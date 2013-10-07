@@ -1,5 +1,7 @@
 package uk.co.forgottendream.vfdeath;
 
+import uk.co.forgottendream.vfdeath.config.ConfigHandler;
+import uk.co.forgottendream.vfdeath.item.Items;
 import uk.co.forgottendream.vfdeath.network.PacketHandler;
 import uk.co.forgottendream.vfdeath.proxies.CommonProxy;
 import cpw.mods.fml.common.Mod;
@@ -11,11 +13,13 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
-@Mod(modid = "VFDeath", name = "VoodooFrog's Death Mod", version = "0.1")
-@NetworkMod(channels = {"vfdeath"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
+@Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION)
+@NetworkMod(channels = {ModInfo.CHANNEL}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class VFDeath {
 
-	@Instance("VFDeath")
+	//TODO: Look into making this more OO oriented with getters/setters etc.
+	
+	@Instance(ModInfo.ID)
 	public static VFDeath instance;
 	
 	@SidedProxy(clientSide = "uk.co.forgottendream.vfdeath.proxies.ClientProxy", serverSide = "uk.co.forgottendream.vfdeath.proxies.CommonProxy")
@@ -23,13 +27,16 @@ public class VFDeath {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		ConfigHandler.initialize(event.getSuggestedConfigurationFile());
+		Items.initialize();
+		
 		proxy.initSounds();
 		proxy.initRenderers();
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		
+		Items.addNames();
 	}
 	
 	@EventHandler
