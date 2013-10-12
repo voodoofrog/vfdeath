@@ -16,18 +16,18 @@ public class ConfigHandler {
 	private static final String blockidscat = "BlockIDs";
 	
 	//ItemIDs
-	public static int REGEN_HEART_ID; //Default: 17070
+	public static int RES_ANKH_ID; //Default: 17070
 	
 	//General
-	public static int REGEN_HEART_XP_COST; //Default: 10
+	public static int RES_ANKH_XP_COST; //Default: 10
 	
 	public static void initialize(File file) {
 		Configuration config = new Configuration(file);
 		
 		config.load();
 		
-		REGEN_HEART_XP_COST = config.get(generalcat, "RegenHeartXPCost", 10).getInt();
-		REGEN_HEART_ID = config.getItem(itemidscat, "RegenHeart", 17070).getInt() -256;
+		RES_ANKH_XP_COST = config.get(generalcat, "ResAnkhXPCost", 10).getInt();
+		RES_ANKH_ID = config.getItem(itemidscat, "ResAnkh", 17070).getInt() -256;
 		
 		config.save();
 	}

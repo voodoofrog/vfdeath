@@ -7,14 +7,14 @@ import uk.co.forgottendream.vfdeath.config.ConfigHandler;
 
 public class Items {
 
-	public static Item regenheart;
+	public static Item resankh;
 	
 	public static void initialize() {
-		regenheart = new ItemRegenerationHeart(ConfigHandler.REGEN_HEART_ID).setUnlocalizedName("regenHeart").setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1);
+		resankh = new ItemResurrectionAnkh(ConfigHandler.RES_ANKH_ID).setUnlocalizedName("resAnkh").setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1).setMaxDamage(4);
 	}
 	
 	public static void addNames() {
-		LanguageRegistry.addName(regenheart, "Heart of Regeneration");
+		LanguageRegistry.addName(resankh, "Resurrection Ankh");
 	}
 	
 }
