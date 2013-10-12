@@ -14,11 +14,6 @@ public class ItemResurrectionAnkh extends Item {
 	public ItemResurrectionAnkh(int id) {
 		super(id);
 	}
-
-	@Override
-	public void onCreated(ItemStack item, World world, EntityPlayer player) {
-		this.setDamage(item, 4);
-	}
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {

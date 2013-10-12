@@ -2,6 +2,7 @@ package uk.co.forgottendream.vfdeath;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
 import uk.co.forgottendream.vfdeath.item.Items;
 import uk.co.forgottendream.vfdeath.network.PacketHandler;
@@ -40,7 +41,7 @@ public class VFDeath {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		Items.addNames();
-		GameRegistry.addRecipe(new ItemStack(Items.resankh, 1), new Object[] {" D ", "DDD", " D ", 'D', Block.dirt});
+		GameRegistry.addRecipe(new ItemStack(Items.resankh, 1, 4), new Object[] {" D ", "DDD", " D ", 'D', Block.dirt});
 	}
 	
 	@EventHandler
