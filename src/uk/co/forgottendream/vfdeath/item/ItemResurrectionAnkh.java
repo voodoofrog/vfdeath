@@ -48,7 +48,7 @@ public class ItemResurrectionAnkh extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean useExtraInformation) {
-		if(IsCharged(item.getItemDamage())) {
+		if(!IsCharged(item.getItemDamage())) {
 			int levels = item.getItemDamage() * 10;
 			info.add("You must add another " + levels + " levels");
 			info.add("before this item is charged.");
