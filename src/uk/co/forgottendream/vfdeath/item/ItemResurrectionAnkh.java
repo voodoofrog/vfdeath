@@ -26,7 +26,7 @@ public class ItemResurrectionAnkh extends Item {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
-		if(IsCharged(item.getItemDamage())) {
+		if(!IsCharged(item.getItemDamage())) {
 			if (player.experienceLevel >= ConfigHandler.RES_ANKH_XP_COST)
 			{
 				player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
