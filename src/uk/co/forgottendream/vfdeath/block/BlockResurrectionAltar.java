@@ -2,40 +2,50 @@ package uk.co.forgottendream.vfdeath.block;
 
 import java.util.Random;
 
-import uk.co.forgottendream.vfdeath.VFDeath;
-import uk.co.forgottendream.vfdeath.tileentity.TileEntityResurrectionAltar;
-
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import uk.co.forgottendream.vfdeath.VFDeath;
+import uk.co.forgottendream.vfdeath.config.ConfigHandler;
+import uk.co.forgottendream.vfdeath.tileentity.TileEntityResurrectionAltar;
+import cpw.mods.fml.common.network.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockResurrectionAltar extends BlockContainer {
 	
+	@SideOnly(Side.CLIENT)
+	private Icon topBottomIcon;
+	private Icon sideIcon;
+	
 	protected BlockResurrectionAltar (int id) {
-		super(id, Material.wood);
-		setHardness(2.0F);
-		setResistance(5.0F);
-		//setBlockName("blockTiny");
-		setCreativeTab(CreativeTabs.tabDecorations);
+		super(id, Material.rock);
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float var1, float var2, float var3) {
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		/*TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 
 		if (tileEntity == null || player.isSneaking()) {
 			return false;
 		}
 		
 		//code to open gui explained later
-		player.openGui(VFDeath.instance, 0, world, x, y, z);
+		player.openGui(VFDeath.instance, 0, world, x, y, z);*/
+
+		if(!world.isRemote) {
+			FMLNetworkHandler.openGui(player, VFDeath.instance, ConfigHandler.ALTAR_GUI_ID, world, x, y, z);
+		}
+		
 		return true;
 	}
 	
@@ -82,6 +92,24 @@ public class BlockResurrectionAltar extends BlockContainer {
 	@Override
 	public TileEntity createNewTileEntity(World world) {
 		return new TileEntityResurrectionAltar();
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {
+		topBottomIcon = register.registerIcon(ConfigHandler.RESOURCE_PATH + "altar_top_bottom");
+		sideIcon = register.registerIcon("minecraft:stonebrick");
+		
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public Icon getIcon(int side, int meta) {
+		if(side == 0 || side == 1) {
+			return topBottomIcon;
+		} else {
+			return sideIcon;
+		}
 	}
 
 }

@@ -17,7 +17,7 @@ public class ItemResurrectionAnkh extends Item {
 		super(id);
 	}
 	
-	public boolean IsCharged(int damage) {
+	public boolean isCharged(int damage) {
 		if(damage == 0) {
 			return true;
 		}
@@ -26,7 +26,7 @@ public class ItemResurrectionAnkh extends Item {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
-		if(!IsCharged(item.getItemDamage())) {
+		if(!isCharged(item.getItemDamage())) {
 			if (player.experienceLevel >= ConfigHandler.RES_ANKH_XP_COST)
 			{
 				player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
@@ -39,7 +39,7 @@ public class ItemResurrectionAnkh extends Item {
 	
 	@Override
 	public boolean hasEffect(ItemStack item){
-		if(IsCharged(item.getItemDamage())) {
+		if(isCharged(item.getItemDamage())) {
 			return true;
 		}
 		return false;
@@ -48,12 +48,14 @@ public class ItemResurrectionAnkh extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean useExtraInformation) {
-		if(!IsCharged(item.getItemDamage())) {
+		if(isCharged(item.getItemDamage())) {
+			info.add("This ankh is ready to be slotted");
+			info.add("into a resurrection altar.");
+		} else {
 			int levels = item.getItemDamage() * 10;
+			
 			info.add("You must add another " + levels + " levels");
 			info.add("before this item is charged.");
-		} else {
-			info.add("This ankh is ready to be slotted into a resurrection altar.");
 		}
 	}
 

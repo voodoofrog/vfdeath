@@ -21,7 +21,7 @@ public class Items {
 	}
 	
 	public static void addRecipes() {
-		GameRegistry.addRecipe(new ItemStack(Items.resankh, 1, 4), new Object[] {" D ", "DDD", " D ", 'D', Block.dirt});
+		GameRegistry.addRecipe(new ItemStack(resankh, 1, 4), new Object[] {" D ", "DDD", " D ", 'D', Block.dirt});
 	}
 	
 }
