@@ -1,5 +1,7 @@
 package uk.co.forgottendream.vfdeath.item;
 
+import java.util.List;
+
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -34,6 +36,14 @@ public class ItemResurrectionAnkh extends Item {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean useExtraInformation) {
+		int levels = item.getItemDamage() * 10;
+		info.add("You must add another " + levels + " levels");
+		info.add("before this item is charged.");
 	}
 	
 	@Override
