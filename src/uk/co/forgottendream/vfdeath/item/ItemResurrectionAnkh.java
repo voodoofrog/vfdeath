@@ -17,35 +17,46 @@ public class ItemResurrectionAnkh extends Item {
 		super(id);
 	}
 	
-	@Override
-	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
-		player.curePotionEffects(item);
-
-        if (player.experienceLevel >= ConfigHandler.RES_ANKH_XP_COST)
-        {
-        	player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
-        	item.damageItem(-1, player);
-        }
-
-        return item;
-	}
-	
-	@Override
-	public boolean hasEffect(ItemStack item){
-		if(item.getItemDamage() == 0) {
+	public boolean IsCharged(int damage) {
+		if(damage == 0) {
 			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean useExtraInformation) {
-		int levels = item.getItemDamage() * 10;
-		info.add("You must add another " + levels + " levels");
-		info.add("before this item is charged.");
+	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+		if(IsCharged(item.getItemDamage())) {
+			if (player.experienceLevel >= ConfigHandler.RES_ANKH_XP_COST)
+			{
+				player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
+				item.damageItem(-1, player);
+			}
+		}
+
+        return item;
 	}
 	
+	@Override
+	public boolean hasEffect(ItemStack item){
+		if(IsCharged(item.getItemDamage())) {
+			return true;
+		}
+		return false;
+	}
+		
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean useExtraInformation) {
+		if(IsCharged(item.getItemDamage())) {
+			int levels = item.getItemDamage() * 10;
+			info.add("You must add another " + levels + " levels");
+			info.add("before this item is charged.");
+		} else {
+			info.add("This ankh is ready to be slotted into a resurrection altar.");
+		}
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register) {
