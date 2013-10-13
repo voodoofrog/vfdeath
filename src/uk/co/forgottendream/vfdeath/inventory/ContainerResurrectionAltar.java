@@ -4,13 +4,36 @@ import uk.co.forgottendream.vfdeath.tileentity.TileEntityResurrectionAltar;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 
 public class ContainerResurrectionAltar extends Container {
 	
-	TileEntityResurrectionAltar altar;
+	private TileEntityResurrectionAltar altar;
 
 	public ContainerResurrectionAltar(InventoryPlayer playerInventory, TileEntityResurrectionAltar altar) {
 		this.altar = altar;
+		
+		//Player's Hotbar
+		for(int x = 0; x < 9; x++) {
+			addSlotToContainer(new Slot(playerInventory, x, 8 + 18 * x, 142));
+		}
+		
+		//Player's Main Inventory
+		for(int y = 0; y < 3; y++) {
+			for(int x = 0; x < 9; x++) {
+				addSlotToContainer(new Slot(playerInventory, x + y * 9 + 9, 8 + 18 * x, 84 + y * 18));
+			}
+		}
+		
+		for(int x = 0; x < 10; x++) {
+			if(x <= 4) {
+				addSlotToContainer(new Slot(altar, x, 52 + 23 * x, 13));
+			}
+			
+			if(x > 4) {
+				addSlotToContainer(new Slot(altar, x, 52 + 23 * x - 115, 36));
+			}
+		}
 	}
 	
 	@Override
