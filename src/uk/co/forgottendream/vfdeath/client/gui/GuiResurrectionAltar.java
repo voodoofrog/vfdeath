@@ -49,7 +49,7 @@ public class GuiResurrectionAltar extends GuiContainer {
         Keyboard.enableRepeatEvents(true);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
-        this.playerNameField = new GuiTextField(fontRenderer, guiLeft + 51, guiTop + 58, 103, 12);
+        this.playerNameField = new GuiTextField(fontRenderer, guiLeft + 54, guiTop + 62, 103, 12);
         this.playerNameField.setTextColor(-1);
         this.playerNameField.setDisabledTextColour(-1);
         this.playerNameField.setEnableBackgroundDrawing(false);
@@ -61,6 +61,30 @@ public class GuiResurrectionAltar extends GuiContainer {
     {
         super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
+    }
+	
+    protected void keyTyped(char par1, int par2) {
+        if (this.playerNameField.textboxKeyTyped(par1, par2))
+        {
+            this.updateTextField();
+        }
+        else
+        {
+            super.keyTyped(par1, par2);
+        }
+    }
+
+    private void updateTextField() {
+        String s = this.playerNameField.getText();
+        //Slot slot = this.repairContainer.getSlot(0);
+
+        /*if (slot != null && slot.getHasStack() && !slot.getStack().hasDisplayName() && s.equals(slot.getStack().getDisplayName()))
+        {
+            s = "";
+        }*/
+
+        //this.repairContainer.updateItemName(s);
+        this.mc.thePlayer.sendQueue.addToSendQueue(new Packet250CustomPayload("MC|ItemName", s.getBytes()));
     }
 	
 	@Override
@@ -117,10 +141,10 @@ public class GuiResurrectionAltar extends GuiContainer {
         
         if (getChargedAnkhCount() > 0)
         {
-            this.playerNameField.setText("Player Name");
+            //this.playerNameField.setText("Player Name");
             this.playerNameField.setEnabled(true);
         } else {
-            this.playerNameField.setText("");
+            //this.playerNameField.setText("");
             this.playerNameField.setEnabled(false);
         }
     }

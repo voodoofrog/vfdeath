@@ -43,6 +43,7 @@ public class VFDeath {
 		Blocks.addNames();
 		Items.addRecipes();
 		Blocks.addRecipes();
+		Blocks.registerTileEntities();
 		
 		new GuiHandler();
 	}
