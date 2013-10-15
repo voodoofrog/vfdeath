@@ -33,15 +33,6 @@ public class BlockResurrectionAltar extends BlockContainer {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float var1, float var2, float var3) {
-		/*TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-
-		if (tileEntity == null || player.isSneaking()) {
-			return false;
-		}
-		
-		//code to open gui explained later
-		player.openGui(VFDeath.instance, 0, world, x, y, z);*/
-
 		if(!world.isRemote) {
 			FMLNetworkHandler.openGui(player, VFDeath.instance, ConfigHandler.ALTAR_GUI_ID, world, x, y, z);
 		}
@@ -50,9 +41,9 @@ public class BlockResurrectionAltar extends BlockContainer {
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int par5, int par6) {
+	public void breakBlock(World world, int x, int y, int z, int id, int meta) {
 		dropItems(world, x, y, z);
-		super.breakBlock(world, x, y, z, par5, par6);
+		super.breakBlock(world, x, y, z, id, meta);
 	}
 	
 	private void dropItems(World world, int x, int y, int z) {

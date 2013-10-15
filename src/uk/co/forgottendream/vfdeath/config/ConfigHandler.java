@@ -9,6 +9,7 @@ public class ConfigHandler {
 
 	//Paths
 	public static final String RESOURCE_PATH = ModInfo.ID.toLowerCase() + ":";
+	public static final String GUI_PATH = "textures/gui/";
 	public static final String GUI_CONTAINER_PATH = "textures/gui/container/";
 	
 	//Categories

@@ -135,4 +135,8 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		}
 	}
 
+	public void receiveButtonEvent(byte buttonID) {
+		
+	}
+
 }

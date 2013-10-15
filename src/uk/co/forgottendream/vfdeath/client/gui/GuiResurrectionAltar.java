@@ -1,15 +1,10 @@
 package uk.co.forgottendream.vfdeath.client.gui;
 
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.ResourceLocation;
@@ -21,6 +16,7 @@ import uk.co.forgottendream.vfdeath.ModInfo;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
 import uk.co.forgottendream.vfdeath.inventory.ContainerResurrectionAltar;
 import uk.co.forgottendream.vfdeath.item.ItemResurrectionAnkh;
+import uk.co.forgottendream.vfdeath.network.PacketHandler;
 import uk.co.forgottendream.vfdeath.tileentity.TileEntityResurrectionAltar;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,6 +27,7 @@ public class GuiResurrectionAltar extends GuiContainer {
 	private static final ResourceLocation texture = new ResourceLocation(ModInfo.ID.toLowerCase(), ConfigHandler.GUI_CONTAINER_PATH + "gui_altar.png");
 	private ContainerResurrectionAltar altarContainer;
 	private GuiTextField playerNameField;
+	private GuiButtonResurrect resButton;
 	//private InventoryPlayer playerInventory;
 	
 	public GuiResurrectionAltar(InventoryPlayer playerInventory, TileEntityResurrectionAltar altar) {
@@ -49,11 +46,14 @@ public class GuiResurrectionAltar extends GuiContainer {
         Keyboard.enableRepeatEvents(true);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
-        this.playerNameField = new GuiTextField(fontRenderer, guiLeft + 54, guiTop + 62, 103, 12);
+        this.playerNameField = new GuiTextField(fontRenderer, guiLeft + 44, guiTop + 62, 103, 12);
         this.playerNameField.setTextColor(-1);
         this.playerNameField.setDisabledTextColour(-1);
         this.playerNameField.setEnableBackgroundDrawing(false);
         this.playerNameField.setMaxStringLength(40);
+        
+        buttonList.clear();
+        buttonList.add(resButton = new GuiButtonResurrect(0, guiLeft + 25, guiTop + 58));
     }
 	
 	@Override
@@ -76,25 +76,19 @@ public class GuiResurrectionAltar extends GuiContainer {
 
     private void updateTextField() {
         String s = this.playerNameField.getText();
-        //Slot slot = this.repairContainer.getSlot(0);
-
-        /*if (slot != null && slot.getHasStack() && !slot.getStack().hasDisplayName() && s.equals(slot.getStack().getDisplayName()))
-        {
-            s = "";
-        }*/
-
-        //this.repairContainer.updateItemName(s);
-        this.mc.thePlayer.sendQueue.addToSendQueue(new Packet250CustomPayload("MC|ItemName", s.getBytes()));
+        //this.mc.thePlayer.sendQueue.addToSendQueue(new Packet250CustomPayload("MC|ItemName", s.getBytes()));
     }
+    
+	@Override
+	protected void actionPerformed(GuiButton button) {
+		PacketHandler.sendButtonPacket((byte) button.id);
+	}
 	
 	@Override
     protected void mouseClicked(int par1, int par2, int par3)
     {
         super.mouseClicked(par1, par2, par3);
         this.playerNameField.mouseClicked(par1, par2, par3);
-        /*if(playerNameField.isFocused() && playerNameField.getText() == "Player Name") {
-        	playerNameField.setText("");
-        }*/
     }
 	
     private int getChargedAnkhCount() {
@@ -130,10 +124,9 @@ public class GuiResurrectionAltar extends GuiContainer {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		drawTexturedModalRect(guiLeft + 51, guiTop + 58, 0, this.ySize + (getChargedAnkhCount() > 0 ? 0 : 16), 110, 16);
+		drawTexturedModalRect(guiLeft + 41, guiTop + 58, 0, this.ySize + (getChargedAnkhCount() > 0 ? 0 : 16), 110, 16);
 	}
 	
-	//TODO: Need to find a better way to update the text field and it's contents
 	@Override
     public void updateScreen()
     {
@@ -141,11 +134,15 @@ public class GuiResurrectionAltar extends GuiContainer {
         
         if (getChargedAnkhCount() > 0)
         {
-            //this.playerNameField.setText("Player Name");
             this.playerNameField.setEnabled(true);
+            if(this.playerNameField.getText() != "") {
+            	resButton.enabled = true;
+            } else {
+            	resButton.enabled = false;
+            }
         } else {
-            //this.playerNameField.setText("");
             this.playerNameField.setEnabled(false);
+            resButton.enabled = false;
         }
     }
 

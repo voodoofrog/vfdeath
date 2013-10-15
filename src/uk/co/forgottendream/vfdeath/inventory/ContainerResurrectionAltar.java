@@ -47,5 +47,9 @@ public class ContainerResurrectionAltar extends Container {
 		//return super.transferStackInSlot(player, slot);
 		return null;
 	}
+	
+	public TileEntityResurrectionAltar getTileEntityAltar() {
+		return this.altar;
+	}
 
 }
