@@ -31,25 +31,24 @@ public class PacketHandler implements IPacketHandler {
 		switch(packetID) {
 		case 0:
 			byte buttonID = reader.readByte();
+			String playerName = reader.readUTF();
 			Container container = entityPlayer.openContainer;
 			
 			if(container != null && container instanceof ContainerResurrectionAltar) {
 				TileEntityResurrectionAltar altar = ((ContainerResurrectionAltar) container).getTileEntityAltar();
-				altar.receiveButtonEvent(buttonID);
+				altar.receiveButtonEvent(buttonID, playerName);
 			}
 		}
 	}
 	
-	public static void sendButtonPacket(byte id) {
+	public static void sendButtonPacket(byte id, String text) {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		DataOutputStream dataStream = new DataOutputStream(byteStream);
 		
 		try {
 			dataStream.writeByte((byte) 0);
-			//dataStream.writeInt(te.xCoord);
-			//dataStream.writeInt(te.yCoord);
-			//dataStream.writeInt(te.zCoord);
 			dataStream.writeByte(id);
+			dataStream.writeUTF(text);
 			
 			PacketDispatcher.sendPacketToServer(PacketDispatcher.getPacket(ModInfo.CHANNEL, byteStream.toByteArray()));
 		} catch(IOException ex) {
