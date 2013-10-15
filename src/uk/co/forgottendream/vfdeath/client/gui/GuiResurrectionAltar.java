@@ -135,7 +135,7 @@ public class GuiResurrectionAltar extends GuiContainer {
         if (getChargedAnkhCount() > 0)
         {
             this.playerNameField.setEnabled(true);
-            if(this.playerNameField.getText() != "") {
+            if(!this.playerNameField.getText().isEmpty()) {
             	resButton.enabled = true;
             } else {
             	resButton.enabled = false;
