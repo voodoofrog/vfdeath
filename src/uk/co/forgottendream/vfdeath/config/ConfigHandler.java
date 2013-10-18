@@ -41,7 +41,7 @@ public class ConfigHandler {
 		Configuration config = new Configuration(file);
 		
 		config.load();
-		HEART_LOSS_ON_DEATH = config.get(generalcat, "HeartLossOnDeath", 1, "How many hearts a player loses on death").getInt();
+		HEART_LOSS_ON_DEATH = config.get(generalcat, "HeartLossOnDeath", 2, "How many hearts a player loses on death").getInt();
 		RES_ANKH_XP_COST = config.get(generalcat, "ResAnkhXPCost", 10, "Cost in player levels to charge an ankh by one point").getInt();
 		GHOST_ALLOWED_BLOCKS = config.get(generalcat, "GhostAllowedBlocks", "", "Comma seperated list of block ids (no metadata) that you can interact with as a ghost.");
 		RES_ANKH_ID = config.getItem(itemidscat, "ResAnkh", 17070).getInt() -256;

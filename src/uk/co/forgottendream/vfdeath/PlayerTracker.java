@@ -16,11 +16,11 @@ public class PlayerTracker implements IPlayerTracker {
 		boolean setData = false;
 		NBTTagCompound compound;
 
-		if (!player.getEntityData().hasKey("VFDeathPlayerData")) {
+		if (!player.getEntityData().hasKey("PlayerPersisted")) {
 			compound = new NBTTagCompound();
-			player.getEntityData().setCompoundTag("VFDeathPlayerData", compound);
+			player.getEntityData().setCompoundTag("PlayerPersisted", compound);
 		} else {
-			compound = player.getEntityData().getCompoundTag("VFDeathPlayerData");
+			compound = player.getEntityData().getCompoundTag("PlayerPersisted");
 		}
 
 		if (compound.getTag("MaxHP") != null) {
@@ -80,7 +80,7 @@ public class PlayerTracker implements IPlayerTracker {
 	}
 
 	public void onPlayerRespawn(EntityPlayer player) {
-		NBTTagCompound compound = player.getEntityData().getCompoundTag("VFDeathPlayerData");
+		NBTTagCompound compound = player.getEntityData().getCompoundTag("PlayerPersisted");
 		int healthModifier = compound.getInteger("MaxHP");
 
 		if (player.getMaxHealth() + (float) healthModifier - (float) ConfigHandler.HEART_LOSS_ON_DEATH <= 0.0F) {

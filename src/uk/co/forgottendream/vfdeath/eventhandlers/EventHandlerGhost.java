@@ -22,7 +22,7 @@ public class EventHandlerGhost {
 	public void disableDamage(LivingHurtEvent event) {
 		if (event.source.getEntity() instanceof EntityPlayer) {
 			EntityPlayer attackingPlayer = (EntityPlayer) event.source.getEntity();
-			NBTTagCompound compound = attackingPlayer.getEntityData().getCompoundTag("VFDeathPlayerData");
+			NBTTagCompound compound = attackingPlayer.getEntityData().getCompoundTag("PlayerPersisted");
 
 			if (compound.getBoolean("IsDead") && !attackingPlayer.capabilities.isCreativeMode) {
 				event.setCanceled(true);
@@ -33,7 +33,7 @@ public class EventHandlerGhost {
 	@ForgeSubscribe
 	public void disableInteraction(PlayerInteractEvent event) {
 		EntityPlayer player = event.entityPlayer;
-		NBTTagCompound compound = player.getEntityData().getCompoundTag("VFDeathPlayerData");
+		NBTTagCompound compound = player.getEntityData().getCompoundTag("PlayerPersisted");
 
 		if (compound.getBoolean("IsDead") && !player.capabilities.isCreativeMode) {
 			int blockID = player.worldObj.getBlockId(event.x, event.y, event.z);
@@ -46,9 +46,9 @@ public class EventHandlerGhost {
 				event.setCanceled(true);
 			}
 
-			if (event.action != Action.LEFT_CLICK_BLOCK	&& player.getHeldItem() != null	&& player.getHeldItem().itemID == Item.appleGold.itemID) {
+			/*if (event.action != Action.LEFT_CLICK_BLOCK	&& player.getHeldItem() != null	&& player.getHeldItem().itemID == Item.appleGold.itemID) {
 				event.setCanceled(false);
-			}
+			}*/
 		}
 	}
 
@@ -56,15 +56,12 @@ public class EventHandlerGhost {
 	public void onEntityUpdate(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
-			NBTTagCompound nbt = player.getEntityData().getCompoundTag(
-					"PlayerPersisted");
+			NBTTagCompound nbt = player.getEntityData().getCompoundTag("PlayerPersisted");
 
-			if (nbt.getBoolean("isDead") && !player.capabilities.isCreativeMode) {
-				int invisTimeLeft = player.getActivePotionEffect(
-						Potion.invisibility).getDuration();
+			if (nbt.getBoolean("IsDead") && !player.capabilities.isCreativeMode) {
+				int invisTimeLeft = player.getActivePotionEffect(Potion.invisibility).getDuration();
 				if (invisTimeLeft < 100) {
 					player.getActivePotionEffect(Potion.invisibility).duration = 1000;
-					// player.addChatMessage("adding time");
 				}
 			}
 		}

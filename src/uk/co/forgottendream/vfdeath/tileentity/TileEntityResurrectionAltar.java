@@ -1,18 +1,25 @@
 package uk.co.forgottendream.vfdeath.tileentity;
 
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeInstance;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.Potion;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import uk.co.forgottendream.vfdeath.ModInfo;
+import uk.co.forgottendream.vfdeath.config.ConfigHandler;
 import uk.co.forgottendream.vfdeath.item.ItemResurrectionAnkh;
 import uk.co.forgottendream.vfdeath.item.Items;
 
 public class TileEntityResurrectionAltar extends TileEntity implements IInventory {
-	
+
 	private ItemStack[] slots;
-	
+
 	public TileEntityResurrectionAltar() {
 		slots = new ItemStack[10];
 	}
@@ -30,16 +37,16 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	@Override
 	public ItemStack decrStackSize(int slot, int count) {
 		ItemStack item = getStackInSlot(slot);
-		
-		if(item != null) {
-			if(item.stackSize <= count) {
+
+		if (item != null) {
+			if (item.stackSize <= count) {
 				setInventorySlotContents(slot, null);
 			} else {
 				item = item.splitStack(count);
 				onInventoryChanged();
 			}
 		}
-		
+
 		return item;
 	}
 
@@ -53,11 +60,11 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack item) {
 		slots[slot] = item;
-		
-		if(item != null && item.stackSize > getInventoryStackLimit()) {
+
+		if (item != null && item.stackSize > getInventoryStackLimit()) {
 			item.stackSize = getInventoryStackLimit();
 		}
-		
+
 		onInventoryChanged();
 	}
 
@@ -82,17 +89,19 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	}
 
 	@Override
-	public void openChest() {}
+	public void openChest() {
+	}
 
 	@Override
-	public void closeChest() {}
+	public void closeChest() {
+	}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack item) {
-		if(item.itemID == Items.resankh.itemID) {
+		if (item.itemID == Items.resankh.itemID) {
 			ItemResurrectionAnkh ankh = (ItemResurrectionAnkh) item.getItem();
-			
-			if(ankh.isCharged(item.getItemDamage())) {
+
+			if (ankh.isCharged(item.getItemDamage())) {
 				return true;
 			}
 		}
@@ -102,43 +111,65 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
-		
+
 		NBTTagList items = new NBTTagList();
-		
-		for(int i = 0; i < getSizeInventory(); i++) {
+
+		for (int i = 0; i < getSizeInventory(); i++) {
 			ItemStack stack = getStackInSlot(i);
-			
-			if(stack != null) {
+
+			if (stack != null) {
 				NBTTagCompound item = new NBTTagCompound();
 				item.setByte("Slot", (byte) i);
 				stack.writeToNBT(item);
 				items.appendTag(item);
 			}
 		}
-		
+
 		compound.setTag("Items", items);
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		
+
 		NBTTagList items = compound.getTagList("Items");
-		
-		for(int i = 0; i < items.tagCount(); i++) {
+
+		for (int i = 0; i < items.tagCount(); i++) {
 			NBTTagCompound item = (NBTTagCompound) items.tagAt(i);
 			int slot = item.getByte("Slot");
-			
-			if(slot >= 0 && slot < getSizeInventory()) {
+
+			if (slot >= 0 && slot < getSizeInventory()) {
 				setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(item));
 			}
 		}
 	}
 
 	public void receiveButtonEvent(byte buttonID, String text) {
-		switch(buttonID) {
+		switch (buttonID) {
 		case 0:
-			//do stuff with res button
+			EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(text);
+
+			if (player != null) {
+				NBTTagCompound compound = player.getEntityData().getCompoundTag("PlayerPersisted");
+				compound.setInteger("MaxHP", 0);
+				compound.setBoolean("IsDead", false);
+				AttributeInstance attributeinstance = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+
+				try {
+					attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
+				} catch (Exception var7) {
+				}
+
+				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod", 0.0D, 0));
+				player.setHealth(player.getMaxHealth());
+
+				if (!player.capabilities.isCreativeMode) {
+					player.capabilities.allowFlying = false;
+					player.capabilities.disableDamage = false;
+					player.removePotionEffect(Potion.invisibility.getId());
+					player.sendPlayerAbilities();
+				}
+			}
 			break;
 		}
 	}

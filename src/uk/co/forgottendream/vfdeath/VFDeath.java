@@ -1,7 +1,9 @@
 package uk.co.forgottendream.vfdeath;
 
+import net.minecraftforge.common.MinecraftForge;
 import uk.co.forgottendream.vfdeath.block.Blocks;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
+import uk.co.forgottendream.vfdeath.eventhandlers.EventHandlerGhost;
 import uk.co.forgottendream.vfdeath.handler.GuiHandler;
 import uk.co.forgottendream.vfdeath.item.Items;
 import uk.co.forgottendream.vfdeath.network.PacketHandler;
@@ -14,6 +16,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION)
 @NetworkMod(channels = {ModInfo.CHANNEL}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
@@ -44,6 +47,8 @@ public class VFDeath {
 		Items.addRecipes();
 		Blocks.addRecipes();
 		Blocks.registerTileEntities();
+		GameRegistry.registerPlayerTracker(new PlayerTracker());
+		MinecraftForge.EVENT_BUS.register(new EventHandlerGhost());
 		
 		new GuiHandler();
 	}
