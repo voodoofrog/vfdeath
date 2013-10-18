@@ -82,15 +82,16 @@ public class PlayerTracker implements IPlayerTracker {
 	public void onPlayerRespawn(EntityPlayer player) {
 		NBTTagCompound compound = player.getEntityData().getCompoundTag("PlayerPersisted");
 		int healthModifier = compound.getInteger("MaxHP");
+		int heartLoss = ConfigHandler.HEART_LOSS_ON_DEATH * 2;
 
-		if (player.getMaxHealth() + (float) healthModifier - (float) ConfigHandler.HEART_LOSS_ON_DEATH <= 0.0F) {
+		if (player.getMaxHealth() + (float) healthModifier - (float) heartLoss <= 0.0F) {
 			this.setGhost(player);
 			player.addChatMessage("You have died and are now a ghost!");
 			compound.setBoolean("IsDead", true);
 			healthModifier = (int) (1.0F - player.getMaxHealth());
 		} else {
 			compound.setBoolean("IsDead", false);
-			healthModifier -= ConfigHandler.HEART_LOSS_ON_DEATH;
+			healthModifier -= heartLoss;
 		}
 
 		compound.setInteger("MaxHP", healthModifier);

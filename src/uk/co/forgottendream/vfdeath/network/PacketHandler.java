@@ -31,38 +31,26 @@ public class PacketHandler implements IPacketHandler {
 		switch(packetID) {
 		case 0:
 			byte buttonID = reader.readByte();
+			byte ankhs = reader.readByte();
 			String playerName = reader.readUTF();
 			Container container = entityPlayer.openContainer;
 			
 			if(container != null && container instanceof ContainerResurrectionAltar) {
 				TileEntityResurrectionAltar altar = ((ContainerResurrectionAltar) container).getTileEntityAltar();
-				altar.receiveButtonEvent(buttonID, playerName);
+				altar.receiveButtonEvent(buttonID, ankhs, playerName);
 			}
 		}
 	}
 	
-	public static void sendButtonPacket(byte id) {
+	public static void sendResButtonPacket(byte id, byte ankhs, String playerName) {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		DataOutputStream dataStream = new DataOutputStream(byteStream);
 		
 		try {
 			dataStream.writeByte((byte) 0);
 			dataStream.writeByte(id);
-			
-			PacketDispatcher.sendPacketToServer(PacketDispatcher.getPacket(ModInfo.CHANNEL, byteStream.toByteArray()));
-		} catch(IOException ex) {
-			System.err.append("Failed to send button clicked packet for id" + id + ".");
-		}
-	}
-	
-	public static void sendButtonPacket(byte id, String text) {
-		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-		DataOutputStream dataStream = new DataOutputStream(byteStream);
-		
-		try {
-			dataStream.writeByte((byte) 0);
-			dataStream.writeByte(id);
-			dataStream.writeUTF(text);
+			dataStream.writeByte(ankhs);
+			dataStream.writeUTF(playerName);
 			
 			PacketDispatcher.sendPacketToServer(PacketDispatcher.getPacket(ModInfo.CHANNEL, byteStream.toByteArray()));
 		} catch(IOException ex) {

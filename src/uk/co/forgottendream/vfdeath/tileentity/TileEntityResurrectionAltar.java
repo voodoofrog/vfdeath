@@ -144,24 +144,27 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		}
 	}
 
-	public void receiveButtonEvent(byte buttonID, String text) {
+	public void receiveButtonEvent(byte buttonID, byte ankhs, String text) {
 		switch (buttonID) {
 		case 0:
+			//healthmod & maxhp = -19
 			EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(text);
+			int healthGained = ankhs * 2;
+			int healthMod = -20 + healthGained;
 
 			if (player != null) {
 				NBTTagCompound compound = player.getEntityData().getCompoundTag("PlayerPersisted");
-				compound.setInteger("MaxHP", 0);
+				compound.setInteger("MaxHP", healthMod);
 				compound.setBoolean("IsDead", false);
 				AttributeInstance attributeinstance = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
 
 				try {
 					attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
-				} catch (Exception var7) {
+				} catch (Exception ex) {
 				}
 
-				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod", 0.0D, 0));
-				player.setHealth(player.getMaxHealth());
+				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod", (double) healthMod, 0));
+				player.setHealth(healthGained);
 
 				if (!player.capabilities.isCreativeMode) {
 					player.capabilities.allowFlying = false;

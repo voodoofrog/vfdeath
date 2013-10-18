@@ -81,7 +81,8 @@ public class GuiResurrectionAltar extends GuiContainer {
     
 	@Override
 	protected void actionPerformed(GuiButton button) {
-		PacketHandler.sendButtonPacket((byte) button.id, playerNameField.getText());
+		//altarContainer.
+		PacketHandler.sendResButtonPacket((byte) button.id, (byte) getChargedAnkhCount(), playerNameField.getText());
 	}
 	
 	@Override
@@ -93,7 +94,7 @@ public class GuiResurrectionAltar extends GuiContainer {
 	
     private int getChargedAnkhCount() {
 		int count = 0;
-		
+	
 		for(int x = 0; x < 10; x++) {
 			ItemStack item = altarContainer.getSlot(x + 36).getStack();
 
