@@ -41,6 +41,20 @@ public class PacketHandler implements IPacketHandler {
 		}
 	}
 	
+	public static void sendButtonPacket(byte id) {
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		DataOutputStream dataStream = new DataOutputStream(byteStream);
+		
+		try {
+			dataStream.writeByte((byte) 0);
+			dataStream.writeByte(id);
+			
+			PacketDispatcher.sendPacketToServer(PacketDispatcher.getPacket(ModInfo.CHANNEL, byteStream.toByteArray()));
+		} catch(IOException ex) {
+			System.err.append("Failed to send button clicked packet for id" + id + ".");
+		}
+	}
+	
 	public static void sendButtonPacket(byte id, String text) {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		DataOutputStream dataStream = new DataOutputStream(byteStream);
