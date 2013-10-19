@@ -95,8 +95,8 @@ public class GuiResurrectionAltar extends GuiContainer {
     private int getChargedAnkhCount() {
 		int count = 0;
 	
-		for(int x = 0; x < 10; x++) {
-			ItemStack item = altarContainer.getSlot(x + 36).getStack();
+		for(int i = 0; i < 10; i++) {
+			ItemStack item = altarContainer.getSlot(i + 36).getStack();
 
 			if(item != null) {
 				if(item.getItem() instanceof ItemResurrectionAnkh) {

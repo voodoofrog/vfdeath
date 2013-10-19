@@ -144,19 +144,34 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		}
 	}
 
-	public void receiveButtonEvent(byte buttonID, byte ankhs, String text) {
+	private void removeAnkhs() {
+		for(int i = 0; i < getSizeInventory(); i++) {
+			ItemStack item = getStackInSlot(i);
+
+			if(item != null) {
+				if(item.getItem() instanceof ItemResurrectionAnkh) {
+					ItemResurrectionAnkh ankh = (ItemResurrectionAnkh) item.getItem();
+
+					if (ankh.hasEffect(item)) {
+						setInventorySlotContents(i, null);
+					}
+				}
+			}
+		}
+	}
+	
+	public void receiveResButtonEvent(byte buttonID, byte ankhs, EntityPlayer player, String playerName) {
 		switch (buttonID) {
 		case 0:
-			//healthmod & maxhp = -19
-			EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(text);
+			EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(playerName);
 			int healthGained = ankhs * 2;
 			int healthMod = -20 + healthGained;
 
-			if (player != null) {
-				NBTTagCompound compound = player.getEntityData().getCompoundTag("PlayerPersisted");
+			if (resPlayer != null) {
+				NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag("PlayerPersisted");
 				compound.setInteger("MaxHP", healthMod);
 				compound.setBoolean("IsDead", false);
-				AttributeInstance attributeinstance = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+				AttributeInstance attributeinstance = resPlayer.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
 
 				try {
 					attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
@@ -164,14 +179,17 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				}
 
 				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod", (double) healthMod, 0));
-				player.setHealth(healthGained);
+				resPlayer.setHealth(healthGained);
 
-				if (!player.capabilities.isCreativeMode) {
-					player.capabilities.allowFlying = false;
-					player.capabilities.disableDamage = false;
-					player.removePotionEffect(Potion.invisibility.getId());
-					player.sendPlayerAbilities();
+				if (!resPlayer.capabilities.isCreativeMode) {
+					resPlayer.capabilities.allowFlying = false;
+					resPlayer.capabilities.disableDamage = false;
+					resPlayer.removePotionEffect(Potion.invisibility.getId());
+					resPlayer.sendPlayerAbilities();
 				}
+				
+				removeAnkhs();
+				player.closeScreen();
 			}
 			break;
 		}
