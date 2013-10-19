@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import uk.co.forgottendream.vfdeath.ModInfo;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
 import uk.co.forgottendream.vfdeath.item.ItemResurrectionAnkh;
@@ -190,6 +191,8 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				
 				removeAnkhs();
 				player.closeScreen();
+				
+				//TODO: Teleport player across dimension to altar and add lightning strike
 			}
 			break;
 		}
