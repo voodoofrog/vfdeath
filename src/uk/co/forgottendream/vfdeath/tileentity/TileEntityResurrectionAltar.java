@@ -4,6 +4,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeInstance;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,11 +12,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraftforge.common.DimensionManager;
 import uk.co.forgottendream.vfdeath.ModInfo;
+import uk.co.forgottendream.vfdeath.Teleportation;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
 import uk.co.forgottendream.vfdeath.item.ItemResurrectionAnkh;
 import uk.co.forgottendream.vfdeath.item.Items;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class TileEntityResurrectionAltar extends TileEntity implements IInventory {
 
@@ -192,10 +197,29 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				removeAnkhs();
 				player.closeScreen();
 				
-				//TODO: Teleport player across dimension to altar and add lightning strike
+				//TODO: add lightning strike, add new death screen before ghost respawn
+				if (player.dimension == 0) {
+					Teleportation.teleportEntity(this.worldObj, resPlayer, this.worldObj.provider.dimensionId, getRandomAltarSpawnPoint(), resPlayer.rotationYaw);
+				} else {
+					//cannot res
+				}
 			}
 			break;
 		}
 	}
+	
+    private ChunkCoordinates getRandomAltarSpawnPoint()
+    {
+        ChunkCoordinates chunkcoordinates = new ChunkCoordinates(this.xCoord, this.yCoord, this.zCoord);
+
+        int spawnFuzz = 10;
+        int spawnFuzzHalf = spawnFuzz / 2;
+
+        chunkcoordinates.posX += this.worldObj.rand.nextInt(spawnFuzz) - spawnFuzzHalf;
+        chunkcoordinates.posZ += this.worldObj.rand.nextInt(spawnFuzz) - spawnFuzzHalf;
+        chunkcoordinates.posY = this.worldObj.getTopSolidOrLiquidBlock(chunkcoordinates.posX, chunkcoordinates.posZ);
+
+        return chunkcoordinates;
+    }
 
 }
