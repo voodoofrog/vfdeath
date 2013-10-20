@@ -170,7 +170,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 			int healthMod = -20 + healthGained;
 
 			if (resPlayer != null) {
-				NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag("PlayerPersisted");
+				NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 				compound.setInteger("MaxHP", healthMod);
 				compound.setBoolean("IsDead", false);
 				AttributeInstance attributeinstance = resPlayer.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);

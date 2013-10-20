@@ -22,7 +22,7 @@ public class EventHandlerGhost {
 	public void disableDamage(LivingHurtEvent event) {
 		if (event.source.getEntity() instanceof EntityPlayer) {
 			EntityPlayer attackingPlayer = (EntityPlayer) event.source.getEntity();
-			NBTTagCompound compound = attackingPlayer.getEntityData().getCompoundTag("PlayerPersisted");
+			NBTTagCompound compound = attackingPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 
 			if (compound.getBoolean("IsDead") && !attackingPlayer.capabilities.isCreativeMode) {
 				event.setCanceled(true);
@@ -33,7 +33,7 @@ public class EventHandlerGhost {
 	@ForgeSubscribe
 	public void disableInteraction(PlayerInteractEvent event) {
 		EntityPlayer player = event.entityPlayer;
-		NBTTagCompound compound = player.getEntityData().getCompoundTag("PlayerPersisted");
+		NBTTagCompound compound = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 
 		if (compound.getBoolean("IsDead") && !player.capabilities.isCreativeMode) {
 			int blockID = player.worldObj.getBlockId(event.x, event.y, event.z);
@@ -56,7 +56,7 @@ public class EventHandlerGhost {
 	public void onEntityUpdate(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
-			NBTTagCompound nbt = player.getEntityData().getCompoundTag("PlayerPersisted");
+			NBTTagCompound nbt = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 
 			if (nbt.getBoolean("IsDead") && !player.capabilities.isCreativeMode) {
 				int invisTimeLeft = player.getActivePotionEffect(Potion.invisibility).getDuration();
