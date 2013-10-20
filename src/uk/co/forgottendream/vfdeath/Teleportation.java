@@ -14,7 +14,6 @@ import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
 import net.minecraft.network.packet.Packet9Respawn;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
@@ -22,8 +21,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 public class Teleportation {
-
-	private static MinecraftServer mcServer = null;
 
 	public static Entity teleportEntity(World newworld, Entity entity, int dimension, ChunkCoordinates spawn, float yaw) {
 		Entity mount = entity.ridingEntity;
