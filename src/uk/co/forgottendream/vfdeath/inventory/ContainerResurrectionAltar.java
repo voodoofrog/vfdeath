@@ -28,11 +28,11 @@ public class ContainerResurrectionAltar extends Container {
 		
 		for(int x = 0; x < 10; x++) {
 			if(x <= 4) {
-				addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x, 13));
+				addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x, 8));
 			}
 			
 			if(x > 4) {
-				addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x - 115, 36));
+				addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x - 115, 31));
 			}
 		}
 	}

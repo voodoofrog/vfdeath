@@ -39,6 +39,9 @@ public class PacketHandler implements IPacketHandler {
 				TileEntityResurrectionAltar altar = ((ContainerResurrectionAltar) container).getTileEntityAltar();
 				altar.receiveResButtonEvent(buttonID, ankhs, entityPlayer, playerName);
 			}
+			break;
+		case 1:
+			break;
 		}
 	}
 	

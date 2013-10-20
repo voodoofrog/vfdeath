@@ -4,9 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
@@ -28,6 +31,7 @@ public class GuiResurrectionAltar extends GuiContainer {
 	private ContainerResurrectionAltar altarContainer;
 	private GuiTextField playerNameField;
 	private GuiButtonResurrect resButton;
+	private String outputText;
 	//private InventoryPlayer playerInventory;
 	
 	public GuiResurrectionAltar(InventoryPlayer playerInventory, TileEntityResurrectionAltar altar) {
@@ -46,14 +50,14 @@ public class GuiResurrectionAltar extends GuiContainer {
         Keyboard.enableRepeatEvents(true);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
-        this.playerNameField = new GuiTextField(fontRenderer, guiLeft + 44, guiTop + 62, 103, 12);
+        this.playerNameField = new GuiTextField(fontRenderer, guiLeft + 44, guiTop + 56, 103, 12);
         this.playerNameField.setTextColor(-1);
         this.playerNameField.setDisabledTextColour(-1);
         this.playerNameField.setEnableBackgroundDrawing(false);
         this.playerNameField.setMaxStringLength(40);
         
         buttonList.clear();
-        buttonList.add(resButton = new GuiButtonResurrect(0, guiLeft + 25, guiTop + 58));
+        buttonList.add(resButton = new GuiButtonResurrect(0, guiLeft + 25, guiTop + 52));
     }
 	
 	@Override
@@ -76,13 +80,23 @@ public class GuiResurrectionAltar extends GuiContainer {
 
     private void updateTextField() {
         String s = this.playerNameField.getText();
-        //this.mc.thePlayer.sendQueue.addToSendQueue(new Packet250CustomPayload("MC|ItemName", s.getBytes()));
     }
     
 	@Override
 	protected void actionPerformed(GuiButton button) {
-		//altarContainer.
 		PacketHandler.sendResButtonPacket((byte) button.id, (byte) getChargedAnkhCount(), playerNameField.getText());
+		
+		EntityPlayerMP resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(this.playerNameField.getText());
+		
+		if (resPlayer != null) {
+			NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+			
+			if (!compound.getBoolean("IsDead")) {
+				this.outputText = "Player is not dead.";
+			}
+		} else {
+			this.outputText = "Player not found.";
+		}
 	}
 	
 	@Override
@@ -119,13 +133,20 @@ public class GuiResurrectionAltar extends GuiContainer {
         this.playerNameField.drawTextBox();
     }
     
+    @Override
+    protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+    	if (this.outputText != null && this.outputText != "") {
+    		this.fontRenderer.drawString(this.outputText, this.xSize / 2 - this.fontRenderer.getStringWidth(this.outputText) / 2, guiTop + 34, 0xFF0000);
+    	}
+    }
+    
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
 		GL11.glColor4f(1, 1, 1, 1);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		drawTexturedModalRect(guiLeft + 41, guiTop + 58, 0, this.ySize + (getChargedAnkhCount() > 0 ? 0 : 16), 110, 16);
+		drawTexturedModalRect(guiLeft + 41, guiTop + 52, 0, this.ySize + (getChargedAnkhCount() > 0 ? 0 : 16), 110, 16);
 	}
 	
 	@Override

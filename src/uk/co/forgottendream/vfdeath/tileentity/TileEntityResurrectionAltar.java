@@ -171,33 +171,36 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 
 			if (resPlayer != null) {
 				NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-				compound.setInteger("MaxHP", healthMod);
-				compound.setBoolean("IsDead", false);
-				AttributeInstance attributeinstance = resPlayer.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
-
-				try {
-					attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
-				} catch (Exception ex) {
-				}
-
-				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod", (double) healthMod, 0));
-				resPlayer.setHealth(healthGained);
-
-				if (!resPlayer.capabilities.isCreativeMode) {
-					resPlayer.capabilities.allowFlying = false;
-					resPlayer.capabilities.disableDamage = false;
-					resPlayer.removePotionEffect(Potion.invisibility.getId());
-					resPlayer.sendPlayerAbilities();
-				}
 				
-				removeAnkhs();
-				player.closeScreen();
-				
-				//TODO: add lightning strike, add new death screen before ghost respawn
-				if (player.dimension == 0) {
-					Teleportation.teleportEntity(this.worldObj, resPlayer, this.worldObj.provider.dimensionId, getRandomAltarSpawnPoint(), resPlayer.rotationYaw);
-				} else {
-					//cannot res
+				if (compound.getBoolean("IsDead")) {
+					compound.setInteger("MaxHP", healthMod);
+					compound.setBoolean("IsDead", false);
+					AttributeInstance attributeinstance = resPlayer.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+	
+					try {
+						attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
+					} catch (Exception ex) {
+					}
+	
+					attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod", (double) healthMod, 0));
+					resPlayer.setHealth(healthGained);
+	
+					if (!resPlayer.capabilities.isCreativeMode) {
+						resPlayer.capabilities.allowFlying = false;
+						resPlayer.capabilities.disableDamage = false;
+						resPlayer.removePotionEffect(Potion.invisibility.getId());
+						resPlayer.sendPlayerAbilities();
+					}
+					
+					removeAnkhs();
+					player.closeScreen();
+					
+					//TODO: add lightning strike, add new death screen before ghost respawn
+					if (player.dimension == 0) {
+						Teleportation.teleportEntity(this.worldObj, resPlayer, this.worldObj.provider.dimensionId, getRandomAltarSpawnPoint(), resPlayer.rotationYaw);
+					} else {
+						//player is not in the overworld
+					}
 				}
 			}
 			break;
