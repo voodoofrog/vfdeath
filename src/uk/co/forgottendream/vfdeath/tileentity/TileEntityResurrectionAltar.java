@@ -15,6 +15,7 @@ import net.minecraft.util.ChunkCoordinates;
 import uk.co.forgottendream.vfdeath.ModInfo;
 import uk.co.forgottendream.vfdeath.Teleportation;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
+import uk.co.forgottendream.vfdeath.entity.effect.EntityVisualLightningBolt;
 import uk.co.forgottendream.vfdeath.item.ItemResurrectionAnkh;
 import uk.co.forgottendream.vfdeath.item.Items;
 
@@ -195,9 +196,11 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 					removeAnkhs();
 					player.closeScreen();
 					
-					//TODO: add lightning strike, add new death screen before ghost respawn
+					//TODO: add new death screen before ghost respawn
 					if (player.dimension == 0) {
-						Teleportation.teleportEntity(this.worldObj, resPlayer, this.worldObj.provider.dimensionId, getRandomAltarSpawnPoint(), resPlayer.rotationYaw);
+						ChunkCoordinates coords = getRandomAltarSpawnPoint();
+						Teleportation.teleportEntity(this.worldObj, resPlayer, this.worldObj.provider.dimensionId, coords, resPlayer.rotationYaw);
+						this.worldObj.addWeatherEffect(new EntityVisualLightningBolt(this.worldObj, coords.posX, coords.posY, coords.posZ));
 					} else {
 						//player is not in the overworld
 					}
