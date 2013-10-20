@@ -1,12 +1,11 @@
 package uk.co.forgottendream.vfdeath.item;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class Items {
 
@@ -21,7 +20,7 @@ public class Items {
 	}
 	
 	public static void addRecipes() {
-		GameRegistry.addRecipe(new ItemStack(resankh, 1, 4), new Object[] {" D ", "DDD", " D ", 'D', Block.dirt});
+		GameRegistry.addRecipe(new ItemStack(resankh, 1, 4), new Object[] {" g ", "ggg", " g ", 'g', Item.ingotGold});
 	}
 	
 }
