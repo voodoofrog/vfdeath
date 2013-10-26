@@ -7,7 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
+import uk.co.forgottendream.vfdeath.graveyard.Graveyard;
 import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerTracker implements IPlayerTracker {
@@ -86,6 +89,8 @@ public class PlayerTracker implements IPlayerTracker {
 
 		if (player.getMaxHealth() + (float) healthModifier - (float) heartLoss <= 0.0F) {
 			this.setGhost(player);
+			WorldServer worldserver = MinecraftServer.getServer().worldServerForDimension(player.dimension);
+			Graveyard.spawnGrave(worldserver, player.worldObj.provider.getRandomizedSpawnPoint());
 			player.addChatMessage("You have died and are now a ghost!");
 			compound.setBoolean("IsDead", true);
 			healthModifier = (int) (1.0F - player.getMaxHealth());

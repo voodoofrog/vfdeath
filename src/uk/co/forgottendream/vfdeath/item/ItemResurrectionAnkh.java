@@ -3,10 +3,16 @@ package uk.co.forgottendream.vfdeath.item;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeInstance;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import uk.co.forgottendream.vfdeath.ModInfo;
 import uk.co.forgottendream.vfdeath.config.ConfigHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,6 +22,47 @@ public class ItemResurrectionAnkh extends Item {
 	public ItemResurrectionAnkh(int id) {
 		super(id);
 	}
+	
+	@Override
+	public ItemStack onEaten(ItemStack item, World world, EntityPlayer player) {
+		if (!world.isRemote && isCharged(item.getItemDamage())) {
+			NBTTagCompound nbt = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+			int healthModifier = nbt.getInteger("MaxHP");
+
+			if (healthModifier != 0) {
+				if (healthModifier + 2 > 0) {
+					healthModifier = 0;
+				} else {
+					healthModifier += 2;
+				}
+
+				nbt.setInteger("MaxHP", healthModifier);
+				nbt.setBoolean("IsDead", false);
+				AttributeInstance attributeinstance = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+
+				try {
+					attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
+				} catch (Exception var8) {}
+
+				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod", (double) healthModifier, 0));
+				player.setHealth(player.getMaxHealth());
+				item.stackSize--;
+			}
+		}
+		return item;
+	}
+	
+	@Override
+    public int getMaxItemUseDuration(ItemStack item)
+    {
+        return 32;
+    }
+	
+	@Override
+    public EnumAction getItemUseAction(ItemStack item)
+    {
+        return EnumAction.bow;
+    }
 	
 	public boolean isCharged(int damage) {
 		if(damage == 0) {
@@ -32,6 +79,8 @@ public class ItemResurrectionAnkh extends Item {
 				player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
 				item.damageItem(-1, player);
 			}
+		} else {
+			player.setItemInUse(item, this.getMaxItemUseDuration(item));
 		}
 
         return item;
