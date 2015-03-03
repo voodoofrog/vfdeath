@@ -1,17 +1,16 @@
 [
 {
-"modid": "VFDeath",
-"name": "VoodooFrog's Death Mod",
-"description": "Making death in Minecraft deadlier.",
-"version": "0.1",
-"credits": "",
-"logoFile": "",
-"mcversion": "1.6.4",
-"url": "",
-"updateUrl": "",
-"authors": [ "VoodooFrog" ],
-"parent":"",
-"screenshots": [],
-"dependencies": [ "mod_MinecraftForge" ]
+  "modid": "VFDeath",
+  "name": "VoodooFrog's Death Mod",
+  "description": "Making death in Minecraft deadlier.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["VoodooFrog"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
 }
 ]
