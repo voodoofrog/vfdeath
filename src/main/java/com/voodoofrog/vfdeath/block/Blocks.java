@@ -1,36 +1,36 @@
 package com.voodoofrog.vfdeath.block;
 
-import com.voodoofrog.vfdeath.config.ConfigHandler;
-import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
-import com.voodoofrog.vfdeath.item.Items;
-import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
-
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.LanguageRegistry;
 
-public class Blocks {
+import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 
+public class Blocks
+{
 	public static Block altar;
-	
-	public static void initialize() {
-		altar = new BlockResurrectionAltar(ConfigHandler.ALTAR_ID).setHardness(3.5F).setStepSound(Block.soundStoneFootstep).setUnlocalizedName("resAltar").setCreativeTab(CreativeTabs.tabMisc);
+
+	public static void initialize()
+	{
+		altar = new BlockResurrectionAltar().setHardness(3.5F).setStepSound(Block.soundTypePiston).setUnlocalizedName("resAltar")
+				.setCreativeTab(CreativeTabs.tabMisc);
 		GameRegistry.registerBlock(altar, "ResAltar");
 	}
-	
-	public static void addNames() {
+
+	public static void addNames()
+	{
 		LanguageRegistry.addName(altar, "Resurrection Altar");
 	}
-	
-	public static void addRecipes() {
-		GameRegistry.addRecipe(new ItemStack(altar), new Object[] {"DDD ", "D D", "DDD", 'D', Block.dirt});
+
+	public static void addRecipes()
+	{
+		GameRegistry.addRecipe(new ItemStack(altar), new Object[] { "DDD ", "D D", "DDD", 'D', net.minecraft.init.Blocks.dirt });
 	}
-	
-	public static void registerTileEntities() {
+
+	public static void registerTileEntities()
+	{
 		GameRegistry.registerTileEntity(TileEntityResurrectionAltar.class, "tileEntityAltar");
 	}
-	
 }

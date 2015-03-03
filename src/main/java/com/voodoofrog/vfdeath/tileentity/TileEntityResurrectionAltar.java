@@ -1,15 +1,8 @@
 package com.voodoofrog.vfdeath.tileentity;
 
-import com.voodoofrog.vfdeath.ModInfo;
-import com.voodoofrog.vfdeath.Teleportation;
-import com.voodoofrog.vfdeath.config.ConfigHandler;
-import com.voodoofrog.vfdeath.entity.effect.EntityVisualLightningBolt;
-import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
-import com.voodoofrog.vfdeath.item.Items;
-
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeInstance;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -18,36 +11,54 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 
-public class TileEntityResurrectionAltar extends TileEntity implements IInventory {
+import com.voodoofrog.vfdeath.ModInfo;
+import com.voodoofrog.vfdeath.TeleportationHelper;
+import com.voodoofrog.vfdeath.config.ConfigHandler;
+import com.voodoofrog.vfdeath.entity.effect.EntityVisualLightningBolt;
+import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
+import com.voodoofrog.vfdeath.item.Items;
 
-	private ItemStack[] slots;
+public class TileEntityResurrectionAltar extends TileEntity implements IInventory
+{
+	private ItemStack[] inventory;
+	private String name = "InventoryAltar";
 
-	public TileEntityResurrectionAltar() {
-		slots = new ItemStack[10];
+	public TileEntityResurrectionAltar()
+	{
+		this.inventory = new ItemStack[10];
 	}
 
 	@Override
-	public int getSizeInventory() {
-		return slots.length;
+	public int getSizeInventory()
+	{
+		return this.inventory.length;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return slots[slot];
+	public ItemStack getStackInSlot(int slot)
+	{
+		return this.inventory[slot];
 	}
 
 	@Override
-	public ItemStack decrStackSize(int slot, int count) {
+	public ItemStack decrStackSize(int slot, int count)
+	{
 		ItemStack item = getStackInSlot(slot);
 
-		if (item != null) {
-			if (item.stackSize <= count) {
-				setInventorySlotContents(slot, null);
-			} else {
+		if (item != null)
+		{
+			if (item.stackSize <= count)
+			{
+				this.setInventorySlotContents(slot, null);
+			}
+			else
+			{
 				item = item.splitStack(count);
-				onInventoryChanged();
+				this.markDirty();
 			}
 		}
 
@@ -55,57 +66,70 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) {
+	public ItemStack getStackInSlotOnClosing(int slot)
+	{
 		ItemStack item = getStackInSlot(slot);
-		setInventorySlotContents(slot, null);
+		this.setInventorySlotContents(slot, null);
 		return item;
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack item) {
-		slots[slot] = item;
+	public void setInventorySlotContents(int slot, ItemStack stack)
+	{
+		this.inventory[slot] = stack;
 
-		if (item != null && item.stackSize > getInventoryStackLimit()) {
-			item.stackSize = getInventoryStackLimit();
+		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+		{
+			stack.stackSize = this.getInventoryStackLimit();
 		}
 
-		onInventoryChanged();
+		this.markDirty();
 	}
 
 	@Override
-	public String getInvName() {
-		return "InventoryAltar";
+	public String getName()
+	{
+		return this.name;
 	}
 
 	@Override
-	public boolean isInvNameLocalized() {
+	public boolean hasCustomName()
+	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit() {
+	public int getInventoryStackLimit()
+	{
 		return 1;
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
+	public boolean isUseableByPlayer(EntityPlayer player)
+	{
+		return this.worldObj.getTileEntity(this.pos) == this
+				&& player.getDistanceSq(this.pos.getX() + 0.5, this.pos.getY() + 0.5, this.pos.getZ() + 0.5) < 64;
 	}
 
 	@Override
-	public void openChest() {
+	public void openInventory(EntityPlayer player)
+	{
 	}
 
 	@Override
-	public void closeChest() {
+	public void closeInventory(EntityPlayer player)
+	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack item) {
-		if (item.itemID == Items.resankh.itemID) {
-			ItemResurrectionAnkh ankh = (ItemResurrectionAnkh) item.getItem();
+	public boolean isItemValidForSlot(int i, ItemStack stack)
+	{
+		if (stack.getItem() == Items.resankh)
+		{
+			ItemResurrectionAnkh ankh = (ItemResurrectionAnkh)stack.getItem();
 
-			if (ankh.isCharged(item.getItemDamage())) {
+			if (ankh.isCharged(stack.getItemDamage()))
+			{
 				return true;
 			}
 		}
@@ -113,17 +137,20 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public void writeToNBT(NBTTagCompound compound)
+	{
 		super.writeToNBT(compound);
 
 		NBTTagList items = new NBTTagList();
 
-		for (int i = 0; i < getSizeInventory(); i++) {
+		for (int i = 0; i < this.getSizeInventory(); i++)
+		{
 			ItemStack stack = getStackInSlot(i);
 
-			if (stack != null) {
+			if (stack != null)
+			{
 				NBTTagCompound item = new NBTTagCompound();
-				item.setByte("Slot", (byte) i);
+				item.setByte("Slot", (byte)i);
 				stack.writeToNBT(item);
 				items.appendTag(item);
 			}
@@ -133,96 +160,148 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound compound) {
+	public void readFromNBT(NBTTagCompound compound)
+	{
 		super.readFromNBT(compound);
 
-		NBTTagList items = compound.getTagList("Items");
+		NBTTagList items = compound.getTagList(("Items"), compound.getId());
 
-		for (int i = 0; i < items.tagCount(); i++) {
-			NBTTagCompound item = (NBTTagCompound) items.tagAt(i);
+		for (int i = 0; i < items.tagCount(); i++)
+		{
+			NBTTagCompound item = items.getCompoundTagAt(i);
 			int slot = item.getByte("Slot");
 
-			if (slot >= 0 && slot < getSizeInventory()) {
-				setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(item));
+			if (slot >= 0 && slot < this.getSizeInventory())
+			{
+				this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(item));
 			}
 		}
 	}
 
-	private void removeAnkhs() {
-		for(int i = 0; i < getSizeInventory(); i++) {
+	private void removeAnkhs()
+	{
+		for (int i = 0; i < this.getSizeInventory(); i++)
+		{
 			ItemStack item = getStackInSlot(i);
 
-			if(item != null) {
-				if(item.getItem() instanceof ItemResurrectionAnkh) {
-					ItemResurrectionAnkh ankh = (ItemResurrectionAnkh) item.getItem();
+			if (item != null)
+			{
+				if (item.getItem() instanceof ItemResurrectionAnkh)
+				{
+					ItemResurrectionAnkh ankh = (ItemResurrectionAnkh)item.getItem();
 
-					if (ankh.hasEffect(item)) {
-						setInventorySlotContents(i, null);
+					if (ankh.hasEffect(item))
+					{
+						this.setInventorySlotContents(i, null);
 					}
 				}
 			}
 		}
 	}
-	
-	public void receiveResButtonEvent(byte buttonID, byte ankhs, EntityPlayer player, String playerName) {
-		switch (buttonID) {
+
+	public void receiveResButtonEvent(byte buttonID, byte ankhs, EntityPlayer player, String playerName)
+	{
+		switch (buttonID)
+		{
 		case 0:
-			EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(playerName);
+			EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(playerName);
 			int healthGained = ankhs * 2;
 			int healthMod = -20 + healthGained;
 
-			if (resPlayer != null) {
+			if (resPlayer != null)
+			{
 				NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-				
-				if (compound.getBoolean("IsDead")) {
+
+				if (compound.getBoolean("IsDead"))
+				{
 					compound.setInteger("MaxHP", healthMod);
 					compound.setBoolean("IsDead", false);
-					AttributeInstance attributeinstance = resPlayer.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
-	
-					try {
+					IAttributeInstance attributeinstance = resPlayer.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+
+					try
+					{
 						attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
-					} catch (Exception ex) {
 					}
-	
-					attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod", (double) healthMod, 0));
+					catch (Exception ex)
+					{
+					}
+
+					attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID,
+							ModInfo.ID.toLowerCase() + ".healthmod", (double)healthMod, 0));
 					resPlayer.setHealth(healthGained);
-	
-					if (!resPlayer.capabilities.isCreativeMode) {
+
+					if (!resPlayer.capabilities.isCreativeMode)
+					{
 						resPlayer.capabilities.allowFlying = false;
 						resPlayer.capabilities.disableDamage = false;
 						resPlayer.removePotionEffect(Potion.invisibility.getId());
 						resPlayer.sendPlayerAbilities();
 					}
-					
-					removeAnkhs();
+
+					this.removeAnkhs();
 					player.closeScreen();
-					
-					//TODO: add new death screen before ghost respawn
-					if (player.dimension == 0) {
-						ChunkCoordinates coords = getRandomAltarSpawnPoint();
-						Teleportation.teleportEntity(this.worldObj, resPlayer, this.worldObj.provider.dimensionId, coords, resPlayer.rotationYaw);
-						this.worldObj.addWeatherEffect(new EntityVisualLightningBolt(this.worldObj, coords.posX, coords.posY, coords.posZ));
-					} else {
-						//player is not in the overworld
+
+					// TODO: add new death screen before ghost respawn
+					if (player.dimension == 0)
+					{
+						BlockPos coords = getRandomAltarSpawnPoint();
+						// Teleportation.teleportEntity(this.worldObj,
+						// resPlayer, this.worldObj.provider.dimensionId,
+						// coords, resPlayer.rotationYaw);
+						new TeleportationHelper(MinecraftServer.getServer().worldServerForDimension(this.worldObj.provider.getDimensionId()))
+								.teleport(player, this.worldObj, coords);
+						this.worldObj
+								.addWeatherEffect(new EntityVisualLightningBolt(this.worldObj, coords.getX(), coords.getY(), coords.getZ()));
+					}
+					else
+					{
+						// player is not in the overworld
 					}
 				}
 			}
 			break;
 		}
 	}
-	
-    private ChunkCoordinates getRandomAltarSpawnPoint()
-    {
-        ChunkCoordinates chunkcoordinates = new ChunkCoordinates(this.xCoord, this.yCoord, this.zCoord);
 
-        int spawnFuzz = 10;
-        int spawnFuzzHalf = spawnFuzz / 2;
+	private BlockPos getRandomAltarSpawnPoint()
+	{
+		int spawnFuzz = 10;
+		int spawnFuzzHalf = spawnFuzz / 2;
+		int x = this.pos.getX() + this.worldObj.rand.nextInt(spawnFuzz) - spawnFuzzHalf;
+		int z = this.pos.getZ() + this.worldObj.rand.nextInt(spawnFuzz) - spawnFuzzHalf;
 
-        chunkcoordinates.posX += this.worldObj.rand.nextInt(spawnFuzz) - spawnFuzzHalf;
-        chunkcoordinates.posZ += this.worldObj.rand.nextInt(spawnFuzz) - spawnFuzzHalf;
-        chunkcoordinates.posY = this.worldObj.getTopSolidOrLiquidBlock(chunkcoordinates.posX, chunkcoordinates.posZ);
+		return this.worldObj.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z));
+	}
 
-        return chunkcoordinates;
-    }
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentText(name);
+	}
 
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		for (int i = 0; i < this.inventory.length; ++i)
+		{
+			this.inventory[i] = null;
+		}
+	}
 }

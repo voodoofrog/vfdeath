@@ -1,62 +1,68 @@
 package com.voodoofrog.vfdeath;
 
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import proxy.CommonProxy;
+
 import com.voodoofrog.vfdeath.block.Blocks;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.eventhandlers.EventHandlerGhost;
 import com.voodoofrog.vfdeath.handler.GuiHandler;
 import com.voodoofrog.vfdeath.item.Items;
-import com.voodoofrog.vfdeath.network.PacketHandler;
-import com.voodoofrog.vfdeath.proxies.CommonProxy;
-
-import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.GameRegistry;
+import com.voodoofrog.vfdeath.network.PacketDispatcher;
+import com.voodoofrog.vfdeath.server.handler.PlayerEventHandler;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION)
-@NetworkMod(channels = {ModInfo.CHANNEL}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
-public class VFDeath {
+public class VFDeath
+{
+	// TODO: Look into making this more OO oriented with getters/setters etc.
 
-	//TODO: Look into making this more OO oriented with getters/setters etc.
-	
 	@Instance(ModInfo.ID)
 	public static VFDeath instance;
-	
-	@SidedProxy(clientSide = "uk.co.forgottendream.vfdeath.proxies.ClientProxy", serverSide = "uk.co.forgottendream.vfdeath.proxies.CommonProxy")
+
+	@SidedProxy(clientSide = "com.voodoofrog.vfdeath.proxy.ClientProxy", serverSide = "com.voodoofrog.vfdeath.proxy.CommonProxy")
 	public static CommonProxy proxy;
-	
+
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		ConfigHandler.initialize(event.getSuggestedConfigurationFile());
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		PacketDispatcher.registerPackets();
+
+		ConfigHandler.configFile = new Configuration(event.getSuggestedConfigurationFile());
+		ConfigHandler.configFile.load();
+		ConfigHandler.syncConfig();
+
 		Items.initialize();
 		Blocks.initialize();
-		
+
 		proxy.initSounds();
 		proxy.initRenderers();
 	}
-	
+
 	@EventHandler
-	public void init(FMLInitializationEvent event) {
+	public void init(FMLInitializationEvent event)
+	{
 		Items.addNames();
 		Blocks.addNames();
 		Items.addRecipes();
 		Blocks.addRecipes();
 		Blocks.registerTileEntities();
-		GameRegistry.registerPlayerTracker(new PlayerTracker());
-		MinecraftForge.EVENT_BUS.register(new EventHandlerGhost());
-		
+		FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
+		FMLCommonHandler.instance().bus().register(new EventHandlerGhost());
+
 		new GuiHandler();
 	}
-	
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
-		
-	}
 
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event)
+	{
+
+	}
 }
