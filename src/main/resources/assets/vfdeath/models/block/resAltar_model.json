@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "down": "vfdeath:blocks/altar_top_bottom",
+        "up": "vfdeath:blocks/altar_top_bottom",
+        "north": "blocks/stonebrick",
+        "east": "blocks/stonebrick",
+        "south": "blocks/stonebrick",
+        "west": "blocks/stonebrick",
+        "particle": "vfdeath:blocks/altar_top_bottom"
+    }
+}

@@ -2,6 +2,7 @@ package com.voodoofrog.vfdeath.item;
 
 import java.util.List;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -19,6 +20,16 @@ import com.voodoofrog.vfdeath.config.ConfigHandler;
 
 public class ItemResurrectionAnkh extends Item
 {
+	private final String name = "resAnkh";
+	
+	public ItemResurrectionAnkh()
+	{
+		this.setUnlocalizedName(ModInfo.ID + "_" + this.name);
+		this.setCreativeTab(CreativeTabs.tabMisc);
+		this.setMaxStackSize(1);
+		this.setMaxDamage(4);
+	}
+	
 	@Override
 	public ItemStack onItemUseFinish(ItemStack item, World world, EntityPlayer player)
 	{
@@ -125,5 +136,10 @@ public class ItemResurrectionAnkh extends Item
 			info.add("You must add another " + levels + " levels");
 			info.add("before this item is charged.");
 		}
+	}
+	
+	public String getName()
+	{
+		return this.name;
 	}
 }

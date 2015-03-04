@@ -12,13 +12,7 @@ public class Items
 
 	public static void initialize()
 	{
-		resankh = new ItemResurrectionAnkh().setUnlocalizedName("resAnkh").setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1)
-				.setMaxDamage(4);
-	}
-
-	public static void addNames()
-	{
-		LanguageRegistry.addName(resankh, "Resurrection Ankh");
+		resankh = new ItemResurrectionAnkh();
 	}
 
 	public static void addRecipes()
