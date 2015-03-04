@@ -10,7 +10,7 @@ import net.minecraft.potion.Potion;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 
@@ -18,7 +18,7 @@ public class EventHandlerGhost
 {
 	public static List<String> allowedBlocks = new ArrayList();
 
-	@EventHandler
+	@SubscribeEvent
 	public void disableDamage(LivingHurtEvent event)
 	{
 		if (event.source.getEntity() instanceof EntityPlayer)
@@ -33,7 +33,7 @@ public class EventHandlerGhost
 		}
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void disableInteraction(PlayerInteractEvent event)
 	{
 		EntityPlayer player = event.entityPlayer;
@@ -61,7 +61,7 @@ public class EventHandlerGhost
 		}
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void onEntityUpdate(LivingUpdateEvent event)
 	{
 		if (event.entityLiving instanceof EntityPlayer)

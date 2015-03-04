@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import com.voodoofrog.vfdeath.block.Blocks;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
@@ -51,8 +52,6 @@ public class VFDeath
 		Items.addRecipes();
 		Blocks.addRecipes();
 		Blocks.registerTileEntities();
-		FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
-		FMLCommonHandler.instance().bus().register(new EventHandlerGhost());
 
 		proxy.initRenderers();
 		
@@ -63,5 +62,12 @@ public class VFDeath
 	public void postInit(FMLPostInitializationEvent event)
 	{
 
+	}
+	
+	@EventHandler
+	public void serverLoad(FMLServerStartingEvent event)
+	{
+		FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
+		FMLCommonHandler.instance().bus().register(new EventHandlerGhost());
 	}
 }

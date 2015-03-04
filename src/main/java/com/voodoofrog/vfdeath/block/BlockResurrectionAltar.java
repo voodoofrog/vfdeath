@@ -110,4 +110,10 @@ public class BlockResurrectionAltar extends BlockContainer
 	{
 		return this.name;
 	}
+	
+	@Override
+    public int getRenderType()
+    {
+        return 3;
+    }
 }

@@ -12,6 +12,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
@@ -21,7 +22,7 @@ import com.voodoofrog.vfdeath.graveyard.Graveyard;
 
 public class PlayerEventHandler
 {
-	@EventHandler
+	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event)
 	{
 		int healthModifier = 0;
@@ -99,7 +100,7 @@ public class PlayerEventHandler
 		}
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void onPlayerRespawn(PlayerRespawnEvent event)
 	{
 		EntityPlayer player = event.player;
