@@ -1,4 +1,4 @@
-package proxy;
+package com.voodoofrog.vfdeath.proxy;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
