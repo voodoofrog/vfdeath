@@ -22,7 +22,7 @@ group= "com.voodoofrog.vfdeath" // http://maven.apache.org/guides/mini/guide-nam
 archivesBaseName = "vfdeath"
 
 minecraft {
-    version = "1.8-11.14.1.1329"
+    version = "1.8-11.14.1.1334"
 	if (file('../run').exists())
 	{
 		runDir = "../run"
