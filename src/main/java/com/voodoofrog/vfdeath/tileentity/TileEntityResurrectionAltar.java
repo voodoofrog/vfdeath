@@ -226,8 +226,8 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 					{
 					}
 
-					attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID,
-							ModInfo.ID.toLowerCase() + ".healthmod", (double)healthMod, 0));
+					attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID + ".healthmod",
+							(double)healthMod, 0));
 					resPlayer.setHealth(healthGained);
 
 					if (!resPlayer.capabilities.isCreativeMode)

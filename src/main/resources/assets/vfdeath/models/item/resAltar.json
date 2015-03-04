@@ -1,5 +1,5 @@
 {
-    "parent":"vfdeath:block/resAltar_model",
+    "parent":"vfdeath:block/resAltar",
     "display":{
         "thirdperson":{
             "rotation":[10, -45, 170],

@@ -27,7 +27,7 @@ public class ClientProxy extends CommonProxy
 		// renderItem.getItemModelMesher().register(Blocks.altar, 0, new
 		// ModelResourceLocation(ModInfo.ID.toLowerCase() + ":" +
 		// ((BlockResurrectionAltar)Blocks.altar).getName(), "inventory"));
-		ModelResourceLocation resource = new ModelResourceLocation(ModInfo.ID.toLowerCase() + ":" + ((BlockResurrectionAltar)Blocks.altar).getName(), "inventory");
+		ModelResourceLocation resource = new ModelResourceLocation(ModInfo.ID + ":" + ((BlockResurrectionAltar)Blocks.altar).getName(), "inventory");
 		renderItem.getItemModelMesher().register(Item.getItemFromBlock(Blocks.altar), 0, resource);
 	}
 

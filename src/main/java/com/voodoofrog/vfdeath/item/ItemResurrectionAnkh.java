@@ -61,7 +61,7 @@ public class ItemResurrectionAnkh extends Item
 				{
 				}
 
-				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod",
+				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID + ".healthmod",
 						(double)healthModifier, 0));
 				player.setHealth(player.getMaxHealth());
 				item.stackSize--;

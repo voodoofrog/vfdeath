@@ -81,7 +81,7 @@ public class PlayerEventHandler
 			{
 			}
 
-			maxHealthAttrib.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod",
+			maxHealthAttrib.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID + ".healthmod",
 					(double)healthModifier, 0));
 			maxHealthAttrib.setBaseValue(20.0D);
 
@@ -136,7 +136,7 @@ public class PlayerEventHandler
 		{
 		}
 
-		maxHealthAttrib.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID.toLowerCase() + ".healthmod",
+		maxHealthAttrib.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID + ".healthmod",
 				(double)healthModifier, 0));
 
 		if (player.getHealth() > player.getMaxHealth())

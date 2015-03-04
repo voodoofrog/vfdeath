@@ -10,7 +10,7 @@ import com.voodoofrog.vfdeath.config.ConfigHandler;
 
 public class GuiButtonResurrect extends GuiButton
 {
-	protected static final ResourceLocation buttonTextures = new ResourceLocation(ModInfo.ID.toLowerCase(), ConfigHandler.GUI_PATH
+	protected static final ResourceLocation buttonTextures = new ResourceLocation(ModInfo.ID, ConfigHandler.GUI_PATH
 			+ "widgets.png");
 
 	public GuiButtonResurrect(int id, int x, int y)
