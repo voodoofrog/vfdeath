@@ -1,23 +1,18 @@
 package com.voodoofrog.vfdeath.tileentity;
 
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
-import com.voodoofrog.vfdeath.ModInfo;
 import com.voodoofrog.vfdeath.TeleportationHelper;
-import com.voodoofrog.vfdeath.config.ConfigHandler;
+import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.entity.effect.EntityVisualLightningBolt;
 import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
 import com.voodoofrog.vfdeath.item.Items;
@@ -205,42 +200,18 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		{
 		case 0:
 			EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(playerName);
-			int healthGained = ankhs * 2;
-			int healthMod = -20 + healthGained;
 
 			if (resPlayer != null)
 			{
-				NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-
-				if (compound.getBoolean("IsDead"))
+				ExtendedPlayer props = ExtendedPlayer.get(resPlayer);
+				
+				if (props.getIsDead() && ankhs > 0)
 				{
-					compound.setInteger("MaxHP", healthMod);
-					compound.setBoolean("IsDead", false);
-					IAttributeInstance attributeinstance = resPlayer.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
-
-					try
-					{
-						attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
-					}
-					catch (Exception ex)
-					{
-					}
-
-					attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID + ".healthmod",
-							(double)healthMod, 0));
-					resPlayer.setHealth(healthGained);
-
-					if (!resPlayer.capabilities.isCreativeMode)
-					{
-						resPlayer.capabilities.allowFlying = false;
-						resPlayer.capabilities.disableDamage = false;
-						resPlayer.removePotionEffect(Potion.invisibility.getId());
-						resPlayer.sendPlayerAbilities();
-					}
-
+					//props.ghostPlayer(false);
+					props.gainHearts(ankhs);
 					this.removeAnkhs();
 					player.closeScreen();
-
+					
 					// TODO: add new death screen before ghost respawn
 					if (player.dimension == 0)
 					{

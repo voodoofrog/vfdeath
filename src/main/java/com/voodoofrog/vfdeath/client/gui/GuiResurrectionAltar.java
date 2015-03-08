@@ -18,21 +18,19 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import com.voodoofrog.vfdeath.ModInfo;
+import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.inventory.ContainerResurrectionAltar;
 import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
-import com.voodoofrog.vfdeath.network.PacketDispatcher;
-import com.voodoofrog.vfdeath.network.packet.server.SendResButtonMessage;
+import com.voodoofrog.vfdeath.network.server.SendResButtonMessage;
 import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 
 @SideOnly(Side.CLIENT)
 public class GuiResurrectionAltar extends GuiContainer
 {
-	private static final ResourceLocation texture = new ResourceLocation(ModInfo.ID, ConfigHandler.GUI_CONTAINER_PATH
-			+ "gui_altar.png");
+	private static final ResourceLocation texture = new ResourceLocation(ModInfo.ID, ConfigHandler.GUI_CONTAINER_PATH + "gui_altar.png");
 	private ContainerResurrectionAltar altarContainer;
 	private GuiTextField playerNameField;
 	private GuiButtonResurrect resButton;
@@ -96,7 +94,7 @@ public class GuiResurrectionAltar extends GuiContainer
 	@Override
 	protected void actionPerformed(GuiButton button)
 	{
-		PacketDispatcher.sendToServer(new SendResButtonMessage((byte)button.id, (byte)getChargedAnkhCount(), playerNameField.getText()));
+		VFDeath.packetDispatcher.sendToServer(new SendResButtonMessage((byte)button.id, (byte)getChargedAnkhCount(), playerNameField.getText()));
 
 		EntityPlayerMP resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(this.playerNameField.getText());
 

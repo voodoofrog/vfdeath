@@ -43,10 +43,12 @@ public class TeleportationHelper extends Teleporter
 	@Override
 	public void removeStalePortalLocations(long par1)
 	{
+		return;
 	}
 
 	@Override
 	public void placeInPortal(Entity par1Entity, float rotationYaw)
 	{
+		return;
 	}
 }

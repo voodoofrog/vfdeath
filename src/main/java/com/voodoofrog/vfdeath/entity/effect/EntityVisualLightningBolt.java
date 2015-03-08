@@ -73,24 +73,6 @@ public class EntityVisualLightningBolt extends EntityLightningBolt
 		}
 	}
 
-	protected void entityInit()
-	{
-	}
-
-	/**
-	 * (abstract) Protected helper method to read subclass entity data from NBT.
-	 */
-	protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
-	{
-	}
-
-	/**
-	 * (abstract) Protected helper method to write subclass entity data to NBT.
-	 */
-	protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
-	{
-	}
-
 	@SideOnly(Side.CLIENT)
 	/**
 	 * Checks using a Vec3d to determine if this entity is within range of that vector to be rendered. Args: vec3D

@@ -1,7 +1,9 @@
 package com.voodoofrog.vfdeath;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -11,12 +13,16 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
+import org.apache.logging.log4j.Logger;
+
+import com.voodoofrog.ribbit.network.PacketDispatcher;
 import com.voodoofrog.vfdeath.block.Blocks;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
-import com.voodoofrog.vfdeath.eventhandlers.EventHandlerGhost;
+import com.voodoofrog.vfdeath.handler.ForgeEventHandler;
 import com.voodoofrog.vfdeath.handler.GuiHandler;
 import com.voodoofrog.vfdeath.item.Items;
-import com.voodoofrog.vfdeath.network.PacketDispatcher;
+import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
+import com.voodoofrog.vfdeath.network.server.SendResButtonMessage;
 import com.voodoofrog.vfdeath.proxy.CommonProxy;
 import com.voodoofrog.vfdeath.server.handler.PlayerEventHandler;
 
@@ -31,29 +37,41 @@ public class VFDeath
 	@SidedProxy(clientSide = "com.voodoofrog.vfdeath.proxy.ClientProxy", serverSide = "com.voodoofrog.vfdeath.proxy.CommonProxy")
 	public static CommonProxy proxy;
 
+	public static PacketDispatcher packetDispatcher;
+	public static Logger logger;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		PacketDispatcher.registerPackets();
-
+		if (Loader.isModLoaded("ribbit"))
+		{
+			packetDispatcher = new PacketDispatcher(ModInfo.ID);
+		}
+		
+		logger = event.getModLog();
+		
 		ConfigHandler.configFile = new Configuration(event.getSuggestedConfigurationFile());
 		ConfigHandler.configFile.load();
 		ConfigHandler.syncConfig();
 
 		Items.initialize();
 		Blocks.initialize();
-
-		proxy.initSounds();
+		
+		packetDispatcher.registerMessage(SyncPlayerPropsMessage.class);
+		packetDispatcher.registerMessage(SendResButtonMessage.class);
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
+		proxy.initRenderers();
+		
+		FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
+		MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
+		
 		Items.addRecipes();
 		Blocks.addRecipes();
 		Blocks.registerTileEntities();
-
-		proxy.initRenderers();
 		
 		new GuiHandler();
 	}
@@ -67,7 +85,7 @@ public class VFDeath
 	@EventHandler
 	public void serverLoad(FMLServerStartingEvent event)
 	{
-		FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
-		FMLCommonHandler.instance().bus().register(new EventHandlerGhost());
+		//FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
+		//FMLCommonHandler.instance().bus().register(new EventHandlerGhost());
 	}
 }
