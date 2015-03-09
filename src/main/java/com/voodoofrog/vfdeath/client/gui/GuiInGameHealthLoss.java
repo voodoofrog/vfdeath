@@ -3,6 +3,9 @@ package com.voodoofrog.vfdeath.client.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.MathHelper;
@@ -24,7 +27,8 @@ public class GuiInGameHealthLoss extends Gui
 {
 	private Minecraft mc;
 	private static final ResourceLocation texture = new ResourceLocation(ModInfo.ID, "textures/gui/skull.png");
-    protected static final ResourceLocation icons = new ResourceLocation("textures/gui/icons.png");
+	private static final ResourceLocation ghostBlur = new ResourceLocation(ModInfo.ID, "textures/misc/ghost_blur.png");
+	protected static final ResourceLocation icons = new ResourceLocation("textures/gui/icons.png");
 
 	public GuiInGameHealthLoss(Minecraft mc)
 	{
@@ -50,12 +54,12 @@ public class GuiInGameHealthLoss extends Gui
 		float maxHealthBase = (float)iattributeinstance.getBaseValue();
 		float maxHealthCurr = (float)iattributeinstance.getAttributeValue();
 		float healthDiff = maxHealthBase - maxHealthCurr;
-        
+
 		ScaledResolution resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-        int x = (resolution.getScaledWidth() / 2 - 91) + ((MathHelper.ceiling_float_int(maxHealthCurr / 2.0F) * 8) + 2);
-        int y = resolution.getScaledHeight() - 39;
+		int x = (resolution.getScaledWidth() / 2 - 91) + ((MathHelper.ceiling_float_int(maxHealthCurr / 2.0F) * 8) + 2);
+		int y = resolution.getScaledHeight() - 39;
 		this.mc.getTextureManager().bindTexture(texture);
-        
+
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glDepthMask(false);
@@ -63,16 +67,52 @@ public class GuiInGameHealthLoss extends Gui
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 
-        for (int numHearts = MathHelper.ceiling_float_int(healthDiff / 2.0F) - 1; numHearts >= 0; --numHearts)
-        {
-    		int xAdj = x + numHearts % 10 * 8;
-            
-            this.drawTexturedModalRect(xAdj, y + 1, 0, 0, 7, 7);
-        }
-		
+		for (int numHearts = MathHelper.ceiling_float_int(healthDiff / 2.0F) - 1; numHearts >= 0; --numHearts)
+		{
+			int xAdj = x + numHearts % 10 * 8;
+
+			this.drawTexturedModalRect(xAdj, y + 1, 0, 0, 7, 7);
+		}
+
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDepthMask(true);
 		this.mc.getTextureManager().bindTexture(icons);
+	}
+
+	@SubscribeEvent(priority = EventPriority.NORMAL)
+	public void preRenderHUD(RenderGameOverlayEvent.Pre event)
+	{
+		if (event.type != ElementType.HELMET)
+		{
+			return;
+		}
+		
+		ExtendedPlayer props = ExtendedPlayer.get(this.mc.thePlayer);
+		if (props == null || !props.getIsDead())
+		{
+			return;
+		}
+		
+		ScaledResolution resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+		
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
+		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.disableAlpha();
+		this.mc.getTextureManager().bindTexture(ghostBlur);
+		Tessellator tessellator = Tessellator.getInstance();
+		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		worldrenderer.startDrawingQuads();
+		worldrenderer.addVertexWithUV(0.0D, (double)resolution.getScaledHeight(), -90.0D, 0.0D, 1.0D);
+		worldrenderer.addVertexWithUV((double)resolution.getScaledWidth(), (double)resolution.getScaledHeight(), -90.0D, 1.0D, 1.0D);
+		worldrenderer.addVertexWithUV((double)resolution.getScaledWidth(), 0.0D, -90.0D, 1.0D, 0.0D);
+		worldrenderer.addVertexWithUV(0.0D, 0.0D, -90.0D, 0.0D, 0.0D);
+		tessellator.draw();
+		GlStateManager.depthMask(true);
+		GlStateManager.enableDepth();
+		GlStateManager.enableAlpha();
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

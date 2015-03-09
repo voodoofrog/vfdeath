@@ -49,7 +49,7 @@ public class PlayerEventHandler
 		VFDeath.packetDispatcher.sendTo(new SyncPlayerPropsMessage((EntityPlayer)event.player), (EntityPlayerMP)event.player);
 	}
 	
-	public void ghostPlayer(EntityPlayer player, boolean makeGhost)
+	public static void ghostPlayer(EntityPlayer player, boolean makeGhost)
 	{
 		if (makeGhost)
 		{
