@@ -112,7 +112,6 @@ public class GhostEventHandler
 		allowedBlocks.add(Blocks.spruce_fence_gate.getUnlocalizedName());
 		allowedBlocks.add(Blocks.trapdoor.getUnlocalizedName());
 		allowedBlocks.add(Blocks.lever.getUnlocalizedName());
-		VFDeath.logger.info("Adding lever: " + Blocks.lever.getUnlocalizedName());
 		allowedBlocks.add(Blocks.stone_button.getUnlocalizedName());
 		allowedBlocks.add(Blocks.wooden_button.getUnlocalizedName());
 
