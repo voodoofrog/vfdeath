@@ -140,7 +140,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		double currentMax = iattributeinstance.getAttributeValue();
 		double amount = num * 2D;
 		
-		if (amount > baseMax)
+		if (amount > (baseMax - this.healthMod))
 		{
 			this.healthMod = 0;
 		}
