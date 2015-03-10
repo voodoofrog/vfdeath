@@ -14,8 +14,8 @@ import net.minecraft.util.IChatComponent;
 import com.voodoofrog.vfdeath.TeleportationHelper;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.entity.effect.EntityVisualLightningBolt;
+import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
-import com.voodoofrog.vfdeath.item.Items;
 import com.voodoofrog.vfdeath.server.handler.PlayerEventHandler;
 
 public class TileEntityResurrectionAltar extends TileEntity implements IInventory
@@ -120,7 +120,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack stack)
 	{
-		if (stack.getItem() == Items.resankh)
+		if (stack.getItem() == VFDeathItems.ankh)
 		{
 			ItemResurrectionAnkh ankh = (ItemResurrectionAnkh)stack.getItem();
 

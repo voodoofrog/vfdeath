@@ -17,13 +17,14 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
 
 import com.voodoofrog.ribbit.network.PacketDispatcher;
-import com.voodoofrog.vfdeath.block.Blocks;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.creativetab.VFDeathCreativeTab;
 import com.voodoofrog.vfdeath.handler.GhostEventHandler;
 import com.voodoofrog.vfdeath.handler.ForgeEventHandler;
 import com.voodoofrog.vfdeath.handler.GuiHandler;
-import com.voodoofrog.vfdeath.item.Items;
+import com.voodoofrog.vfdeath.init.VFDeathBlocks;
+import com.voodoofrog.vfdeath.init.VFDeathItems;
+import com.voodoofrog.vfdeath.item.crafting.VFDeathRecipesCrafting;
 import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
 import com.voodoofrog.vfdeath.network.server.SendResButtonMessage;
 import com.voodoofrog.vfdeath.proxy.CommonProxy;
@@ -59,8 +60,8 @@ public class VFDeath
 		ConfigHandler.configFile.load();
 		ConfigHandler.syncConfig();
 
-		Items.initialize();
-		Blocks.initialize();
+		VFDeathItems.registerItems();
+		VFDeathBlocks.registerBlocks();
 		
 		packetDispatcher.registerMessage(SyncPlayerPropsMessage.class);
 		packetDispatcher.registerMessage(SendResButtonMessage.class);
@@ -75,9 +76,9 @@ public class VFDeath
 		MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
 		MinecraftForge.EVENT_BUS.register(new GhostEventHandler());
 		
-		Items.addRecipes();
-		Blocks.addRecipes();
-		Blocks.registerTileEntities();
+		VFDeathRecipesCrafting.addRecipes();
+		
+		VFDeathBlocks.registerTileEntities();
 		
 		new GuiHandler();
 	}

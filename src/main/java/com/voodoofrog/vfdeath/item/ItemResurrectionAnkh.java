@@ -2,38 +2,20 @@ package com.voodoofrog.vfdeath.item;
 
 import java.util.List;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.voodoofrog.vfdeath.ModInfo;
-import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 
 public class ItemResurrectionAnkh extends Item
 {
-	private final String name = "resAnkh";
-	
-	public ItemResurrectionAnkh()
-	{
-		this.setUnlocalizedName(ModInfo.ID + "." + this.name);
-		this.setCreativeTab(VFDeath.vfdeathTab);
-		this.setMaxStackSize(1);
-		this.setMaxDamage(4);
-		GameRegistry.registerItem(this, this.name);
-	}
-	
 	@Override
 	public ItemStack onItemUseFinish(ItemStack item, World world, EntityPlayer player)
 	{
@@ -117,10 +99,5 @@ public class ItemResurrectionAnkh extends Item
 			info.add("You must add another " + levels + " levels");
 			info.add("before this item is charged.");
 		}
-	}
-	
-	public String getName()
-	{
-		return this.name;
 	}
 }

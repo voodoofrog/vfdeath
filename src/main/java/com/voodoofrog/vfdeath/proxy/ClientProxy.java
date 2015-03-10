@@ -7,11 +7,10 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.voodoofrog.vfdeath.ModInfo;
-import com.voodoofrog.vfdeath.block.BlockResurrectionAltar;
-import com.voodoofrog.vfdeath.block.Blocks;
 import com.voodoofrog.vfdeath.client.gui.GuiInGameHealthLoss;
-import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
-import com.voodoofrog.vfdeath.item.Items;
+import com.voodoofrog.vfdeath.init.VFDeathBlocks;
+import com.voodoofrog.vfdeath.init.VFDeathItems;
+import com.voodoofrog.vfdeath.misc.Strings;
 
 public class ClientProxy extends CommonProxy
 {
@@ -21,13 +20,11 @@ public class ClientProxy extends CommonProxy
 	public void initRenderers()
 	{
 		RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-		ModelResourceLocation altarResource = new ModelResourceLocation(ModInfo.ID + ":" + ((BlockResurrectionAltar)Blocks.altar).getName(),
-				"inventory");
-		ModelResourceLocation ankhResource = new ModelResourceLocation(ModInfo.ID + ":" + ((ItemResurrectionAnkh)Items.resankh).getName(),
-				"inventory");
+		ModelResourceLocation altarResource = new ModelResourceLocation(ModInfo.ID + ":" + Strings.ALTAR_NAME, "inventory");
+		ModelResourceLocation ankhResource = new ModelResourceLocation(ModInfo.ID + ":" + Strings.ANKH_NAME, "inventory");
 
-		renderItem.getItemModelMesher().register(Item.getItemFromBlock(Blocks.altar), 0, altarResource);
-		renderItem.getItemModelMesher().register(Items.resankh, 0, ankhResource);
+		renderItem.getItemModelMesher().register(Item.getItemFromBlock(VFDeathBlocks.altar), 0, altarResource);
+		renderItem.getItemModelMesher().register(VFDeathItems.ankh, 0, ankhResource);
 
 		MinecraftForge.EVENT_BUS.register(new GuiInGameHealthLoss(this.mc));
 	}
