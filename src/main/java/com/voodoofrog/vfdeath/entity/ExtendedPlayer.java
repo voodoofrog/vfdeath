@@ -130,7 +130,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	public void gainHearts(int num, boolean setIsDead)
 	{
 		this.isDead = setIsDead;
-		this.gainHearts(num);
+		this.gainHearts(num - 1);
 	}
 	
 	public void gainHearts(int num)
