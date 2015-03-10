@@ -1,6 +1,7 @@
 package com.voodoofrog.vfdeath.item;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -11,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 
@@ -19,17 +21,28 @@ public class ItemResurrectionAnkh extends Item
 	@Override
 	public ItemStack onItemUseFinish(ItemStack item, World world, EntityPlayer player)
 	{
+		if (!this.isCharged(item.getItemDamage()))
+		{
+			if (player.experienceLevel >= ConfigHandler.RES_ANKH_XP_COST)
+			{
+				player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
+				item.damageItem(-1, player);
+				item.getTagCompound().setString("owner", player.getUUID(player.getGameProfile()).toString());
+				return item;
+			}
+		}
+
 		if (!world.isRemote && this.isCharged(item.getItemDamage()))
 		{
-			NBTTagCompound nbt = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 			ExtendedPlayer props = ExtendedPlayer.get(player);
 
-			if (props.getHealthMod() != 0D)
+			if (!props.getIsDead())
 			{
 				props.gainHearts(1);
 				item.stackSize--;
 			}
 		}
+
 		return item;
 	}
 
@@ -57,19 +70,7 @@ public class ItemResurrectionAnkh extends Item
 	@Override
 	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player)
 	{
-		if (!this.isCharged(item.getItemDamage()))
-		{
-			if (player.experienceLevel >= ConfigHandler.RES_ANKH_XP_COST)
-			{
-				player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
-				item.damageItem(-1, player);
-			}
-		}
-		else
-		{
-			player.setItemInUse(item, this.getMaxItemUseDuration(item));
-		}
-
+		player.setItemInUse(item, this.getMaxItemUseDuration(item));
 		return item;
 	}
 
@@ -91,6 +92,20 @@ public class ItemResurrectionAnkh extends Item
 		{
 			info.add("This ankh is ready to be slotted");
 			info.add("into a resurrection altar.");
+
+			if (item.getTagCompound() != null)
+			{
+				if (item.getTagCompound().getString("owner") != null)
+				{
+					String ownerName = VFDeath.userNameFromUUID(UUID.fromString(item.getTagCompound().getString("owner")));
+					
+					if (ownerName != "")
+					{
+						info.add("Can also be used to gain hearts");
+						info.add("directly by " + ownerName);
+					}
+				}
+			}
 		}
 		else
 		{
@@ -99,5 +114,11 @@ public class ItemResurrectionAnkh extends Item
 			info.add("You must add another " + levels + " levels");
 			info.add("before this item is charged.");
 		}
+	}
+
+	@Override
+	public void onCreated(ItemStack item, World world, EntityPlayer player)
+	{
+		item.setTagCompound(new NBTTagCompound());
 	}
 }
