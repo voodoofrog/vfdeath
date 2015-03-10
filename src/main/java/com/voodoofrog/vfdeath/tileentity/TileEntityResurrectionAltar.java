@@ -209,7 +209,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				if (props.getIsDead() && ankhs > 0)
 				{
 					PlayerEventHandler.ghostPlayer(resPlayer, false);
-					props.gainHearts(ankhs);
+					props.gainHearts(ankhs, false);
 					this.removeAnkhs();
 					player.closeScreen();
 					
