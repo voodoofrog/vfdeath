@@ -1,3 +1,6 @@
 tile.vfdeath.resAltar.name=Resurrection Altar
 item.vfdeath.resAnkh.name=Resurrection Ankh
 itemGroup.vfDeathTab=VF Death
+commands.vfdeath.addlife.usage=/addlife <amount> [player]
+commands.vfdeath.addlife.success=Given %d hearts to %s
+commands.vfdeath.addlife.failure=You cannot use this command to remove hearts

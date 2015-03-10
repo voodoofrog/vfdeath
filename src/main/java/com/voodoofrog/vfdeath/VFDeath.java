@@ -17,10 +17,11 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
 
 import com.voodoofrog.ribbit.network.PacketDispatcher;
+import com.voodoofrog.vfdeath.command.AddLifeCommand;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.creativetab.VFDeathCreativeTab;
-import com.voodoofrog.vfdeath.handler.GhostEventHandler;
 import com.voodoofrog.vfdeath.handler.ForgeEventHandler;
+import com.voodoofrog.vfdeath.handler.GhostEventHandler;
 import com.voodoofrog.vfdeath.handler.GuiHandler;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.init.VFDeathItems;
@@ -43,9 +44,9 @@ public class VFDeath
 
 	public static PacketDispatcher packetDispatcher;
 	public static Logger logger;
-	
+
 	public static CreativeTabs vfdeathTab = new VFDeathCreativeTab(CreativeTabs.getNextID(), "vfDeathTab");
-	
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -53,16 +54,16 @@ public class VFDeath
 		{
 			packetDispatcher = new PacketDispatcher(ModInfo.ID);
 		}
-		
+
 		logger = event.getModLog();
-		
+
 		ConfigHandler.configFile = new Configuration(event.getSuggestedConfigurationFile());
 		ConfigHandler.configFile.load();
 		ConfigHandler.syncConfig();
 
 		VFDeathItems.registerItems();
 		VFDeathBlocks.registerBlocks();
-		
+
 		packetDispatcher.registerMessage(SyncPlayerPropsMessage.class);
 		packetDispatcher.registerMessage(SendResButtonMessage.class);
 	}
@@ -71,15 +72,15 @@ public class VFDeath
 	public void init(FMLInitializationEvent event)
 	{
 		proxy.initRenderers();
-		
+
 		FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
 		MinecraftForge.EVENT_BUS.register(new GhostEventHandler());
-		
+
 		VFDeathRecipesCrafting.addRecipes();
-		
+
 		VFDeathBlocks.registerTileEntities();
-		
+
 		new GuiHandler();
 	}
 
@@ -88,11 +89,10 @@ public class VFDeath
 	{
 
 	}
-	
+
 	@EventHandler
 	public void serverLoad(FMLServerStartingEvent event)
 	{
-		//FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
-		//FMLCommonHandler.instance().bus().register(new EventHandlerGhost());
+		event.registerServerCommand(new AddLifeCommand());
 	}
 }
