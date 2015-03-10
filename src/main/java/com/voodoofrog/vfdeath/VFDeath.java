@@ -1,5 +1,6 @@
 package com.voodoofrog.vfdeath;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -18,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 import com.voodoofrog.ribbit.network.PacketDispatcher;
 import com.voodoofrog.vfdeath.block.Blocks;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
+import com.voodoofrog.vfdeath.creativetab.VFDeathCreativeTab;
+import com.voodoofrog.vfdeath.handler.GhostEventHandler;
 import com.voodoofrog.vfdeath.handler.ForgeEventHandler;
 import com.voodoofrog.vfdeath.handler.GuiHandler;
 import com.voodoofrog.vfdeath.item.Items;
@@ -39,6 +42,8 @@ public class VFDeath
 
 	public static PacketDispatcher packetDispatcher;
 	public static Logger logger;
+	
+	public static CreativeTabs vfdeathTab = new VFDeathCreativeTab(CreativeTabs.getNextID(), "vfDeathTab");
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -68,6 +73,7 @@ public class VFDeath
 		
 		FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
+		MinecraftForge.EVENT_BUS.register(new GhostEventHandler());
 		
 		Items.addRecipes();
 		Blocks.addRecipes();

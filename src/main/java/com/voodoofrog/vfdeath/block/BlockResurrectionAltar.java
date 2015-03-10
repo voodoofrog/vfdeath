@@ -36,8 +36,8 @@ public class BlockResurrectionAltar extends BlockContainer
 		super(Material.rock);
 		this.setHardness(3.5F);
 		this.setStepSound(Block.soundTypePiston);
-		this.setUnlocalizedName(ModInfo.ID + "_" + this.name);
-		this.setCreativeTab(CreativeTabs.tabMisc);
+		this.setUnlocalizedName(ModInfo.ID + "." + this.name);
+		this.setCreativeTab(VFDeath.vfdeathTab);
 		GameRegistry.registerBlock(this, name);
 	}
 

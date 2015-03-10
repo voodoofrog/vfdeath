@@ -17,6 +17,10 @@ public class Items
 
 	public static void addRecipes()
 	{
-		GameRegistry.addRecipe(new ItemStack(resankh, 1, 4), new Object[] { " g ", "ggg", " g ", 'g', net.minecraft.init.Items.gold_ingot });
+		GameRegistry.addRecipe(new ItemStack(resankh, 1, 4), new Object[] {
+			" g ",
+			"ggg",
+			" g ",
+			'g', net.minecraft.init.Items.gold_ingot });
 	}
 }

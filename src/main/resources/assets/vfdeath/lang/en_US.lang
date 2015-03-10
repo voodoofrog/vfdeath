@@ -1,1 +1,3 @@
-tile.vfdeath_resAltar.name=Resurrection Altar
+tile.vfdeath.resAltar.name=Resurrection Altar
+item.vfdeath.resAnkh.name=Resurrection Ankh
+itemGroup.vfDeathTab=VF Death

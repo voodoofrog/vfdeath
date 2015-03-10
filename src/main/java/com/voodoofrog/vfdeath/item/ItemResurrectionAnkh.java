@@ -12,11 +12,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.voodoofrog.vfdeath.ModInfo;
+import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
+import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 
 public class ItemResurrectionAnkh extends Item
 {
@@ -24,10 +27,11 @@ public class ItemResurrectionAnkh extends Item
 	
 	public ItemResurrectionAnkh()
 	{
-		this.setUnlocalizedName(ModInfo.ID + "_" + this.name);
-		this.setCreativeTab(CreativeTabs.tabMisc);
+		this.setUnlocalizedName(ModInfo.ID + "." + this.name);
+		this.setCreativeTab(VFDeath.vfdeathTab);
 		this.setMaxStackSize(1);
 		this.setMaxDamage(4);
+		GameRegistry.registerItem(this, this.name);
 	}
 	
 	@Override
@@ -36,34 +40,11 @@ public class ItemResurrectionAnkh extends Item
 		if (!world.isRemote && this.isCharged(item.getItemDamage()))
 		{
 			NBTTagCompound nbt = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-			int healthModifier = nbt.getInteger("MaxHP");
+			ExtendedPlayer props = ExtendedPlayer.get(player);
 
-			if (healthModifier != 0)
+			if (props.getHealthMod() != 0D)
 			{
-				if (healthModifier + 2 > 0)
-				{
-					healthModifier = 0;
-				}
-				else
-				{
-					healthModifier += 2;
-				}
-
-				nbt.setInteger("MaxHP", healthModifier);
-				nbt.setBoolean("IsDead", false);
-				IAttributeInstance attributeinstance = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
-
-				try
-				{
-					attributeinstance.removeModifier(attributeinstance.getModifier(ConfigHandler.HEALTH_MOD_UUID));
-				}
-				catch (Exception var8)
-				{
-				}
-
-				attributeinstance.applyModifier(new AttributeModifier(ConfigHandler.HEALTH_MOD_UUID, ModInfo.ID + ".healthmod",
-						(double)healthModifier, 0));
-				player.setHealth(player.getMaxHealth());
+				props.gainHearts(1);
 				item.stackSize--;
 			}
 		}

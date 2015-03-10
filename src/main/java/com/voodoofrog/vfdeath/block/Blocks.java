@@ -13,12 +13,15 @@ public class Blocks
 	public static void initialize()
 	{
 		altar = new BlockResurrectionAltar();
-		//GameRegistry.registerBlock(altar, altar.getName());
 	}
 
 	public static void addRecipes()
 	{
-		GameRegistry.addRecipe(new ItemStack(altar), new Object[] { "DDD ", "D D", "DDD", 'D', net.minecraft.init.Blocks.dirt });
+		GameRegistry.addRecipe(new ItemStack(altar), new Object[] {
+			"DDD",
+			"D D",
+			"DDD",
+			'D', net.minecraft.init.Blocks.dirt });
 	}
 
 	public static void registerTileEntities()
