@@ -37,15 +37,11 @@ public class GuiInGameHealthLoss extends Gui
 	}
 
 	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void onRenderExperienceBar(RenderGameOverlayEvent.Pre event)
+	public void preRenderExperienceBar(RenderGameOverlayEvent.Pre event)
 	{
-		if (event.type != ElementType.HEALTH)
-		{
-			return;
-		}
-
 		ExtendedPlayer props = ExtendedPlayer.get(this.mc.thePlayer);
-		if (props == null || props.getHealthMod() == 0)
+		
+		if (event.type != ElementType.HEALTH || (props == null || props.getHealthMod() == 0))
 		{
 			return;
 		}
@@ -54,11 +50,17 @@ public class GuiInGameHealthLoss extends Gui
 		float maxHealthBase = (float)iattributeinstance.getBaseValue();
 		float maxHealthCurr = (float)iattributeinstance.getAttributeValue();
 		float healthDiff = maxHealthBase - maxHealthCurr;
+		
+		if (props.getIsDead())
+			healthDiff = 20f;
 
 		ScaledResolution resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-		int x = (resolution.getScaledWidth() / 2 - 91) + ((MathHelper.ceiling_float_int(maxHealthCurr / 2.0F) * 8) + 2);
+		int x = (resolution.getScaledWidth() / 2 - 91);
 		int y = resolution.getScaledHeight() - 39;
 		this.mc.getTextureManager().bindTexture(texture);
+		
+		if (!props.getIsDead())
+			x += ((MathHelper.ceiling_float_int(maxHealthCurr / 2.0F) * 8) + 2);
 
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -70,7 +72,7 @@ public class GuiInGameHealthLoss extends Gui
 		for (int numHearts = MathHelper.ceiling_float_int(healthDiff / 2.0F) - 1; numHearts >= 0; --numHearts)
 		{
 			int xAdj = x + numHearts % 10 * 8;
-
+			
 			this.drawTexturedModalRect(xAdj, y + 1, 0, 0, 7, 7);
 		}
 
@@ -78,18 +80,17 @@ public class GuiInGameHealthLoss extends Gui
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glDepthMask(true);
 		this.mc.getTextureManager().bindTexture(icons);
+		
+		if (props.getIsDead())
+			event.setCanceled(true);
 	}
 
 	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void preRenderHUD(RenderGameOverlayEvent.Pre event)
+	public void preRenderHelmet(RenderGameOverlayEvent.Pre event)
 	{
-		if (event.type != ElementType.HELMET)
-		{
-			return;
-		}
-		
 		ExtendedPlayer props = ExtendedPlayer.get(this.mc.thePlayer);
-		if (props == null || !props.getIsDead())
+		
+		if (event.type != ElementType.HELMET || (props == null || !props.getIsDead()))
 		{
 			return;
 		}
@@ -114,5 +115,18 @@ public class GuiInGameHealthLoss extends Gui
 		GlStateManager.enableDepth();
 		GlStateManager.enableAlpha();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	}
+	
+	@SubscribeEvent(priority = EventPriority.NORMAL)
+	public void preRenderHunger(RenderGameOverlayEvent.Pre event)
+	{
+		ExtendedPlayer props = ExtendedPlayer.get(this.mc.thePlayer);
+		
+		if (event.type != ElementType.FOOD || (props == null || !props.getIsDead()))
+		{
+			return;
+		}
+
+		event.setCanceled(true);
 	}
 }
