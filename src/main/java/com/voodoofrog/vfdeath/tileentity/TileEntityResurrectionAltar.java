@@ -11,12 +11,12 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
-import com.voodoofrog.vfdeath.TeleportationHelper;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.entity.effect.EntityVisualLightningBolt;
+import com.voodoofrog.vfdeath.handler.PlayerEventHandler;
 import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
-import com.voodoofrog.vfdeath.server.handler.PlayerEventHandler;
+import com.voodoofrog.vfdeath.util.TeleportationHelper;
 
 public class TileEntityResurrectionAltar extends TileEntity implements IInventory
 {

@@ -5,8 +5,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import com.voodoofrog.vfdeath.ModInfo;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
+import com.voodoofrog.vfdeath.misc.ModInfo;
 
 public class GuiButtonResurrect extends GuiButton
 {

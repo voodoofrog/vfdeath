@@ -19,11 +19,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 
-import com.voodoofrog.vfdeath.ModInfo;
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.inventory.ContainerResurrectionAltar;
 import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
+import com.voodoofrog.vfdeath.misc.ModInfo;
 import com.voodoofrog.vfdeath.network.server.SendResButtonMessage;
 import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 

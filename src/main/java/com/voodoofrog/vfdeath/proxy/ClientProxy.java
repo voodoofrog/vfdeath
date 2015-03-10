@@ -6,10 +6,10 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.voodoofrog.vfdeath.ModInfo;
 import com.voodoofrog.vfdeath.client.gui.GuiInGameHealthLoss;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.init.VFDeathItems;
+import com.voodoofrog.vfdeath.misc.ModInfo;
 import com.voodoofrog.vfdeath.misc.Strings;
 
 public class ClientProxy extends CommonProxy

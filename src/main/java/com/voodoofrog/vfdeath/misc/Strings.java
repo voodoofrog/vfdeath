@@ -1,6 +1,5 @@
 package com.voodoofrog.vfdeath.misc;
 
-import com.voodoofrog.vfdeath.ModInfo;
 
 public class Strings
 {

@@ -1,4 +1,4 @@
-package com.voodoofrog.vfdeath;
+package com.voodoofrog.vfdeath.misc;
 
 public class ModInfo
 {

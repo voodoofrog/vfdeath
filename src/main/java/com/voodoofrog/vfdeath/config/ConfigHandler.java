@@ -7,7 +7,7 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import com.voodoofrog.vfdeath.ModInfo;
+import com.voodoofrog.vfdeath.misc.ModInfo;
 
 public class ConfigHandler
 {

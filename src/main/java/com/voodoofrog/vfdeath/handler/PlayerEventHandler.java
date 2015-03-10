@@ -1,4 +1,4 @@
-package com.voodoofrog.vfdeath.server.handler;
+package com.voodoofrog.vfdeath.handler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

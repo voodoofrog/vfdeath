@@ -23,13 +23,14 @@ import com.voodoofrog.vfdeath.creativetab.VFDeathCreativeTab;
 import com.voodoofrog.vfdeath.handler.ForgeEventHandler;
 import com.voodoofrog.vfdeath.handler.GhostEventHandler;
 import com.voodoofrog.vfdeath.handler.GuiHandler;
+import com.voodoofrog.vfdeath.handler.PlayerEventHandler;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.item.crafting.VFDeathRecipesCrafting;
+import com.voodoofrog.vfdeath.misc.ModInfo;
 import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
 import com.voodoofrog.vfdeath.network.server.SendResButtonMessage;
 import com.voodoofrog.vfdeath.proxy.CommonProxy;
-import com.voodoofrog.vfdeath.server.handler.PlayerEventHandler;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION)
 public class VFDeath

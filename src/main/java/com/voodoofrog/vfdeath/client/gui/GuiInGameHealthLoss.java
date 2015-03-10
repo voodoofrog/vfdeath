@@ -19,8 +19,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
-import com.voodoofrog.vfdeath.ModInfo;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
+import com.voodoofrog.vfdeath.misc.ModInfo;
 
 @SideOnly(Side.CLIENT)
 public class GuiInGameHealthLoss extends Gui
