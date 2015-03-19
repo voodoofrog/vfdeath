@@ -8,16 +8,22 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.voodoofrog.vfdeath.VFDeath;
+import com.voodoofrog.ribbit.Ribbit;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
+import com.voodoofrog.vfdeath.misc.Strings;
 
 public class ItemResurrectionAnkh extends Item
 {
+	private ChatComponentTranslation bindFailMsg = new ChatComponentTranslation(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "."
+			+ Strings.ANKH_BOUND_FAIL);
+
 	@Override
 	public ItemStack onItemUseFinish(ItemStack item, World world, EntityPlayer player)
 	{
@@ -25,15 +31,46 @@ public class ItemResurrectionAnkh extends Item
 		{
 			if (player.experienceLevel >= ConfigHandler.RES_ANKH_XP_COST)
 			{
-				player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
-				item.damageItem(-1, player);
-				item.getTagCompound().setString("owner", player.getUUID(player.getGameProfile()).toString());
-				return item;
+				if (!item.getTagCompound().getString("owner").isEmpty())
+				{
+					UUID playerUUID = player.getUUID(player.getGameProfile());
+					UUID ownerUUID = UUID.fromString(item.getTagCompound().getString("owner"));
+
+					if (!playerUUID.equals(ownerUUID))
+					{
+						player.addChatMessage(this.bindFailMsg);
+						return item;
+					}
+
+					player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
+					item.damageItem(-1, player);
+					item.getTagCompound().setString("owner", player.getUUID(player.getGameProfile()).toString());
+					return item;
+				}
+				else
+				{
+					player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
+					item.damageItem(-1, player);
+					item.getTagCompound().setString("owner", player.getUUID(player.getGameProfile()).toString());
+					return item;
+				}
 			}
 		}
 
 		if (!world.isRemote && this.isCharged(item.getItemDamage()))
 		{
+			if (!item.getTagCompound().getString("owner").isEmpty())
+			{
+				UUID playerUUID = player.getUUID(player.getGameProfile());
+				UUID ownerUUID = UUID.fromString(item.getTagCompound().getString("owner"));
+
+				if (!playerUUID.equals(ownerUUID))
+				{
+					player.addChatMessage(this.bindFailMsg);
+					return item;
+				}
+			}
+
 			ExtendedPlayer props = ExtendedPlayer.get(player);
 
 			if (!props.getIsDead())
@@ -88,21 +125,24 @@ public class ItemResurrectionAnkh extends Item
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean useExtraInformation)
 	{
+		String msg = "";
+
 		if (this.isCharged(item.getItemDamage()))
 		{
-			info.add("This ankh is ready to be slotted");
-			info.add("into a resurrection altar.");
+			msg = StatCollector.translateToLocal(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "." + Strings.ANKH_READY_TO_SLOT);
+			Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
 
 			if (item.getTagCompound() != null)
 			{
-				if (item.getTagCompound().getString("owner") != null)
+				if (!item.getTagCompound().getString("owner").isEmpty())
 				{
-					String ownerName = VFDeath.userNameFromUUID(UUID.fromString(item.getTagCompound().getString("owner")));
-					
-					if (ownerName != "")
+					String ownerName = Ribbit.playerUtils.getUserNameFromUUID(UUID.fromString(item.getTagCompound().getString("owner")));
+
+					if (!ownerName.isEmpty())
 					{
-						info.add("Can also be used to gain hearts");
-						info.add("directly by " + ownerName);
+						msg = StatCollector.translateToLocalFormatted(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "."
+								+ Strings.ANKH_GAIN_HEARTS, ownerName);
+						Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
 					}
 				}
 			}
@@ -111,8 +151,23 @@ public class ItemResurrectionAnkh extends Item
 		{
 			int levels = item.getItemDamage() * 10;
 
-			info.add("You must add another " + levels + " levels");
-			info.add("before this item is charged.");
+			msg = StatCollector.translateToLocalFormatted(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "." + Strings.ANKH_LVLS_LEFT, levels);
+			Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
+
+			if (item.getTagCompound() != null)
+			{
+				if (!item.getTagCompound().getString("owner").isEmpty())
+				{
+					String ownerName = Ribbit.playerUtils.getUserNameFromUUID(UUID.fromString(item.getTagCompound().getString("owner")));
+
+					if (!ownerName.isEmpty())
+					{
+						msg = StatCollector.translateToLocalFormatted(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "."
+								+ Strings.ANKH_OWNER_CHARGE, ownerName);
+						Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
+					}
+				}
+			}
 		}
 	}
 

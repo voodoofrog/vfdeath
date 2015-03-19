@@ -1,6 +1,13 @@
 tile.vfdeath.resAltar.name=Resurrection Altar
 item.vfdeath.resAnkh.name=Resurrection Ankh
+item.vfdeath.resAnkh.bindfail=This ankh is bound to someone else
+item.vfdeath.resAnkh.readytoslot=This ankh is ready to be slotted into a resurrection altar.
+item.vfdeath.resAnkh.gainhearts=Can also be used to gain hearts directly by %s
+item.vfdeath.resAnkh.levelsleft=This ankh needs another %d levels before it is charged.
+item.vfdeath.resAnkh.ownercharge=Can only be charged by %s
 itemGroup.vfDeathTab=VF Death
+gui.vfdeath.resAltar.notfound=Player not found
+gui.vfdeath.resAltar.notdead=Player is not dead
 commands.vfdeath.addlife.usage=/addlife <amount> [player]
 commands.vfdeath.addlife.success=Given %d hearts to %s
 commands.vfdeath.addlife.failure=You cannot use this command to remove hearts

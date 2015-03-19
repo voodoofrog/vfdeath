@@ -104,17 +104,17 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	{
 		if (this.isDead)
 			return;
-		
+
 		IAttributeInstance iattributeinstance = this.player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
 		double baseMax = iattributeinstance.getBaseValue();
 		double currentMax = iattributeinstance.getAttributeValue();
 		double amount = num * 2D;
-		
+
 		if (amount >= currentMax)
 		{
 			VFDeath.logger.info("Losing last life");
 			this.isDead = true;
-			this.healthMod = baseMax - 2D; //TODO: remove this later?
+			this.healthMod = baseMax - 2D; // TODO: remove this later?
 		}
 		else
 		{
@@ -122,7 +122,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 			VFDeath.logger.info("HEALTH INFO[Losing: " + amount + "|Current: " + currentMax + "]");
 			this.healthMod += amount;
 		}
-		
+
 		this.updateHealthAttribMod();
 		VFDeath.packetDispatcher.sendTo(new SyncPlayerPropsMessage(this.player), (EntityPlayerMP)this.player);
 	}
@@ -132,32 +132,36 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		this.isDead = setIsDead;
 		this.gainHearts(num - 1);
 	}
-	
+
 	public void gainHearts(int num)
 	{
 		IAttributeInstance iattributeinstance = this.player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
 		double baseMax = iattributeinstance.getBaseValue();
 		double currentMax = iattributeinstance.getAttributeValue();
+		double diff = baseMax - this.healthMod;
 		double amount = num * 2D;
-		
-		if (amount > (baseMax - this.healthMod))
+
+		if (this.healthMod != 0)
 		{
-			this.healthMod = 0;
+			if (amount > this.healthMod)
+			{
+				this.healthMod = 0;
+			}
+			else
+			{
+				this.healthMod -= amount;
+			}
+			
+			this.updateHealthAttribMod();
+			VFDeath.packetDispatcher.sendTo(new SyncPlayerPropsMessage(this.player), (EntityPlayerMP)this.player);
 		}
-		else
-		{
-			this.healthMod -= amount;
-		}
-		
-		this.updateHealthAttribMod();
-		VFDeath.packetDispatcher.sendTo(new SyncPlayerPropsMessage(this.player), (EntityPlayerMP)this.player);
 	}
-	
+
 	public double getHealthMod()
 	{
 		return this.healthMod;
 	}
-	
+
 	public boolean getIsDead()
 	{
 		return this.isDead;

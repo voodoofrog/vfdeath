@@ -113,45 +113,4 @@ public class VFDeath
 	{
 		event.registerServerCommand(new AddLifeCommand());
 	}
-
-	//TODO: Add this to Ribbit and cache results
-	@SideOnly(Side.CLIENT)
-	public static String userNameFromUUID(UUID uuid)
-	{
-		Entity entity = MinecraftServer.getServer().getEntityFromUuid(uuid);
-		String name = "";
-
-		if (entity != null)
-		{
-			if (entity instanceof EntityPlayer)
-			{
-				EntityPlayer player = (EntityPlayer)entity;
-				name = player.getName();
-			}
-		}
-		else
-		{
-			try
-			{
-				String convUUID = uuid.toString().replaceAll("-", "");
-				URL url = new URL("https://api.mojang.com/user/profiles/" + convUUID + "/names");
-				BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-				String line = reader.readLine();
-				JsonParser parser = new JsonParser();
-				JsonElement json = parser.parse(line.trim());
-				JsonArray jsonArray = json.getAsJsonArray();
-				name = jsonArray.get(jsonArray.size() - 1).getAsJsonObject().get("name").getAsString();
-				reader.close();
-
-			}
-			catch (Exception ex)
-			{
-
-				ex.printStackTrace();
-				name = ex.toString();
-
-			}
-		}
-		return name;
-	}
 }

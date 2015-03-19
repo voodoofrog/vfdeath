@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,6 +25,7 @@ import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.inventory.ContainerResurrectionAltar;
 import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
 import com.voodoofrog.vfdeath.misc.ModInfo;
+import com.voodoofrog.vfdeath.misc.Strings;
 import com.voodoofrog.vfdeath.network.server.SendResButtonMessage;
 import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 
@@ -104,12 +106,12 @@ public class GuiResurrectionAltar extends GuiContainer
 
 			if (!compound.getBoolean("IsDead"))
 			{
-				this.outputText = "Player is not dead.";
+				this.outputText = Strings.GUI_KEY + "." + Strings.ALTAR_NAME + "." + Strings.ALTAR_GUI_NOT_DEAD;
 			}
 		}
 		else
 		{
-			this.outputText = "Player not found.";
+			this.outputText = Strings.GUI_KEY + "." + Strings.ALTAR_NAME + "." + Strings.ALTAR_GUI_NOT_FOUND;
 		}
 	}
 
@@ -158,7 +160,7 @@ public class GuiResurrectionAltar extends GuiContainer
 	{
 		if (this.outputText != null && this.outputText != "")
 		{
-			this.fontRendererObj.drawString(this.outputText, this.xSize / 2 - this.fontRendererObj.getStringWidth(this.outputText) / 2,
+			this.fontRendererObj.drawString(StatCollector.translateToLocal(this.outputText), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.outputText) / 2,
 					this.guiTop + 34, 0xFF0000);
 		}
 	}
