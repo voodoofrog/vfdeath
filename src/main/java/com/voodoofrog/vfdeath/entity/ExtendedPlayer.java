@@ -11,10 +11,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 import com.voodoofrog.vfdeath.VFDeath;
+import com.voodoofrog.vfdeath.graveyard.Graveyard;
 import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
 
 public class ExtendedPlayer implements IExtendedEntityProperties
@@ -24,6 +26,8 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	private final EntityPlayer player;
 	private double healthMod;
 	private boolean isDead;
+	private boolean hasGrave;
+	private BlockPos gravePos;
 	public final static UUID healthModUUID = UUID.fromString("b70b11c6-3690-4ff6-b284-2d626929c6da");
 
 	public ExtendedPlayer(EntityPlayer player)
@@ -31,6 +35,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		this.player = player;
 		this.healthMod = 0;
 		this.isDead = false;
+		this.hasGrave = false;
 	}
 
 	/**
@@ -58,6 +63,8 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	{
 		this.healthMod = props.healthMod;
 		this.isDead = props.isDead;
+		this.hasGrave = props.hasGrave;
+		this.gravePos = props.gravePos;
 	}
 
 	@Override
@@ -67,6 +74,10 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 
 		properties.setDouble("HealthModifier", this.healthMod);
 		properties.setBoolean("IsDead", this.isDead);
+		properties.setBoolean("HasGrave", this.hasGrave);
+		properties.setInteger("GravePosX", this.gravePos.getX());
+		properties.setInteger("GravePosY", this.gravePos.getY());
+		properties.setInteger("GravePosZ", this.gravePos.getZ());
 
 		compound.setTag(EXT_PROP_NAME, properties);
 	}
@@ -77,6 +88,11 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		NBTTagCompound properties = (NBTTagCompound)compound.getTag(EXT_PROP_NAME);
 		this.healthMod = properties.getDouble("HealthModifier");
 		this.isDead = properties.getBoolean("IsDead");
+		this.hasGrave = properties.getBoolean("HasGrave");
+		int gravePosX = properties.getInteger("GravePosX");
+		int gravePosY = properties.getInteger("GravePosY");
+		int gravePosZ = properties.getInteger("GravePosZ");
+		this.gravePos = new BlockPos(gravePosX, gravePosY, gravePosZ);
 	}
 
 	@Override
@@ -114,6 +130,13 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		{
 			VFDeath.logger.info("Losing last life");
 			this.isDead = true;
+			
+			if (!this.hasGrave)
+			{
+				this.gravePos = Graveyard.spawnGrave(player);
+				this.hasGrave = true;
+			}
+			
 			this.healthMod = baseMax - 2D; // TODO: remove this later?
 		}
 		else
