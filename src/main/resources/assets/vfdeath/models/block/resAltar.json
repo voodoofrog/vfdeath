@@ -1,12 +1,301 @@
 {
-    "parent": "block/cube",
+    "__createdwith": "opl's Model Creator",
+    "ambientocclusion": true,
     "textures": {
-        "down": "vfdeath:blocks/altar_top_bottom",
-        "up": "vfdeath:blocks/altar_top_bottom",
-        "north": "blocks/stonebrick",
-        "east": "blocks/stonebrick",
-        "south": "blocks/stonebrick",
-        "west": "blocks/stonebrick",
-        "particle": "vfdeath:blocks/altar_top_bottom"
-    }
+        "altar": "vfdeath:blocks/altar"
+    },
+    "elements": [
+        {
+            "from": [0,0,0],
+            "to": [2,2,2],
+            "faces": {
+                "down": {
+                    "uv": [1.75,11.5,2.25,12],
+                    "texture": "#altar"
+                },
+                "west": {
+                    "uv": [0,8.75,0.5,9.25],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [4.25,8.75,4.5,9.25],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [4,8.75,4.5,9.25],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [0.25,8.75,0.5,9.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [14,0,14],
+            "to": [16,2,16],
+            "faces": {
+                "down": {
+                    "uv": [2,11.5,2.5,12],
+                    "texture": "#altar"
+                },
+                "west": {
+                    "uv": [4.25,8.75,4.5,9.25],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [0,8.75,0.5,9.25],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [0.25,8.75,0.5,9.25],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [4,8.75,4.5,9.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [14,0,0],
+            "to": [16,2,2],
+            "faces": {
+                "down": {
+                    "uv": [1.75,11.25,2.25,11.75],
+                    "texture": "#altar"
+                },
+                "west": {
+                    "uv": [0.25,8.75,0.5,9.25],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [4,8.75,4.5,9.25],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [0,8.75,0.5,9.25],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [4.25,8.75,4.5,9.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [0,0,14],
+            "to": [2,2,16],
+            "faces": {
+                "down": {
+                    "uv": [1.75,11.5,2.25,12],
+                    "texture": "#altar"
+                },
+                "west": {
+                    "uv": [4,8.75,4.5,9.25],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [0.25,8.75,0.5,9.25],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [4.25,8.75,4.5,9.25],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [0,8.75,0.5,9.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [0,14,0],
+            "to": [16,16,16],
+            "faces": {
+                "up": {
+                    "uv": [0.25,0.25,4.25,4.25],
+                    "texture": "#altar"
+                },
+                "down": {
+                    "uv": [0,9.25,4.5,13.75],
+                    "texture": "#altar"
+                },
+                "west": {
+                    "uv": [0.25,4.25,4.25,4.75],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [0.25,4.25,4.25,4.75],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [0.25,4.25,4.25,4.75],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [0.25,4.25,4.25,4.75],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [0,2,0],
+            "to": [16,4,16],
+            "faces": {
+                "up": {
+                    "uv": [0,9.25,4.5,13.75],
+                    "texture": "#altar"
+                },
+                "down": {
+                    "uv": [0,9.25,4.5,13.75],
+                    "texture": "#altar"
+                },
+                "west": {
+                    "uv": [0,8.25,4.5,8.75],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [0,8.25,4.5,8.75],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [0,8.25,4.5,8.75],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [0,8.25,4.5,8.75],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [0,4,0],
+            "to": [2,14,2],
+            "faces": {
+                "west": {
+                    "uv": [0,4.75,0.5,8.25],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [4.25,5,4.5,8.25],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [4,4.75,4.5,8.25],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [0.25,5,0.5,8.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [14,4,14],
+            "to": [16,14,16],
+            "faces": {
+                "west": {
+                    "uv": [4.25,5,4.5,8.25],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [0,4.75,0.5,8.25],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [0.25,5,0.5,8.25],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [4,4.75,4.5,8.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [14,4,0],
+            "to": [16,14,2],
+            "faces": {
+                "west": {
+                    "uv": [0.25,5,0.5,8.25],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [4,4.75,4.5,8.25],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [0,4.75,0.5,8.25],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [4.25,5,4.5,8.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [0,4,14],
+            "to": [2,14,16],
+            "faces": {
+                "west": {
+                    "uv": [4,4.75,4.5,8.25],
+                    "texture": "#altar"
+                },
+                "east": {
+                    "uv": [0.25,5,0.5,8.25],
+                    "texture": "#altar"
+                },
+                "north": {
+                    "uv": [4.25,5,4.5,8.25],
+                    "texture": "#altar"
+                },
+                "south": {
+                    "uv": [0,4.75,0.5,8.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [2,4,2],
+            "to": [4,14,14],
+            "faces": {
+                "west": {
+                    "uv": [0.5,4.75,4,8.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [12,4,2],
+            "to": [14,14,14],
+            "faces": {
+                "east": {
+                    "uv": [0.5,4.75,4,8.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [2,4,2],
+            "to": [14,14,4],
+            "faces": {
+                "north": {
+                    "uv": [0.5,4.75,4,8.25],
+                    "texture": "#altar"
+                }
+            }
+        },
+        {
+            "from": [2,4,12],
+            "to": [14,14,14],
+            "faces": {
+                "south": {
+                    "uv": [0.5,4.75,4,8.25],
+                    "texture": "#altar"
+                }
+            }
+        }
+    ]
 }
