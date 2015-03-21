@@ -10,6 +10,7 @@ import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.voodoofrog.vfdeath.graveyard.Graveyard;
 import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
 
 public class BlockGravestone extends BlockContainer
@@ -35,13 +37,13 @@ public class BlockGravestone extends BlockContainer
 		this.setBlockBounds(0.0F, 0.0F, 0.75F, 1.0F, 1.0F, 1.0F);
 	}
 
-    @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getSelectedBoundingBox(World worldIn, BlockPos pos)
-    {
-        this.setBlockBoundsBasedOnState(worldIn, pos);
-        return super.getSelectedBoundingBox(worldIn, pos);
-    }
-	
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getSelectedBoundingBox(World worldIn, BlockPos pos)
+	{
+		this.setBlockBoundsBasedOnState(worldIn, pos);
+		return super.getSelectedBoundingBox(worldIn, pos);
+	}
+
 	public boolean isOpaqueCube()
 	{
 		return false;
@@ -60,29 +62,29 @@ public class BlockGravestone extends BlockContainer
 
 	public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
 	{
-    	int meta = this.getMetaFromState(worldIn.getBlockState(pos));
+		int meta = this.getMetaFromState(worldIn.getBlockState(pos));
 
-    	this.setBlockBounds(0.0F, 0.0F, 0.75F, 1.0F, 1.0F, 1.0F);
-    	
-    	if (meta == 4)
-    	{
-    		this.setBlockBounds(0.0F, 0.0F, 0.0F, 0.25F, 1.0F, 1.0F); //WEST
-    	}
+		this.setBlockBounds(0.0F, 0.0F, 0.75F, 1.0F, 1.0F, 1.0F);
 
-    	if (meta == 3)
-    	{
-    		this.setBlockBounds(0.0F, 0.0F, 0.75F, 1.0F, 1.0F, 1.0F); //NORTH
-    	}
-    	
-    	if (meta == 2)
-    	{
-    		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.25F); //SOUTH
-    	}
-    	
-    	if (meta == 5)
-    	{
-    		this.setBlockBounds(0.75F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F); //EAST
-    	}
+		if (meta == 4)
+		{
+			this.setBlockBounds(0.0F, 0.0F, 0.0F, 0.25F, 1.0F, 1.0F); // WEST
+		}
+
+		if (meta == 3)
+		{
+			this.setBlockBounds(0.0F, 0.0F, 0.75F, 1.0F, 1.0F, 1.0F); // NORTH
+		}
+
+		if (meta == 2)
+		{
+			this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.25F); // SOUTH
+		}
+
+		if (meta == 5)
+		{
+			this.setBlockBounds(0.75F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F); // EAST
+		}
 	}
 
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
@@ -206,24 +208,71 @@ public class BlockGravestone extends BlockContainer
 	{
 		return new BlockState(this, new IProperty[] { FACING });
 	}
-	
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        if (worldIn.isRemote)
-        {
-            return true;
-        }
-        else
-        {
-    		TileEntity tileentity = worldIn.getTileEntity(pos);
 
-    		if (tileentity instanceof TileEntityGravestone)
-    		{
-    			TileEntityGravestone teGravestone = (TileEntityGravestone)tileentity;
-    			System.out.println(teGravestone.getBlockMetadata());
-    		}
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY,
+			float hitZ)
+	{
+		if (worldIn.isRemote)
+		{
+			return true;
+		}
+		else
+		{
+			Graveyard.spawnGrave(playerIn);
+			return true;
+		}
+	}
 
-            return true;
-        }
-    }
+	public void digGrave(World world, BlockPos pos)
+	{
+		int meta = this.getMetaFromState(world.getBlockState(pos));
+
+		if (meta == 2) // SOUTH
+		{
+			world.setBlockState(pos.down().north(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().north(), Blocks.air);
+			world.setBlockState(pos.down().north().north(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().north().north(), Blocks.air);
+			world.setBlockState(pos.down().down().north(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().down().north(), Blocks.air);
+			world.setBlockState(pos.down().down().north().north(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().down().north().north(), Blocks.air);
+		}
+
+		if (meta == 3) // NORTH
+		{
+			world.setBlockState(pos.down().south(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().south(), Blocks.air);
+			world.setBlockState(pos.down().south().south(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().south().south(), Blocks.air);
+			world.setBlockState(pos.down().down().south(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().down().south(), Blocks.air);
+			world.setBlockState(pos.down().down().south().south(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().down().south().south(), Blocks.air);
+		}
+
+		if (meta == 4) // WEST
+		{
+			world.setBlockState(pos.down().east(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().east(), Blocks.air);
+			world.setBlockState(pos.down().east().east(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().east().east(), Blocks.air);
+			world.setBlockState(pos.down().down().east(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().down().east(), Blocks.air);
+			world.setBlockState(pos.down().down().east().east(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().down().east().east(), Blocks.air);
+		}
+
+		if (meta == 5) // EAST
+		{
+			world.setBlockState(pos.down().west(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().west(), Blocks.air);
+			world.setBlockState(pos.down().west().west(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().west().west(), Blocks.air);
+			world.setBlockState(pos.down().down().west(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().down().west(), Blocks.air);
+			world.setBlockState(pos.down().down().west().west(), Blocks.air.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().down().west().west(), Blocks.air);
+		}
+	}
 }
