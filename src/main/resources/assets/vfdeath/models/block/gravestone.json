@@ -1,0 +1,97 @@
+{
+    "__createdwith": "opl's Model Creator",
+    "ambientocclusion": true,
+    "textures": {
+        "gravestone": "blocks/stone",
+        "particle]": "blocks/stone"
+    },
+    "elements": [
+        {
+            "from": [0,0,0],
+            "to": [16,2,4],
+            "faces": {
+                "up": {
+                    "texture": "#gravestone"
+                },
+                "down": {
+                    "texture": "#gravestone"
+                },
+                "west": {
+                    "texture": "#gravestone"
+                },
+                "east": {
+                    "texture": "#gravestone"
+                },
+                "north": {
+                    "texture": "#gravestone"
+                },
+                "south": {
+                    "texture": "#gravestone"
+                }
+            }
+        },
+        {
+            "from": [1,2,1],
+            "to": [15,14,3],
+            "faces": {
+                "up": {
+                    "texture": "#gravestone"
+                },
+                "west": {
+                    "texture": "#gravestone"
+                },
+                "east": {
+                    "texture": "#gravestone"
+                },
+                "north": {
+                    "texture": "#gravestone"
+                },
+                "south": {
+                    "texture": "#gravestone"
+                }
+            }
+        },
+        {
+            "from": [2,14,1],
+            "to": [14,15,3],
+            "faces": {
+                "up": {
+                    "texture": "#gravestone"
+                },
+                "west": {
+                    "texture": "#gravestone"
+                },
+                "east": {
+                    "texture": "#gravestone"
+                },
+                "north": {
+                    "texture": "#gravestone"
+                },
+                "south": {
+                    "texture": "#gravestone"
+                }
+            }
+        },
+        {
+            "from": [3,15,1],
+            "to": [13,16,3],
+            "faces": {
+                "up": {
+                    "texture": "#gravestone"
+                },
+                "west": {
+                    "texture": "#gravestone"
+                },
+                "east": {
+                    "texture": "#gravestone"
+                },
+                "north": {
+                    "texture": "#gravestone"
+                },
+                "south": {
+                    "texture": "#gravestone"
+                }
+            }
+        }
+    ]
+}

@@ -6,6 +6,8 @@ public class Strings
 	//Blocks
 	public static final String ALTAR_NAME = "resAltar";
 	public static final String ALTAR_UNLOCALIZED = ModInfo.ID + "." + ALTAR_NAME;
+	public static final String GRAVESTONE_NAME = "gravestone";
+	public static final String GRAVESTONE_UNLOCALIZED = ModInfo.ID + "." + GRAVESTONE_NAME;
 	
 	//Items
 	public static final String ITEMS_KEY = "item.vfdeath";

@@ -32,7 +32,7 @@ import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 @SideOnly(Side.CLIENT)
 public class GuiResurrectionAltar extends GuiContainer
 {
-	private static final ResourceLocation texture = new ResourceLocation(ModInfo.ID, ConfigHandler.GUI_CONTAINER_PATH + "gui_altar.png");
+	private static final ResourceLocation texture = new ResourceLocation(ModInfo.ID, "textures/gui/container/gui_altar.png");
 	private ContainerResurrectionAltar altarContainer;
 	private GuiTextField playerNameField;
 	private GuiButtonResurrect resButton;
