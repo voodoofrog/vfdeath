@@ -36,6 +36,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		this.healthMod = 0;
 		this.isDead = false;
 		this.hasGrave = false;
+		this.gravePos = new BlockPos(player.worldObj.getSpawnPoint());
 	}
 
 	/**
