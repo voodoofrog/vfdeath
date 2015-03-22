@@ -8,6 +8,8 @@ public class Strings
 	public static final String ALTAR_UNLOCALIZED = ModInfo.ID + "." + ALTAR_NAME;
 	public static final String GRAVESTONE_NAME = "gravestone";
 	public static final String GRAVESTONE_UNLOCALIZED = ModInfo.ID + "." + GRAVESTONE_NAME;
+	public static final String COFFIN_NAME = "coffin";
+	public static final String COFFIN_UNLOCALIZED = ModInfo.ID + "." + COFFIN_NAME;
 	
 	//Items
 	public static final String ITEMS_KEY = "item.vfdeath";

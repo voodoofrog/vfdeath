@@ -1,4 +1,6 @@
 tile.vfdeath.resAltar.name=Resurrection Altar
+tile.vfdeath.gravestone.name=Gravestone
+tile.vfdeath.coffin.name=Coffin
 item.vfdeath.resAnkh.name=Resurrection Ankh
 item.vfdeath.resAnkh.bindfail=This ankh is bound to someone else
 item.vfdeath.resAnkh.readytoslot=This ankh is ready to be slotted into a resurrection altar.

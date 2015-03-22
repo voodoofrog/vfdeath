@@ -229,14 +229,15 @@ public class BlockGravestone extends BlockContainer
 
 		if (meta == 2) // SOUTH
 		{
-			world.setBlockState(pos.down().north(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().north(), Blocks.air);
-			world.setBlockState(pos.down().north().north(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().north().north(), Blocks.air);
-			world.setBlockState(pos.down().down().north(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().down().north(), Blocks.air);
-			world.setBlockState(pos.down().down().north().north(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().down().north().north(), Blocks.air);
+			world.setBlockState(pos.down().north(), Blocks.grass.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().north(), Blocks.grass);
+			world.setBlockState(pos.down().north().north(), Blocks.grass.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().north().north(), Blocks.grass);
+			
+			world.setBlockState(pos.down().down().north().north(), Blocks.chest.getDefaultState().withProperty(FACING, EnumFacing.WEST));
+			world.notifyNeighborsOfStateChange(pos.down().down().north().north(), Blocks.chest);
+			world.setBlockState(pos.down().down().north(), Blocks.chest.getDefaultState().withProperty(FACING, EnumFacing.WEST));
+			world.notifyNeighborsOfStateChange(pos.down().down().north(), Blocks.chest);
 		}
 
 		if (meta == 3) // NORTH

@@ -53,6 +53,7 @@ public class Graveyard
 
 	public static BlockPos getRandomizedSpawnPoint(World world)
 	{
+		//TODO: May need to make sure this only happens in overworld
 		BlockPos pos = world.getSpawnPoint();
 
 		int radius = 16; // to become configurable
