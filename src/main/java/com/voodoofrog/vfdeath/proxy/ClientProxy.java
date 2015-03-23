@@ -10,13 +10,11 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.voodoofrog.vfdeath.client.gui.GuiInGameHealthLoss;
-import com.voodoofrog.vfdeath.client.renderer.tileentity.TileEntityCoffinRenderer;
 import com.voodoofrog.vfdeath.client.renderer.tileentity.TileEntityGravestoneRenderer;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.misc.ModInfo;
 import com.voodoofrog.vfdeath.misc.Strings;
-import com.voodoofrog.vfdeath.tileentity.TileEntityCoffin;
 import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
 
 public class ClientProxy extends CommonProxy
@@ -36,11 +34,5 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(new GuiInGameHealthLoss(this.mc));
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGravestone.class, new TileEntityGravestoneRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCoffin.class, new TileEntityCoffinRenderer());
-		
-		//Item itemGravestoneSimple = GameRegistry.findItem(ModInfo.ID, Strings.GRAVESTONE_NAME);
-		//ModelResourceLocation gravestoneModelResourceLocation = new ModelResourceLocation(ModInfo.ID + ":" + Strings.GRAVESTONE_NAME, "inventory");
-		//final int DEFAULT_ITEM_SUBTYPE = 0;
-		//Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemGravestoneSimple, DEFAULT_ITEM_SUBTYPE, gravestoneModelResourceLocation);
 	}
 }
