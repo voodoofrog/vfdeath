@@ -2,7 +2,6 @@ package com.voodoofrog.vfdeath.client.renderer.tileentity;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.model.ModelLargeChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -11,15 +10,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.voodoofrog.vfdeath.block.BlockCoffin;
+import com.voodoofrog.vfdeath.client.model.ModelCoffin;
+import com.voodoofrog.vfdeath.misc.ModInfo;
 import com.voodoofrog.vfdeath.tileentity.TileEntityCoffin;
 
 @SideOnly(Side.CLIENT)
 public class TileEntityCoffinRenderer extends TileEntitySpecialRenderer
 {
-	private static final ResourceLocation textureNormalDouble = new ResourceLocation("textures/entity/chest/normal_double.png");
+	private static final ResourceLocation textureNormalDouble = new ResourceLocation(ModInfo.ID, "textures/entity/coffin.png");
 	private static final ResourceLocation textureNormal = new ResourceLocation("textures/entity/chest/normal.png");
 	private ModelChest simpleChest = new ModelChest();
-	private ModelChest largeChest = new ModelLargeChest();
+	private ModelChest fullCoffin = new ModelCoffin();
 
 	public void render(TileEntityCoffin teCoffin, double posX, double posY, double posZ, float p_180538_8_, int p_180538_9_)
 	{
@@ -68,7 +69,7 @@ public class TileEntityCoffinRenderer extends TileEntitySpecialRenderer
 			}
 			else
 			{
-				modelchest = this.largeChest;
+				modelchest = this.fullCoffin;
 
 				if (p_180538_9_ >= 0)
 				{
@@ -93,7 +94,7 @@ public class TileEntityCoffinRenderer extends TileEntitySpecialRenderer
 				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			}
 
-			GlStateManager.translate((float)posX, (float)posY + 1.0F, (float)posZ + 1.0F);
+			GlStateManager.translate((float)posX, (float)posY + 1.1875F, (float)posZ + 1.0F);
 			GlStateManager.scale(1.0F, -1.0F, -1.0F);
 			GlStateManager.translate(0.5F, 0.5F, 0.5F);
 			short short1 = 0;
