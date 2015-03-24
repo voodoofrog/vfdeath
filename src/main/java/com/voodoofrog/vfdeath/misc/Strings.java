@@ -34,4 +34,8 @@ public class Strings
 	public static final String GUI_KEY = "gui.vfdeath";
 	public static final String ALTAR_GUI_NOT_FOUND = "notfound";
 	public static final String ALTAR_GUI_NOT_DEAD = "notdead";
+	
+	//Graveyard
+	public static final String GRAVE_DOD = "msg.vfdeath.dod";
+	public static final String GRAVE_NO_VALID_LOC = "msg.vfdeath.noValidLoc";
 }

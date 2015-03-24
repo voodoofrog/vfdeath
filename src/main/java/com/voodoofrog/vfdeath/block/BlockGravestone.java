@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.graveyard.Graveyard;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
@@ -219,7 +220,7 @@ public class BlockGravestone extends BlockContainer
 		}
 		else
 		{
-			Graveyard.spawnGrave(playerIn);
+			VFDeath.graveyard.spawnGrave(playerIn);
 			return true;
 		}
 	}

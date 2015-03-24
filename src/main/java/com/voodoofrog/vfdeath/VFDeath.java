@@ -37,6 +37,7 @@ import com.voodoofrog.ribbit.network.PacketDispatcher;
 import com.voodoofrog.vfdeath.command.AddLifeCommand;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.creativetab.VFDeathCreativeTab;
+import com.voodoofrog.vfdeath.graveyard.Graveyard;
 import com.voodoofrog.vfdeath.handler.ForgeEventHandler;
 import com.voodoofrog.vfdeath.handler.GhostEventHandler;
 import com.voodoofrog.vfdeath.handler.GuiHandler;
@@ -59,11 +60,10 @@ public class VFDeath
 
 	@SidedProxy(clientSide = "com.voodoofrog.vfdeath.proxy.ClientProxy", serverSide = "com.voodoofrog.vfdeath.proxy.CommonProxy")
 	public static CommonProxy proxy;
-
 	public static PacketDispatcher packetDispatcher;
 	public static Logger logger;
-
 	public static CreativeTabs vfdeathTab = new VFDeathCreativeTab(CreativeTabs.getNextID(), "vfDeathTab");
+	public static Graveyard graveyard;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -100,6 +100,8 @@ public class VFDeath
 		VFDeathBlocks.registerTileEntities();
 
 		new GuiHandler();
+		
+		graveyard = new Graveyard();
 	}
 
 	@EventHandler

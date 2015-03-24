@@ -1,9 +1,8 @@
 package com.voodoofrog.vfdeath.graveyard;
 
-import com.voodoofrog.vfdeath.VFDeath;
-import com.voodoofrog.vfdeath.block.BlockGravestone;
-import com.voodoofrog.vfdeath.init.VFDeathBlocks;
-import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,32 +11,42 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
+
+import com.voodoofrog.ribbit.Ribbit;
+import com.voodoofrog.vfdeath.block.BlockGravestone;
+import com.voodoofrog.vfdeath.init.VFDeathBlocks;
+import com.voodoofrog.vfdeath.misc.Strings;
+import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
 
 public class Graveyard
 {
-	public static BlockPos spawnGrave(EntityPlayer player)
+	public BlockPos spawnGrave(EntityPlayer player)
 	{
 		WorldServer worldserver = MinecraftServer.getServer().worldServerForDimension(player.dimension);
-		BlockPos pos = getRandomizedSpawnPoint(player.worldObj);
+		BlockPos pos = this.getRandomizedSpawnPoint(player.worldObj);
 
 		if (pos != null)
 		{
+			World world = player.worldObj;
 			BlockGravestone graveStone = VFDeathBlocks.gravestone;
-			
+
 			worldserver.setBlockState(pos, graveStone.getDefaultState());
 			worldserver.notifyNeighborsOfStateChange(pos, VFDeathBlocks.gravestone);
-			graveStone.digGrave(player.worldObj, pos);
-			TileEntity tileentity = player.worldObj.getTileEntity(pos);
+			graveStone.digGrave(world, pos);
+			TileEntity tileentity = world.getTileEntity(pos);
 
 			if (tileentity instanceof TileEntityGravestone)
 			{
+				DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
+				Date date = Ribbit.dateTime.getCurrentDate(world);
 				TileEntityGravestone teGravestone = (TileEntityGravestone)tileentity;
+
 				teGravestone.epitaph[0] = new ChatComponentText(player.getName());
-				teGravestone.epitaph[1] = new ChatComponentText("Died 01/01/01");
+				teGravestone.epitaph[1] = new ChatComponentTranslation(Strings.GRAVE_DOD, dateFormat.format(date));
 				teGravestone.epitaph[2] = new ChatComponentText("Killed by");
 				teGravestone.epitaph[3] = new ChatComponentText("deathcause");
 				teGravestone.markForUpdate();
@@ -45,15 +54,15 @@ public class Graveyard
 		}
 		else
 		{
-			player.addChatMessage(new ChatComponentText("Couldn't get a valid position"));
+			player.addChatMessage(new ChatComponentTranslation(Strings.GRAVE_NO_VALID_LOC));
 		}
 
 		return pos;
 	}
 
-	public static BlockPos getRandomizedSpawnPoint(World world)
+	public BlockPos getRandomizedSpawnPoint(World world)
 	{
-		//TODO: May need to make sure this only happens in overworld
+		// TODO: May need to make sure this only happens in overworld
 		BlockPos pos = world.getSpawnPoint();
 
 		int radius = 16; // to become configurable
@@ -72,7 +81,7 @@ public class Graveyard
 				Block block = world.getBlockState(pos).getBlock();
 				Block blockBelow = world.getBlockState(pos.down()).getBlock();
 
-				if (!block.equals(Blocks.water) && !blockBelow.equals(VFDeathBlocks.gravestone) && !isPositionInvalid(world, pos))
+				if (!block.equals(Blocks.water) && !blockBelow.equals(VFDeathBlocks.gravestone) && !this.isPositionInvalid(world, pos))
 				{
 					return pos;
 				}
@@ -82,14 +91,14 @@ public class Graveyard
 		return null;
 	}
 
-	public static boolean isPositionInvalid(World world, BlockPos pos)
+	private boolean isPositionInvalid(World world, BlockPos pos)
 	{
 		BlockPos startPos = pos.north(2).west(1);
 		Block block;
 		boolean flag = false;
 
-		//south is z+
-		//east is x+
+		// south is z+
+		// east is x+
 		for (int z = 0; z < 5; z++)
 		{
 			for (int x = 0; x < 3; x++)

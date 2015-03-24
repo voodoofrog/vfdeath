@@ -13,3 +13,5 @@ gui.vfdeath.resAltar.notdead=Player is not dead
 commands.vfdeath.addlife.usage=/addlife <amount> [player]
 commands.vfdeath.addlife.success=Given %d hearts to %s
 commands.vfdeath.addlife.failure=You cannot use this command to remove hearts
+msg.vfdeath.dod=Died %s
+msg.vfdeath.noValidLoc=Couldn't get a valid position

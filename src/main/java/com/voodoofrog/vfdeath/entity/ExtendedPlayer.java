@@ -134,7 +134,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 			
 			if (!this.hasGrave)
 			{
-				this.gravePos = Graveyard.spawnGrave(player);
+				this.gravePos = VFDeath.graveyard.spawnGrave(player);
 				this.hasGrave = true;
 			}
 			
