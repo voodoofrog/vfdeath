@@ -18,8 +18,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.IInteractionObject;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.voodoofrog.ribbit.world.IBasicContainer;
 import com.voodoofrog.vfdeath.block.BlockCoffin;
@@ -441,7 +439,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 
 	public String getGuiID()
 	{
-		return "minecraft:coffin";
+		return null;
 	}
 
 	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
