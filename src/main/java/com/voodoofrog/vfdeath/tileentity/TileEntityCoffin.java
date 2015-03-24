@@ -17,14 +17,20 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.voodoofrog.ribbit.world.IBasicContainer;
 import com.voodoofrog.vfdeath.block.BlockCoffin;
+import com.voodoofrog.vfdeath.inventory.ContainerCoffin;
+import com.voodoofrog.vfdeath.inventory.InventoryFullCoffin;
 
-public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox, IInventory
+public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox, IInventory, IInteractionObject, IBasicContainer
 {
-	private ItemStack[] coffinContents = new ItemStack[27];
+	private static final int[] slotsItems = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+	private static final int[] slotsAnkhs = new int[] { 18, 19, 20, 21, 22 };
+	private ItemStack[] coffinContents = new ItemStack[23];
 	public boolean adjacentCoffinChecked;
 	public TileEntityCoffin adjacentCoffinZNeg;
 	public TileEntityCoffin adjacentCoffinXPos;
@@ -40,25 +46,16 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 	{
 	}
 
-	/**
-	 * Returns the number of slots in the inventory.
-	 */
 	public int getSizeInventory()
 	{
-		return 27;
+		return 23;
 	}
 
-	/**
-	 * Returns the stack in slot i
-	 */
 	public ItemStack getStackInSlot(int index)
 	{
 		return this.coffinContents[index];
 	}
 
-	/**
-	 * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a new stack.
-	 */
 	public ItemStack decrStackSize(int index, int count)
 	{
 		if (this.coffinContents[index] != null)
@@ -91,10 +88,6 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		}
 	}
 
-	/**
-	 * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem - like when you close a workbench
-	 * GUI.
-	 */
 	public ItemStack getStackInSlotOnClosing(int index)
 	{
 		if (this.coffinContents[index] != null)
@@ -109,9 +102,6 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		}
 	}
 
-	/**
-	 * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-	 */
 	public void setInventorySlotContents(int index, ItemStack stack)
 	{
 		this.coffinContents[index] = stack;
@@ -124,17 +114,11 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		this.markDirty();
 	}
 
-	/**
-	 * Gets the name of this command sender (usually username, but possibly "Rcon")
-	 */
 	public String getName()
 	{
 		return this.hasCustomName() ? this.customName : "container.coffin";
 	}
 
-	/**
-	 * Returns true if this thing is named
-	 */
 	public boolean hasCustomName()
 	{
 		return this.customName != null && this.customName.length() > 0;
@@ -192,17 +176,11 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		}
 	}
 
-	/**
-	 * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended. *Isn't this more of a set than a get?*
-	 */
 	public int getInventoryStackLimit()
 	{
 		return 64;
 	}
 
-	/**
-	 * Do not make give this method the name canInteractWith because it clashes with Container
-	 */
 	public boolean isUseableByPlayer(EntityPlayer player)
 	{
 		return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D,
@@ -215,39 +193,39 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		this.adjacentCoffinChecked = false;
 	}
 
-	private void func_174910_a(TileEntityCoffin p_174910_1_, EnumFacing p_174910_2_)
+	private void setChecked(TileEntityCoffin teCoffin, EnumFacing facing)
 	{
-		if (p_174910_1_.isInvalid())
+		if (teCoffin.isInvalid())
 		{
 			this.adjacentCoffinChecked = false;
 		}
 		else if (this.adjacentCoffinChecked)
 		{
-			switch (TileEntityCoffin.SwitchEnumFacing.field_177366_a[p_174910_2_.ordinal()])
+			switch (TileEntityCoffin.SwitchEnumFacing.ordinals[facing.ordinal()])
 			{
 			case 1:
-				if (this.adjacentCoffinZNeg != p_174910_1_)
+				if (this.adjacentCoffinZNeg != teCoffin)
 				{
 					this.adjacentCoffinChecked = false;
 				}
 
 				break;
 			case 2:
-				if (this.adjacentCoffinZPos != p_174910_1_)
+				if (this.adjacentCoffinZPos != teCoffin)
 				{
 					this.adjacentCoffinChecked = false;
 				}
 
 				break;
 			case 3:
-				if (this.adjacentCoffinXPos != p_174910_1_)
+				if (this.adjacentCoffinXPos != teCoffin)
 				{
 					this.adjacentCoffinChecked = false;
 				}
 
 				break;
 			case 4:
-				if (this.adjacentCoffinXNeg != p_174910_1_)
+				if (this.adjacentCoffinXNeg != teCoffin)
 				{
 					this.adjacentCoffinChecked = false;
 				}
@@ -255,33 +233,30 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		}
 	}
 
-	/**
-	 * Performs the check for adjacent coffins to determine if this coffin is double or not.
-	 */
 	public void checkForAdjacentCoffins()
 	{
 		if (!this.adjacentCoffinChecked)
 		{
 			this.adjacentCoffinChecked = true;
-			this.adjacentCoffinXNeg = this.func_174911_a(EnumFacing.WEST);
-			this.adjacentCoffinXPos = this.func_174911_a(EnumFacing.EAST);
-			this.adjacentCoffinZNeg = this.func_174911_a(EnumFacing.NORTH);
-			this.adjacentCoffinZPos = this.func_174911_a(EnumFacing.SOUTH);
+			this.adjacentCoffinXNeg = this.getAdjacentCoffin(EnumFacing.WEST);
+			this.adjacentCoffinXPos = this.getAdjacentCoffin(EnumFacing.EAST);
+			this.adjacentCoffinZNeg = this.getAdjacentCoffin(EnumFacing.NORTH);
+			this.adjacentCoffinZPos = this.getAdjacentCoffin(EnumFacing.SOUTH);
 		}
 	}
 
-	protected TileEntityCoffin func_174911_a(EnumFacing p_174911_1_)
+	protected TileEntityCoffin getAdjacentCoffin(EnumFacing facing)
 	{
-		BlockPos blockpos = this.pos.offset(p_174911_1_);
+		BlockPos blockpos = this.pos.offset(facing);
 
-		if (this.func_174912_b(blockpos))
+		if (this.isCoffin(blockpos))
 		{
 			TileEntity tileentity = this.worldObj.getTileEntity(blockpos);
 
 			if (tileentity instanceof TileEntityCoffin)
 			{
 				TileEntityCoffin tileentitycoffin = (TileEntityCoffin)tileentity;
-				tileentitycoffin.func_174910_a(this, p_174911_1_.getOpposite());
+				tileentitycoffin.setChecked(this, facing.getOpposite());
 				return tileentitycoffin;
 			}
 		}
@@ -289,7 +264,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		return null;
 	}
 
-	private boolean func_174912_b(BlockPos p_174912_1_)
+	private boolean isCoffin(BlockPos pos)
 	{
 		if (this.worldObj == null)
 		{
@@ -297,7 +272,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		}
 		else
 		{
-			Block block = this.worldObj.getBlockState(p_174912_1_).getBlock();
+			Block block = this.worldObj.getBlockState(pos).getBlock();
 			return block instanceof BlockCoffin;
 		}
 	}
@@ -330,8 +305,8 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 				{
 					IInventory iinventory = ((ContainerCoffin)entityplayer.openContainer).getLowerCoffinInventory();
 
-					if (iinventory == this || iinventory instanceof InventoryLargeCoffin
-							&& ((InventoryLargeCoffin)iinventory).isPartOfLargeCoffin(this))
+					if (iinventory == this || iinventory instanceof InventoryFullCoffin
+							&& ((InventoryFullCoffin)iinventory).isPartOfFullCoffin(this))
 					{
 						++this.numPlayersUsing;
 					}
@@ -358,7 +333,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 				d1 += 0.5D;
 			}
 
-			this.worldObj.playSoundEffect(d1, (double)j + 0.5D, d2, "random.coffinopen", 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			this.worldObj.playSoundEffect(d1, (double)j + 0.5D, d2, "random.chestopen", 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
 
 		if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F)
@@ -396,7 +371,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 					d2 += 0.5D;
 				}
 
-				this.worldObj.playSoundEffect(d2, (double)j + 0.5D, d0, "random.coffinclosed", 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+				this.worldObj.playSoundEffect(d2, (double)j + 0.5D, d0, "random.chestclosed", 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			}
 
 			if (this.lidAngle < 0.0F)
@@ -498,14 +473,13 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 
 	static final class SwitchEnumFacing
 	{
-		static final int[] field_177366_a = new int[EnumFacing.values().length];
-		private static final String __OBFID = "CL_00002041";
+		static final int[] ordinals = new int[EnumFacing.values().length];
 
 		static
 		{
 			try
 			{
-				field_177366_a[EnumFacing.NORTH.ordinal()] = 1;
+				ordinals[EnumFacing.NORTH.ordinal()] = 1;
 			}
 			catch (NoSuchFieldError var4)
 			{
@@ -514,7 +488,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 
 			try
 			{
-				field_177366_a[EnumFacing.SOUTH.ordinal()] = 2;
+				ordinals[EnumFacing.SOUTH.ordinal()] = 2;
 			}
 			catch (NoSuchFieldError var3)
 			{
@@ -523,7 +497,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 
 			try
 			{
-				field_177366_a[EnumFacing.EAST.ordinal()] = 3;
+				ordinals[EnumFacing.EAST.ordinal()] = 3;
 			}
 			catch (NoSuchFieldError var2)
 			{
@@ -532,7 +506,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 
 			try
 			{
-				field_177366_a[EnumFacing.WEST.ordinal()] = 4;
+				ordinals[EnumFacing.WEST.ordinal()] = 4;
 			}
 			catch (NoSuchFieldError var1)
 			{

@@ -16,6 +16,7 @@ public class ConfigHandler
 
 	// GUIIDs
 	public static final int ALTAR_GUI_ID = 0;
+	public static final int COFFIN_GUI_ID = 1;
 
 	// UUIDs
 	public static final UUID HEALTH_MOD_UUID = UUID.fromString("5A4F4F80-37F1-11E3-AA6E-0800200C9A66");

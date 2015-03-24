@@ -41,14 +41,14 @@ public class TileEntityCoffinRenderer extends TileEntitySpecialRenderer
 				j = teCoffin.getBlockMetadata();
 			}
 
-			teCoffin.checkForAdjacentChests();
+			teCoffin.checkForAdjacentCoffins();
 		}
 
-		if (teCoffin.adjacentCoffinZNeg == null && teCoffin.adjacentChestXNeg == null)
+		if (teCoffin.adjacentCoffinZNeg == null && teCoffin.adjacentCoffinXNeg == null)
 		{
 			ModelChest modelchest;
 
-			if (teCoffin.adjacentCoffinXPos == null && teCoffin.adjacentChestZPos == null)
+			if (teCoffin.adjacentCoffinXPos == null && teCoffin.adjacentCoffinZPos == null)
 			{
 				modelchest = this.simpleChest;
 
@@ -123,7 +123,7 @@ public class TileEntityCoffinRenderer extends TileEntitySpecialRenderer
 				GlStateManager.translate(1.0F, 0.0F, 0.0F);
 			}
 
-			if (j == 5 && teCoffin.adjacentChestZPos != null)
+			if (j == 5 && teCoffin.adjacentCoffinZPos != null)
 			{
 				GlStateManager.translate(0.0F, 0.0F, -1.0F);
 			}
@@ -144,9 +144,9 @@ public class TileEntityCoffinRenderer extends TileEntitySpecialRenderer
 				}
 			}
 
-			if (teCoffin.adjacentChestXNeg != null)
+			if (teCoffin.adjacentCoffinXNeg != null)
 			{
-				f2 = teCoffin.adjacentChestXNeg.prevLidAngle + (teCoffin.adjacentChestXNeg.lidAngle - teCoffin.adjacentChestXNeg.prevLidAngle)
+				f2 = teCoffin.adjacentCoffinXNeg.prevLidAngle + (teCoffin.adjacentCoffinXNeg.lidAngle - teCoffin.adjacentCoffinXNeg.prevLidAngle)
 						* p_180538_8_;
 
 				if (f2 > f1)

@@ -12,17 +12,24 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
+import com.voodoofrog.ribbit.world.IBasicContainer;
+import com.voodoofrog.vfdeath.VFDeath;
+import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
+import com.voodoofrog.vfdeath.inventory.InventoryFullCoffin;
 import com.voodoofrog.vfdeath.tileentity.TileEntityCoffin;
 
 public class BlockCoffin extends BlockContainer
@@ -92,11 +99,11 @@ public class BlockCoffin extends BlockContainer
 				this.checkForSurroundingCoffins(worldIn, blockpos1, iblockstate1);
 			}
 		}
-		
+
 		if (!this.isFullSize(worldIn, pos))
 		{
 			int meta = this.getMetaFromState(worldIn.getBlockState(pos));
-			
+
 			if (meta == 2) // SOUTH
 			{
 				worldIn.setBlockState(pos.east(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.SOUTH));
@@ -438,6 +445,21 @@ public class BlockCoffin extends BlockContainer
 			worldIn.updateComparatorOutputLevel(pos, this);
 		}
 
+		Iterator iterator = EnumFacing.Plane.HORIZONTAL.iterator();
+
+		while (iterator.hasNext())
+		{
+			EnumFacing enumfacing = (EnumFacing)iterator.next();
+			BlockPos blockpos1 = pos.offset(enumfacing);
+			IBlockState iblockstate1 = worldIn.getBlockState(blockpos1);
+
+			if (iblockstate1.getBlock() == this)
+			{
+				worldIn.setBlockToAir(blockpos1);
+				worldIn.notifyNeighborsOfStateChange(blockpos1, Blocks.air);
+			}
+		}
+
 		super.breakBlock(worldIn, pos, state);
 	}
 
@@ -450,14 +472,68 @@ public class BlockCoffin extends BlockContainer
 		}
 		else
 		{
-			TileEntity tileentity = worldIn.getTileEntity(pos);
+			IBasicContainer container = this.getContainer(worldIn, pos);
 
-			if (tileentity instanceof IInventory)
+			if (this.isFullSize(worldIn, pos))
 			{
-				playerIn.displayGUIChest((IInventory)tileentity);
-				//Need our own GUI
+				FMLNetworkHandler.openGui(playerIn, VFDeath.instance, ConfigHandler.COFFIN_GUI_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
 			}
+
 			return true;
+		}
+	}
+
+	public IBasicContainer getContainer(World worldIn, BlockPos pos)
+	{
+		TileEntity tileentity = worldIn.getTileEntity(pos);
+
+		if (!(tileentity instanceof TileEntityCoffin))
+		{
+			return null;
+		}
+		else
+		{
+			Object object = (TileEntityCoffin)tileentity;
+
+			if (this.isBlocked(worldIn, pos))
+			{
+				return null;
+			}
+			else
+			{
+				Iterator iterator = EnumFacing.Plane.HORIZONTAL.iterator();
+
+				while (iterator.hasNext())
+				{
+					EnumFacing enumfacing = (EnumFacing)iterator.next();
+					BlockPos blockpos1 = pos.offset(enumfacing);
+					Block block = worldIn.getBlockState(blockpos1).getBlock();
+
+					if (block == this)
+					{
+						if (this.isBlocked(worldIn, blockpos1))
+						{
+							return null;
+						}
+
+						TileEntity tileentity1 = worldIn.getTileEntity(blockpos1);
+
+						if (tileentity1 instanceof TileEntityCoffin)
+						{
+							if (enumfacing != EnumFacing.WEST && enumfacing != EnumFacing.NORTH)
+							{
+								object = new InventoryFullCoffin("container.coffin", (IBasicContainer)object, (TileEntityCoffin)tileentity1);
+							}
+							else
+							{
+								object = new InventoryFullCoffin("container.coffin", (TileEntityCoffin)tileentity1, (IBasicContainer)object);
+							}
+						}
+					}
+				}
+
+				return (IBasicContainer)object;
+			}
 		}
 	}
 

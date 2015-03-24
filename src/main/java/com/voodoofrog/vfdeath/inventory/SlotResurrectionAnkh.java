@@ -8,9 +8,9 @@ import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
 
 public class SlotResurrectionAnkh extends Slot
 {
-	public SlotResurrectionAnkh(IInventory inventory, int id, int x, int y)
+	public SlotResurrectionAnkh(IInventory inventory, int index, int x, int y)
 	{
-		super(inventory, id, x, y);
+		super(inventory, index, x, y);
 	}
 
 	@Override
@@ -18,4 +18,10 @@ public class SlotResurrectionAnkh extends Slot
 	{
 		return item.getItem() instanceof ItemResurrectionAnkh;
 	}
+	
+	@Override
+    public int getItemStackLimit(ItemStack stack)
+    {
+        return 1;
+    }
 }

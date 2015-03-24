@@ -19,7 +19,7 @@ public class ContainerResurrectionAltar extends Container
 		// Player's Hotbar
 		for (int x = 0; x < 9; x++)
 		{
-			this.addSlotToContainer(new Slot(playerInventory, x, 8 + 18 * x, 142));
+			this.addSlotToContainer(new Slot(playerInventory, x, 8 + 18 * x, 142)); //index 0-8
 		}
 
 		// Player's Main Inventory
@@ -35,12 +35,12 @@ public class ContainerResurrectionAltar extends Container
 		{
 			if (x <= 4)
 			{
-				this.addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x, 8));
+				this.addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x, 8)); //index 0-4
 			}
 
 			if (x > 4)
 			{
-				this.addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x - 115, 31));
+				this.addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x - 115, 31)); //index 5-9
 			}
 		}
 	}
