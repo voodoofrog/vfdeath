@@ -6,7 +6,9 @@ import java.util.Locale;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -54,7 +56,8 @@ public class Graveyard
 		}
 		else
 		{
-			player.addChatMessage(new ChatComponentTranslation(Strings.GRAVE_NO_VALID_LOC));
+			//player.addChatMessage(new ChatComponentTranslation(Strings.GRAVE_NO_VALID_LOC));
+			Ribbit.playerUtils.sendPlayerPopupMessage(player, new ChatComponentTranslation(Strings.GRAVE_NO_VALID_LOC));
 		}
 
 		return pos;
