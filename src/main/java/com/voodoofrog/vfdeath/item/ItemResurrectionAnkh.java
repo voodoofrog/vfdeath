@@ -149,7 +149,7 @@ public class ItemResurrectionAnkh extends Item
 		}
 		else
 		{
-			int levels = item.getItemDamage() * 10;
+			int levels = item.getItemDamage() * ConfigHandler.RES_ANKH_LEVEL_COST;
 
 			msg = StatCollector.translateToLocalFormatted(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "." + Strings.ANKH_LVLS_LEFT, levels);
 			Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
