@@ -151,6 +151,11 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		VFDeath.packetDispatcher.sendTo(new SyncPlayerPropsMessage(this.player), (EntityPlayerMP)this.player);
 	}
 
+	public boolean canGainHearts()
+	{
+		return this.healthMod > 0;
+	}
+	
 	public void gainHearts(int num, boolean setIsDead)
 	{
 		this.isDead = setIsDead;
@@ -160,9 +165,6 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	public void gainHearts(int num)
 	{
 		IAttributeInstance iattributeinstance = this.player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
-		double baseMax = iattributeinstance.getBaseValue();
-		double currentMax = iattributeinstance.getAttributeValue();
-		double diff = baseMax - this.healthMod;
 		double amount = num * 2D;
 
 		if (this.healthMod != 0)
