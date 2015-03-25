@@ -22,7 +22,7 @@ public class ConfigHandler
 	public static final UUID HEALTH_MOD_UUID = UUID.fromString("5A4F4F80-37F1-11E3-AA6E-0800200C9A66");
 
 	// General
-	public static int RES_ANKH_XP_COST; // Default: 10
+	public static int RES_ANKH_LEVEL_COST; // Default: 5
 	public static int HEART_LOSS_ON_DEATH; // Default: 1
 	public static Property GHOST_ALLOWED_BLOCKS;
 
@@ -30,7 +30,7 @@ public class ConfigHandler
 	{
 		HEART_LOSS_ON_DEATH = configFile
 				.get(Configuration.CATEGORY_GENERAL, "Heart Loss On Death", 1, "How many hearts a player loses on death").getInt();
-		RES_ANKH_XP_COST = configFile.get(Configuration.CATEGORY_GENERAL, "Resurrection Ankh XP Cost", 10,
+		RES_ANKH_LEVEL_COST = configFile.get(Configuration.CATEGORY_GENERAL, "Resurrection Ankh Level Cost", 5,
 				"Cost in player levels to charge an ankh by one point").getInt();
 		GHOST_ALLOWED_BLOCKS = configFile.get(Configuration.CATEGORY_GENERAL, "GhostAllowedBlocks", "",
 				"Comma seperated list of block ids (no metadata) that you can interact with as a ghost.");

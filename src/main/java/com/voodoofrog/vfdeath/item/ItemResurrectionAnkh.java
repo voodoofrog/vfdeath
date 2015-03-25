@@ -29,27 +29,27 @@ public class ItemResurrectionAnkh extends Item
 	{
 		if (!this.isCharged(item.getItemDamage()))
 		{
-			if (player.experienceLevel >= ConfigHandler.RES_ANKH_XP_COST)
+			if (player.experienceLevel >= ConfigHandler.RES_ANKH_LEVEL_COST)
 			{
 				if (!item.getTagCompound().getString("owner").isEmpty())
 				{
 					UUID playerUUID = player.getUUID(player.getGameProfile());
 					UUID ownerUUID = UUID.fromString(item.getTagCompound().getString("owner"));
 
-					if (!playerUUID.equals(ownerUUID))
+					/*if (!playerUUID.equals(ownerUUID))
 					{
 						player.addChatMessage(this.bindFailMsg);
 						return item;
-					}
+					}*/
 
-					player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
+					player.experienceLevel -= ConfigHandler.RES_ANKH_LEVEL_COST;
 					item.damageItem(-1, player);
 					item.getTagCompound().setString("owner", player.getUUID(player.getGameProfile()).toString());
 					return item;
 				}
 				else
 				{
-					player.experienceLevel -= ConfigHandler.RES_ANKH_XP_COST;
+					player.experienceLevel -= ConfigHandler.RES_ANKH_LEVEL_COST;
 					item.damageItem(-1, player);
 					item.getTagCompound().setString("owner", player.getUUID(player.getGameProfile()).toString());
 					return item;
