@@ -56,7 +56,6 @@ public class Graveyard
 		}
 		else
 		{
-			//player.addChatMessage(new ChatComponentTranslation(Strings.GRAVE_NO_VALID_LOC));
 			Ribbit.playerUtils.sendPlayerPopupMessage(player, new ChatComponentTranslation(Strings.GRAVE_NO_VALID_LOC));
 		}
 
