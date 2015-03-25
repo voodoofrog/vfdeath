@@ -66,17 +66,23 @@ public class ItemResurrectionAnkh extends Item
 
 				if (!playerUUID.equals(ownerUUID))
 				{
-					player.addChatMessage(this.bindFailMsg);
+					Ribbit.playerUtils.sendPlayerPopupMessage(player, this.bindFailMsg);
 					return item;
 				}
 			}
 
 			ExtendedPlayer props = ExtendedPlayer.get(player);
 
-			if (!props.getIsDead())
+			if (!props.getIsDead() && props.canGainHearts())
 			{
 				props.gainHearts(1);
 				item.stackSize--;
+			}
+			else
+			{
+				ChatComponentTranslation cannotGain = new ChatComponentTranslation(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "."
+						+ Strings.ANKH_CANNOT_GAIN);
+				Ribbit.playerUtils.sendPlayerPopupMessage(player, cannotGain);
 			}
 		}
 

@@ -20,6 +20,7 @@ public class Strings
 	public static final String ANKH_GAIN_HEARTS = "gainhearts";
 	public static final String ANKH_LVLS_LEFT = "levelsleft";
 	public static final String ANKH_OWNER_CHARGE = "ownercharge";
+	public static final String ANKH_CANNOT_GAIN = "cannotgain";
 	
 	//TileEntities
 	

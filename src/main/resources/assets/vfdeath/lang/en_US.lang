@@ -3,6 +3,7 @@ tile.vfdeath.gravestone.name=Gravestone
 tile.vfdeath.coffin.name=Coffin
 item.vfdeath.resAnkh.name=Resurrection Ankh
 item.vfdeath.resAnkh.bindfail=This ankh is bound to someone else
+item.vfdeath.resAnkh.cannotgain=You have not lost any hearts
 item.vfdeath.resAnkh.readytoslot=This ankh is ready to be slotted into a resurrection altar.
 item.vfdeath.resAnkh.gainhearts=Can also be used to gain hearts directly by %s
 item.vfdeath.resAnkh.levelsleft=This ankh needs another %d levels before it is charged.
