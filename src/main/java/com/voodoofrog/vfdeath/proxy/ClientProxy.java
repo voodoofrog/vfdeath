@@ -29,9 +29,11 @@ public class ClientProxy extends CommonProxy
 		RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 		ModelResourceLocation altarResource = new ModelResourceLocation(ModInfo.ID + ":" + Strings.ALTAR_NAME, "inventory");
 		ModelResourceLocation ankhResource = new ModelResourceLocation(ModInfo.ID + ":" + Strings.ANKH_NAME, "inventory");
+		ModelResourceLocation coffinResource = new ModelResourceLocation(ModInfo.ID + ":" + Strings.COFFIN_NAME, "inventory");
 
 		renderItem.getItemModelMesher().register(Item.getItemFromBlock(VFDeathBlocks.altar), 0, altarResource);
 		renderItem.getItemModelMesher().register(VFDeathItems.ankh, 0, ankhResource);
+		renderItem.getItemModelMesher().register(Item.getItemFromBlock(VFDeathBlocks.coffin), 0, coffinResource);
 
 		MinecraftForge.EVENT_BUS.register(new GuiInGameHealthLoss(this.mc));
 		
