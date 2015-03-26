@@ -1,0 +1,39 @@
+{
+    "__createdwith": "opl's Model Creator",
+    "ambientocclusion": false,
+    "textures": {
+        "coffin": "vfdeath:items/coffin"
+    },
+    "elements": [
+        {
+            "from": [-7,0,1],
+            "to": [23,14,15],
+            "faces": {
+                "up": {
+                    "uv": [3.5,0,11,3.5],
+                    "texture": "#coffin"
+                },
+                "down": {
+                    "uv": [3.5,11,11,14.5],
+                    "texture": "#coffin"
+                },
+                "west": {
+                    "uv": [11,7.25,14.5,11],
+                    "texture": "#coffin"
+                },
+                "east": {
+                    "uv": [0,7.25,3.5,11],
+                    "texture": "#coffin"
+                },
+                "north": {
+                    "uv": [3.5,7.25,11,11],
+                    "texture": "#coffin"
+                },
+                "south": {
+                    "uv": [3.5,3.5,11,7.25],
+                    "texture": "#coffin"
+                }
+            }
+        }
+    ]
+}
