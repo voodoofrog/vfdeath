@@ -18,6 +18,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.IInteractionObject;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.voodoofrog.ribbit.world.IBasicContainer;
 import com.voodoofrog.vfdeath.block.BlockCoffin;
@@ -517,5 +519,12 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 	public IChatComponent getDisplayName()
 	{
 		return null;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 2, 2));
 	}
 }
