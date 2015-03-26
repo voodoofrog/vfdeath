@@ -17,6 +17,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
 import com.voodoofrog.ribbit.Ribbit;
 import com.voodoofrog.vfdeath.block.BlockGravestone;
@@ -28,23 +29,22 @@ public class Graveyard
 {
 	public BlockPos spawnGrave(EntityPlayer player)
 	{
-		WorldServer worldserver = MinecraftServer.getServer().worldServerForDimension(player.dimension);
-		BlockPos pos = this.getRandomizedSpawnPoint(player.worldObj);
+		WorldServer overworld = DimensionManager.getWorld(0);
+		BlockPos pos = this.getRandomizedSpawnPoint(overworld);
 
 		if (pos != null)
 		{
-			World world = player.worldObj;
 			BlockGravestone graveStone = VFDeathBlocks.gravestone;
 
-			worldserver.setBlockState(pos, graveStone.getDefaultState());
-			worldserver.notifyNeighborsOfStateChange(pos, VFDeathBlocks.gravestone);
-			graveStone.digGrave(world, pos);
-			TileEntity tileentity = world.getTileEntity(pos);
+			overworld.setBlockState(pos, graveStone.getDefaultState());
+			overworld.notifyNeighborsOfStateChange(pos, VFDeathBlocks.gravestone);
+			graveStone.digGrave(overworld, pos);
+			TileEntity tileentity = overworld.getTileEntity(pos);
 
 			if (tileentity instanceof TileEntityGravestone)
 			{
 				DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
-				Date date = Ribbit.dateTime.getCurrentDate(world);
+				Date date = Ribbit.dateTime.getCurrentDate(overworld);
 				TileEntityGravestone teGravestone = (TileEntityGravestone)tileentity;
 
 				teGravestone.epitaph[0] = new ChatComponentText(player.getName());
@@ -64,7 +64,6 @@ public class Graveyard
 
 	public BlockPos getRandomizedSpawnPoint(World world)
 	{
-		// TODO: May need to make sure this only happens in overworld
 		BlockPos pos = world.getSpawnPoint();
 
 		int radius = 16; // to become configurable
