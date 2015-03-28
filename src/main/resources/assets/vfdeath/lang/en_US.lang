@@ -8,6 +8,7 @@ item.vfdeath.resAnkh.readytoslot=This ankh is ready to be slotted into a resurre
 item.vfdeath.resAnkh.gainhearts=Can also be used to gain hearts directly by %s
 item.vfdeath.resAnkh.levelsleft=This ankh needs another %d levels before it is charged.
 item.vfdeath.resAnkh.ownercharge=Can only be charged by %s
+item.vfdeath.coffin.name=Coffin
 itemGroup.vfDeathTab=VF Death
 gui.vfdeath.resAltar.notfound=Player not found
 gui.vfdeath.resAltar.notdead=Player is not dead

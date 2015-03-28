@@ -236,8 +236,8 @@ public class BlockGravestone extends BlockContainer
 			world.setBlockState(pos.down().north().north(), Blocks.grass.getDefaultState());
 			world.notifyNeighborsOfStateChange(pos.down().north().north(), Blocks.grass);
 
-			world.setBlockState(pos.down().down().north(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.WEST));
-			world.notifyNeighborsOfStateChange(pos.down().down().north(), VFDeathBlocks.coffin);
+			world.setBlockState(pos.down().down().north().north(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.WEST));
+			world.notifyNeighborsOfStateChange(pos.down().down().north().north(), VFDeathBlocks.coffin);
 		}
 
 		if (meta == 3) // NORTH

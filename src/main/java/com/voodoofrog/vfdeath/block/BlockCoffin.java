@@ -104,90 +104,28 @@ public class BlockCoffin extends BlockContainer
 		{
 			int meta = this.getMetaFromState(worldIn.getBlockState(pos));
 
-			if (meta == 2) // SOUTH
-			{
-				worldIn.setBlockState(pos.east(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.SOUTH));
-				worldIn.notifyNeighborsOfStateChange(pos.east(), VFDeathBlocks.coffin);
-			}
-
-			if (meta == 3) // NORTH
+			if (meta == 2) // NORTH
 			{
 				worldIn.setBlockState(pos.west(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.NORTH));
 				worldIn.notifyNeighborsOfStateChange(pos.west(), VFDeathBlocks.coffin);
 			}
 
+			if (meta == 3) // SOUTH
+			{
+				worldIn.setBlockState(pos.east(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.SOUTH));
+				worldIn.notifyNeighborsOfStateChange(pos.east(), VFDeathBlocks.coffin);
+			}
+
 			if (meta == 4) // WEST
 			{
-				worldIn.setBlockState(pos.north(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.WEST));
-				worldIn.notifyNeighborsOfStateChange(pos.north(), VFDeathBlocks.coffin);
+				worldIn.setBlockState(pos.south(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.WEST));
+				worldIn.notifyNeighborsOfStateChange(pos.south(), VFDeathBlocks.coffin);
 			}
 
 			if (meta == 5) // EAST
 			{
-				worldIn.setBlockState(pos.south(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.EAST));
-				worldIn.notifyNeighborsOfStateChange(pos.south(), VFDeathBlocks.coffin);
-			}
-		}
-	}
-
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta,
-			EntityLivingBase placer)
-	{
-		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
-	}
-
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-	{
-		EnumFacing enumfacing = EnumFacing.getHorizontal(MathHelper.floor_double((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3)
-				.getOpposite();
-		state = state.withProperty(FACING, enumfacing);
-		BlockPos blockpos1 = pos.north();
-		BlockPos blockpos2 = pos.south();
-		BlockPos blockpos3 = pos.west();
-		BlockPos blockpos4 = pos.east();
-		boolean flag = this == worldIn.getBlockState(blockpos1).getBlock();
-		boolean flag1 = this == worldIn.getBlockState(blockpos2).getBlock();
-		boolean flag2 = this == worldIn.getBlockState(blockpos3).getBlock();
-		boolean flag3 = this == worldIn.getBlockState(blockpos4).getBlock();
-
-		if (!flag && !flag1 && !flag2 && !flag3)
-		{
-			worldIn.setBlockState(pos, state, 3);
-		}
-		else if (enumfacing.getAxis() == EnumFacing.Axis.X && (flag || flag1))
-		{
-			if (flag)
-			{
-				worldIn.setBlockState(blockpos1, state, 3);
-			}
-			else
-			{
-				worldIn.setBlockState(blockpos2, state, 3);
-			}
-
-			worldIn.setBlockState(pos, state, 3);
-		}
-		else if (enumfacing.getAxis() == EnumFacing.Axis.Z && (flag2 || flag3))
-		{
-			if (flag2)
-			{
-				worldIn.setBlockState(blockpos3, state, 3);
-			}
-			else
-			{
-				worldIn.setBlockState(blockpos4, state, 3);
-			}
-
-			worldIn.setBlockState(pos, state, 3);
-		}
-
-		if (stack.hasDisplayName())
-		{
-			TileEntity tileentity = worldIn.getTileEntity(pos);
-
-			if (tileentity instanceof TileEntityCoffin)
-			{
-				((TileEntityCoffin)tileentity).setCustomName(stack.getDisplayName());
+				worldIn.setBlockState(pos.north(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.EAST));
+				worldIn.notifyNeighborsOfStateChange(pos.north(), VFDeathBlocks.coffin);
 			}
 		}
 	}
@@ -347,57 +285,76 @@ public class BlockCoffin extends BlockContainer
 		}
 	}
 
-	public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
+	public boolean canPlaceBlockAt(World worldIn, BlockPos pos, EnumFacing facing)
 	{
-		int i = 0;
-		BlockPos blockpos1 = pos.west();
-		BlockPos blockpos2 = pos.east();
-		BlockPos blockpos3 = pos.north();
-		BlockPos blockpos4 = pos.south();
-
-		if (worldIn.getBlockState(blockpos1).getBlock() == this)
-		{
-			if (this.isFullSize(worldIn, blockpos1))
+		boolean flag = this.canPlaceBlockAt(worldIn, pos);
+		
+		if (facing == EnumFacing.WEST)
+		{		
+			if (worldIn.getBlockState(pos.south().south()).getBlock() == this)
 			{
 				return false;
 			}
-
-			++i;
 		}
-
-		if (worldIn.getBlockState(blockpos2).getBlock() == this)
+		
+		if (facing == EnumFacing.EAST)
 		{
-			if (this.isFullSize(worldIn, blockpos2))
+			if (worldIn.getBlockState(pos.north().north()).getBlock() == this)
 			{
 				return false;
 			}
-
-			++i;
 		}
-
-		if (worldIn.getBlockState(blockpos3).getBlock() == this)
+		
+		if (facing == EnumFacing.NORTH)
 		{
-			if (this.isFullSize(worldIn, blockpos3))
+			if (worldIn.getBlockState(pos.west().west()).getBlock() == this)
 			{
 				return false;
 			}
-
-			++i;
 		}
-
-		if (worldIn.getBlockState(blockpos4).getBlock() == this)
+		
+		if (facing == EnumFacing.SOUTH)
 		{
-			if (this.isFullSize(worldIn, blockpos4))
+			if (worldIn.getBlockState(pos.east().east()).getBlock() == this)
 			{
 				return false;
 			}
-
-			++i;
 		}
-
-		return i <= 1;
+		
+		return flag;
 	}
 
+	@Override
+	public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
+	{
+		BlockPos westPos = pos.west();
+		BlockPos eastPos = pos.east();
+		BlockPos northPos = pos.north();
+		BlockPos southPos = pos.south();
+
+		if (worldIn.getBlockState(westPos).getBlock() == this)
+		{
+			return false;
+		}
+
+		if (worldIn.getBlockState(eastPos).getBlock() == this)
+		{
+			return false;
+		}
+
+		if (worldIn.getBlockState(northPos).getBlock() == this)
+		{
+			return false;
+		}
+
+		if (worldIn.getBlockState(southPos).getBlock() == this)
+		{
+			return false;
+		}
+
+		return true;
+	}
+	
 	private boolean isFullSize(World worldIn, BlockPos pos)
 	{
 		if (worldIn.getBlockState(pos).getBlock() != this)
