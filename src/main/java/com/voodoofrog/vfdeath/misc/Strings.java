@@ -40,4 +40,7 @@ public class Strings
 	//Graveyard
 	public static final String GRAVE_DOD = "msg.vfdeath.dod";
 	public static final String GRAVE_NO_VALID_LOC = "msg.vfdeath.noValidLoc";
+	
+	//Keys
+	public static final String KEY_GRAVE = "key.vfdeath.graveGui";
 }

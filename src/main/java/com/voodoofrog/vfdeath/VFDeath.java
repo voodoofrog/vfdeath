@@ -47,6 +47,7 @@ import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.item.crafting.VFDeathRecipesCrafting;
 import com.voodoofrog.vfdeath.misc.ModInfo;
 import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
+import com.voodoofrog.vfdeath.network.server.OpenGraveInventoryMessage;
 import com.voodoofrog.vfdeath.network.server.SendResButtonMessage;
 import com.voodoofrog.vfdeath.proxy.CommonProxy;
 
@@ -84,6 +85,7 @@ public class VFDeath
 
 		packetDispatcher.registerMessage(SyncPlayerPropsMessage.class);
 		packetDispatcher.registerMessage(SendResButtonMessage.class);
+		packetDispatcher.registerMessage(OpenGraveInventoryMessage.class);
 	}
 
 	@EventHandler
@@ -102,6 +104,8 @@ public class VFDeath
 		new GuiHandler();
 		
 		graveyard = new Graveyard();
+		
+		proxy.registerKeyBindings();
 	}
 
 	@EventHandler

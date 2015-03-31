@@ -1,5 +1,6 @@
 package com.voodoofrog.vfdeath.entity;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
@@ -8,7 +9,9 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.BlockPos;
@@ -17,6 +20,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.graveyard.Graveyard;
+import com.voodoofrog.vfdeath.inventory.InventoryGrave;
 import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
 
 public class ExtendedPlayer implements IExtendedEntityProperties
@@ -29,6 +33,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	private boolean hasGrave;
 	private BlockPos gravePos;
 	public final static UUID healthModUUID = UUID.fromString("b70b11c6-3690-4ff6-b284-2d626929c6da");
+	private InventoryGrave inventoryGrave;
 
 	public ExtendedPlayer(EntityPlayer player)
 	{
@@ -37,11 +42,11 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		this.isDead = false;
 		this.hasGrave = false;
 		this.gravePos = new BlockPos(player.worldObj.getSpawnPoint());
+		this.inventoryGrave = new InventoryGrave(player);
 	}
 
 	/**
-	 * Used to register these extended properties for the player during
-	 * EntityConstructing event
+	 * Used to register these extended properties for the player during EntityConstructing event
 	 */
 	public static final void register(EntityPlayer player)
 	{
@@ -57,8 +62,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	}
 
 	/**
-	 * Copies additional player data from the given ExtendedPlayer instance
-	 * Avoids NBT disk I/O overhead when cloning a player after respawn
+	 * Copies additional player data from the given ExtendedPlayer instance Avoids NBT disk I/O overhead when cloning a player after respawn
 	 */
 	public void copy(ExtendedPlayer props)
 	{
@@ -72,13 +76,29 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	public final void saveNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = new NBTTagCompound();
-
+		NBTTagList tagList = new NBTTagList();
+		NBTTagCompound slot;
+		ItemStack[] inventory = this.inventoryGrave.getInventory();
+		
 		properties.setDouble("HealthModifier", this.healthMod);
 		properties.setBoolean("IsDead", this.isDead);
 		properties.setBoolean("HasGrave", this.hasGrave);
 		properties.setInteger("GravePosX", this.gravePos.getX());
 		properties.setInteger("GravePosY", this.gravePos.getY());
 		properties.setInteger("GravePosZ", this.gravePos.getZ());
+
+		for (int i = 0; i < inventory.length; i++)
+		{
+			if (inventory[i] != null)
+			{
+				slot = new NBTTagCompound();
+				slot.setByte("Slot", (byte)i);
+				inventory[i].writeToNBT(slot);
+				tagList.appendTag(slot);
+			}
+		}
+
+		properties.setTag("GraveInventory", tagList);
 
 		compound.setTag(EXT_PROP_NAME, properties);
 	}
@@ -87,6 +107,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	public final void loadNBTData(NBTTagCompound compound)
 	{
 		NBTTagCompound properties = (NBTTagCompound)compound.getTag(EXT_PROP_NAME);
+
 		this.healthMod = properties.getDouble("HealthModifier");
 		this.isDead = properties.getBoolean("IsDead");
 		this.hasGrave = properties.getBoolean("HasGrave");
@@ -94,6 +115,21 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		int gravePosY = properties.getInteger("GravePosY");
 		int gravePosZ = properties.getInteger("GravePosZ");
 		this.gravePos = new BlockPos(gravePosX, gravePosY, gravePosZ);
+
+		NBTTagList tagList = properties.getTagList("GraveInventory", 10);
+
+		for (int i = 0; i < tagList.tagCount(); i++)
+		{
+			NBTTagCompound slot = (NBTTagCompound)tagList.getCompoundTagAt(i);
+			ItemStack itemstack = ItemStack.loadItemStackFromNBT(slot);
+			int j = slot.getByte("Slot") & 255;
+			
+			if (itemstack != null)
+			{
+				ItemStack[] inventory = this.inventoryGrave.getInventory();
+				inventory[i] = itemstack;
+			}
+		}
 	}
 
 	@Override
@@ -131,13 +167,13 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		{
 			VFDeath.logger.info("Losing last life");
 			this.isDead = true;
-			
+
 			if (!this.hasGrave)
 			{
 				this.gravePos = VFDeath.graveyard.spawnGrave(player);
 				this.hasGrave = true;
 			}
-			
+
 			this.healthMod = baseMax - 2D; // TODO: remove this later?
 		}
 		else
@@ -155,7 +191,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	{
 		return this.healthMod > 0;
 	}
-	
+
 	public void gainHearts(int num, boolean setIsDead)
 	{
 		this.isDead = setIsDead;
@@ -177,7 +213,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 			{
 				this.healthMod -= amount;
 			}
-			
+
 			this.updateHealthAttribMod();
 			VFDeath.packetDispatcher.sendTo(new SyncPlayerPropsMessage(this.player), (EntityPlayerMP)this.player);
 		}
@@ -191,5 +227,10 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	public boolean getIsDead()
 	{
 		return this.isDead;
+	}
+	
+	public InventoryGrave getGraveInventory()
+	{
+		return this.inventoryGrave;
 	}
 }

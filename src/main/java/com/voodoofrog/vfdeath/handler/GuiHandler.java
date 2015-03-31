@@ -12,9 +12,13 @@ import com.voodoofrog.ribbit.world.IBasicContainer;
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.block.BlockCoffin;
 import com.voodoofrog.vfdeath.client.gui.GuiCoffin;
+import com.voodoofrog.vfdeath.client.gui.GuiGraveInventory;
 import com.voodoofrog.vfdeath.client.gui.GuiResurrectionAltar;
+import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.inventory.ContainerCoffin;
+import com.voodoofrog.vfdeath.inventory.ContainerGrave;
 import com.voodoofrog.vfdeath.inventory.ContainerResurrectionAltar;
+import com.voodoofrog.vfdeath.inventory.InventoryGrave;
 import com.voodoofrog.vfdeath.tileentity.TileEntityCoffin;
 import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 
@@ -51,6 +55,9 @@ public class GuiHandler implements IGuiHandler
 				}
 			}
 			break;
+		case 2:
+			ExtendedPlayer props = ExtendedPlayer.get(player);
+			return new ContainerGrave(player.inventory, props.getGraveInventory(), player);
 		}
 
 		return null;
@@ -82,6 +89,9 @@ public class GuiHandler implements IGuiHandler
 				}
 			}
 			break;
+		case 2:
+			ExtendedPlayer props = ExtendedPlayer.get(player);
+			return new GuiGraveInventory(player.inventory, props.getGraveInventory());
 		}
 
 		return null;
