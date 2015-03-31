@@ -22,6 +22,7 @@ import org.lwjgl.input.Keyboard;
 
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
+import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.inventory.ContainerResurrectionAltar;
 import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
 import com.voodoofrog.vfdeath.misc.ModInfo;
@@ -102,9 +103,15 @@ public class GuiResurrectionAltar extends GuiContainer
 
 		if (resPlayer != null)
 		{
-			NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+			//NBTTagCompound compound = resPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+			ExtendedPlayer props = ExtendedPlayer.get(resPlayer);
 
-			if (!compound.getBoolean("IsDead"))
+			//if (!compound.getBoolean("IsDead"))
+			//{
+			//	this.outputText = Strings.GUI_KEY + "." + Strings.ALTAR_NAME + "." + Strings.ALTAR_GUI_NOT_DEAD;
+			//}
+			
+			if (!props.getIsDead())
 			{
 				this.outputText = Strings.GUI_KEY + "." + Strings.ALTAR_NAME + "." + Strings.ALTAR_GUI_NOT_DEAD;
 			}
