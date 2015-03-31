@@ -11,6 +11,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
+import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.entity.effect.EntityVisualLightningBolt;
 import com.voodoofrog.vfdeath.handler.PlayerEventHandler;
@@ -208,7 +209,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				
 				if (props.getIsDead() && ankhs > 0)
 				{
-					PlayerEventHandler.ghostPlayer(resPlayer, false);
+					VFDeath.ghostHandler.ghostPlayer(resPlayer, false);
 					props.gainHearts(ankhs, false);
 					this.removeAnkhs();
 					player.closeScreen();

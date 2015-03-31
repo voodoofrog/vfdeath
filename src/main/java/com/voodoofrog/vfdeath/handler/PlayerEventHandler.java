@@ -22,7 +22,7 @@ public class PlayerEventHandler
 
 		if (props.getIsDead())
 		{
-			this.ghostPlayer(event.player, true);
+			VFDeath.ghostHandler.ghostPlayer(event.player, true);
 		}
 	}
 
@@ -35,7 +35,7 @@ public class PlayerEventHandler
 
 		if (props.getIsDead())
 		{
-			this.ghostPlayer(event.player, true);
+			VFDeath.ghostHandler.ghostPlayer(event.player, true);
 		}
 	}
 
@@ -45,27 +45,5 @@ public class PlayerEventHandler
 		ExtendedPlayer props = ExtendedPlayer.get(event.player);
 
 		VFDeath.packetDispatcher.sendTo(new SyncPlayerPropsMessage((EntityPlayer)event.player), (EntityPlayerMP)event.player);
-	}
-
-	public static void ghostPlayer(EntityPlayer player, boolean makeGhost)
-	{
-		if (makeGhost)
-		{
-			player.capabilities.allowFlying = true;
-			player.capabilities.disableDamage = true;
-			// player.addPotionEffect((new PotionEffect(Potion.invisibility.getId(), 1000)));
-			player.setInvisible(true);
-			player.sendPlayerAbilities();
-		}
-		else
-		{
-			if (!player.capabilities.isCreativeMode)
-			{
-				player.capabilities.allowFlying = false;
-				player.capabilities.disableDamage = false;
-			}
-			player.setInvisible(false);
-			player.sendPlayerAbilities();
-		}
 	}
 }

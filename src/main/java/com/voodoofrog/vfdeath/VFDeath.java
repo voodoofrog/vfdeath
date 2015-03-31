@@ -39,7 +39,7 @@ import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.creativetab.VFDeathCreativeTab;
 import com.voodoofrog.vfdeath.graveyard.Graveyard;
 import com.voodoofrog.vfdeath.handler.ForgeEventHandler;
-import com.voodoofrog.vfdeath.handler.GhostEventHandler;
+import com.voodoofrog.vfdeath.handler.GhostHandler;
 import com.voodoofrog.vfdeath.handler.GuiHandler;
 import com.voodoofrog.vfdeath.handler.PlayerEventHandler;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
@@ -65,6 +65,7 @@ public class VFDeath
 	public static Logger logger;
 	public static CreativeTabs vfdeathTab = new VFDeathCreativeTab(CreativeTabs.getNextID(), "vfDeathTab");
 	public static Graveyard graveyard;
+	public static GhostHandler ghostHandler;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -95,7 +96,7 @@ public class VFDeath
 
 		FMLCommonHandler.instance().bus().register(new PlayerEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
-		MinecraftForge.EVENT_BUS.register(new GhostEventHandler());
+		MinecraftForge.EVENT_BUS.register(ghostHandler = new GhostHandler());
 
 		VFDeathRecipesCrafting.addRecipes();
 
