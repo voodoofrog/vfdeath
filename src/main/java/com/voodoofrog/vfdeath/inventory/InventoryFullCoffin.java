@@ -1,7 +1,5 @@
 package com.voodoofrog.vfdeath.inventory;
 
-import com.voodoofrog.ribbit.world.IBasicContainer;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -10,143 +8,177 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.ILockableContainer;
-import net.minecraft.world.LockCode;
+
+import com.voodoofrog.ribbit.world.IBasicContainer;
 
 public class InventoryFullCoffin implements IBasicContainer
 {
-    private String name;
-    private IBasicContainer upperCoffin;
-    private IBasicContainer lowerCoffin;
+	private String name;
+	private IBasicContainer upperCoffin;
+	private IBasicContainer lowerCoffin;
+	private String occupantName;
 
-    public InventoryFullCoffin(String name, IBasicContainer upperCoffin, IBasicContainer lowerCoffin)
-    {
-        this.name = name;
+	public InventoryFullCoffin(String name, IBasicContainer upperCoffin, IBasicContainer lowerCoffin, String occupantName)
+	{
+		this.name = name;
 
-        if (upperCoffin == null)
-        {
-            upperCoffin = lowerCoffin;
-        }
+		if (upperCoffin == null)
+		{
+			upperCoffin = lowerCoffin;
+		}
 
-        if (lowerCoffin == null)
-        {
-            lowerCoffin = upperCoffin;
-        }
+		if (lowerCoffin == null)
+		{
+			lowerCoffin = upperCoffin;
+		}
 
-        this.upperCoffin = upperCoffin;
-        this.lowerCoffin = lowerCoffin;
-    }
+		this.upperCoffin = upperCoffin;
+		this.lowerCoffin = lowerCoffin;
+		this.occupantName = occupantName;
+	}
 
-    public int getSizeInventory()
-    {
-        return this.upperCoffin.getSizeInventory() + this.lowerCoffin.getSizeInventory();
-    }
+	public InventoryFullCoffin(String name, IBasicContainer upperCoffin, IBasicContainer lowerCoffin)
+	{
+		this.name = name;
 
-    public boolean isPartOfFullCoffin(IInventory inventoryIn)
-    {
-        return this.upperCoffin == inventoryIn || this.lowerCoffin == inventoryIn;
-    }
+		if (upperCoffin == null)
+		{
+			upperCoffin = lowerCoffin;
+		}
 
-    public String getName()
-    {
-        return this.upperCoffin.hasCustomName() ? this.upperCoffin.getName() : (this.lowerCoffin.hasCustomName() ? this.lowerCoffin.getName() : this.name);
-    }
+		if (lowerCoffin == null)
+		{
+			lowerCoffin = upperCoffin;
+		}
 
-    public boolean hasCustomName()
-    {
-        return this.upperCoffin.hasCustomName() || this.lowerCoffin.hasCustomName();
-    }
+		this.upperCoffin = upperCoffin;
+		this.lowerCoffin = lowerCoffin;
+		this.occupantName = "";
+	}
 
-    public IChatComponent getDisplayName()
-    {
-        return (IChatComponent)(this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName(), new Object[0]));
-    }
+	public int getSizeInventory()
+	{
+		return this.upperCoffin.getSizeInventory() + this.lowerCoffin.getSizeInventory();
+	}
 
-    public ItemStack getStackInSlot(int index)
-    {
-        return index >= this.upperCoffin.getSizeInventory() ? this.lowerCoffin.getStackInSlot(index - this.upperCoffin.getSizeInventory()) : this.upperCoffin.getStackInSlot(index);
-    }
+	public boolean isPartOfFullCoffin(IInventory inventoryIn)
+	{
+		return this.upperCoffin == inventoryIn || this.lowerCoffin == inventoryIn;
+	}
 
-    public ItemStack decrStackSize(int index, int count)
-    {
-        return index >= this.upperCoffin.getSizeInventory() ? this.lowerCoffin.decrStackSize(index - this.upperCoffin.getSizeInventory(), count) : this.upperCoffin.decrStackSize(index, count);
-    }
+	public String getName()
+	{
+		return this.upperCoffin.hasCustomName() ? this.upperCoffin.getName() : (this.lowerCoffin.hasCustomName() ? this.lowerCoffin.getName()
+				: this.name);
+	}
 
-    public ItemStack getStackInSlotOnClosing(int index)
-    {
-        return index >= this.upperCoffin.getSizeInventory() ? this.lowerCoffin.getStackInSlotOnClosing(index - this.upperCoffin.getSizeInventory()) : this.upperCoffin.getStackInSlotOnClosing(index);
-    }
+	public boolean hasCustomName()
+	{
+		return this.upperCoffin.hasCustomName() || this.lowerCoffin.hasCustomName();
+	}
 
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-        if (index >= this.upperCoffin.getSizeInventory())
-        {
-            this.lowerCoffin.setInventorySlotContents(index - this.upperCoffin.getSizeInventory(), stack);
-        }
-        else
-        {
-            this.upperCoffin.setInventorySlotContents(index, stack);
-        }
-    }
+	public IChatComponent getDisplayName()
+	{
+		if (!this.occupantName.isEmpty())
+		{
+			return (IChatComponent)(this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName(),
+					this.occupantName));
+		}
 
-    public int getInventoryStackLimit()
-    {
-        return this.upperCoffin.getInventoryStackLimit();
-    }
+		return (IChatComponent)(this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName(),
+				new Object[0]));
+	}
 
-    public void markDirty()
-    {
-        this.upperCoffin.markDirty();
-        this.lowerCoffin.markDirty();
-    }
+	public ItemStack getStackInSlot(int index)
+	{
+		return index >= this.upperCoffin.getSizeInventory() ? this.lowerCoffin.getStackInSlot(index - this.upperCoffin.getSizeInventory())
+				: this.upperCoffin.getStackInSlot(index);
+	}
 
-    public boolean isUseableByPlayer(EntityPlayer player)
-    {
-        return this.upperCoffin.isUseableByPlayer(player) && this.lowerCoffin.isUseableByPlayer(player);
-    }
+	public ItemStack decrStackSize(int index, int count)
+	{
+		return index >= this.upperCoffin.getSizeInventory() ? this.lowerCoffin.decrStackSize(index - this.upperCoffin.getSizeInventory(), count)
+				: this.upperCoffin.decrStackSize(index, count);
+	}
 
-    public void openInventory(EntityPlayer player)
-    {
-        this.upperCoffin.openInventory(player);
-        this.lowerCoffin.openInventory(player);
-    }
+	public ItemStack getStackInSlotOnClosing(int index)
+	{
+		return index >= this.upperCoffin.getSizeInventory() ? this.lowerCoffin.getStackInSlotOnClosing(index - this.upperCoffin.getSizeInventory())
+				: this.upperCoffin.getStackInSlotOnClosing(index);
+	}
 
-    public void closeInventory(EntityPlayer player)
-    {
-        this.upperCoffin.closeInventory(player);
-        this.lowerCoffin.closeInventory(player);
-    }
+	public void setInventorySlotContents(int index, ItemStack stack)
+	{
+		if (index >= this.upperCoffin.getSizeInventory())
+		{
+			this.lowerCoffin.setInventorySlotContents(index - this.upperCoffin.getSizeInventory(), stack);
+		}
+		else
+		{
+			this.upperCoffin.setInventorySlotContents(index, stack);
+		}
+	}
 
-    public boolean isItemValidForSlot(int index, ItemStack stack)
-    {
-        return true;
-    }
+	public int getInventoryStackLimit()
+	{
+		return this.upperCoffin.getInventoryStackLimit();
+	}
 
-    public int getField(int id)
-    {
-        return 0;
-    }
+	public void markDirty()
+	{
+		this.upperCoffin.markDirty();
+		this.lowerCoffin.markDirty();
+	}
 
-    public void setField(int id, int value) {}
+	public boolean isUseableByPlayer(EntityPlayer player)
+	{
+		return this.upperCoffin.isUseableByPlayer(player) && this.lowerCoffin.isUseableByPlayer(player);
+	}
 
-    public int getFieldCount()
-    {
-        return 0;
-    }
+	public void openInventory(EntityPlayer player)
+	{
+		this.upperCoffin.openInventory(player);
+		this.lowerCoffin.openInventory(player);
+	}
 
-    public String getGuiID()
-    {
-        return this.upperCoffin.getGuiID();
-    }
+	public void closeInventory(EntityPlayer player)
+	{
+		this.upperCoffin.closeInventory(player);
+		this.lowerCoffin.closeInventory(player);
+	}
 
-    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
-    {
-        return new ContainerCoffin(playerInventory, this, playerIn);
-    }
+	public boolean isItemValidForSlot(int index, ItemStack stack)
+	{
+		return true;
+	}
 
-    public void clear()
-    {
-        this.upperCoffin.clear();
-        this.lowerCoffin.clear();
-    }
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	public void setField(int id, int value)
+	{
+	}
+
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	public String getGuiID()
+	{
+		return this.upperCoffin.getGuiID();
+	}
+
+	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
+	{
+		return new ContainerCoffin(playerInventory, this, playerIn);
+	}
+
+	public void clear()
+	{
+		this.upperCoffin.clear();
+		this.lowerCoffin.clear();
+	}
 }

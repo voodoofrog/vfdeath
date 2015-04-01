@@ -7,23 +7,22 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -135,7 +134,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 
 	public String getName()
 	{
-		return this.hasCustomName() ? this.customName : "container.coffin";
+		return this.hasCustomName() ? this.customName : "container.vfdeath.coffin";
 	}
 
 	public boolean hasCustomName()
@@ -177,6 +176,20 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		{
 			this.customName = compound.getString("CustomName");
 		}
+	}
+
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		this.writeToNBT(tag);
+		return new S35PacketUpdateTileEntity(this.pos, 1, tag);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet)
+	{
+		readFromNBT(packet.getNbtCompound());
 	}
 
 	public void writeToNBT(NBTTagCompound compound)
@@ -641,6 +654,16 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 2, 2));
+	}
+
+	public boolean hasOccupant()
+	{
+		return this.occupantUUID != null;
+	}
+
+	public UUID getOccupant()
+	{
+		return this.occupantUUID;
 	}
 
 	public void setOccupant(UUID playerUUID, boolean withAdjacent)

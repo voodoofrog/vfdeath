@@ -10,18 +10,14 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
@@ -431,11 +427,11 @@ public class BlockCoffin extends BlockContainer
 		}
 		else
 		{
-			//TODO: Remove this
+			// TODO: Remove this
 			if (playerIn.isSneaking())
 			{
 				TileEntity tileentity = worldIn.getTileEntity(pos);
-				
+
 				if (!(tileentity instanceof TileEntityCoffin))
 				{
 					return false;
@@ -498,13 +494,37 @@ public class BlockCoffin extends BlockContainer
 
 						if (tileentity1 instanceof TileEntityCoffin)
 						{
-							if (enumfacing != EnumFacing.WEST && enumfacing != EnumFacing.NORTH)
+							TileEntityCoffin coffinTE = (TileEntityCoffin)tileentity1;
+
+							if (coffinTE.hasOccupant())
 							{
-								object = new InventoryFullCoffin("container.coffin", (IBasicContainer)object, (TileEntityCoffin)tileentity1);
+								String occupantName = Ribbit.playerUtils.getUserNameFromUUID(coffinTE.getOccupant());
+								VFDeath.logger.info("Coffin occupied by " + occupantName);
+
+								if (enumfacing != EnumFacing.WEST && enumfacing != EnumFacing.NORTH)
+								{
+									object = new InventoryFullCoffin("container.vfdeath.coffinOccupied", (IBasicContainer)object,
+											(TileEntityCoffin)tileentity1, occupantName);
+								}
+								else
+								{
+									object = new InventoryFullCoffin("container.vfdeath.coffinOccupied", (TileEntityCoffin)tileentity1,
+											(IBasicContainer)object, occupantName);
+								}
 							}
 							else
 							{
-								object = new InventoryFullCoffin("container.coffin", (TileEntityCoffin)tileentity1, (IBasicContainer)object);
+								VFDeath.logger.info("Coffin unoccupied");
+								if (enumfacing != EnumFacing.WEST && enumfacing != EnumFacing.NORTH)
+								{
+									object = new InventoryFullCoffin("container.vfdeath.coffin", (IBasicContainer)object,
+											(TileEntityCoffin)tileentity1);
+								}
+								else
+								{
+									object = new InventoryFullCoffin("container.vfdeath.coffin", (TileEntityCoffin)tileentity1,
+											(IBasicContainer)object);
+								}
 							}
 						}
 					}
