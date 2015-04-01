@@ -25,49 +25,37 @@ public class ItemResurrectionAnkh extends Item
 			+ Strings.ANKH_BOUND_FAIL);
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack item, World world, EntityPlayer player)
+	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityPlayer player)
 	{
-		if (!this.isCharged(item.getItemDamage()))
+		if (!this.isCharged(stack.getItemDamage()) && player.experienceLevel >= ConfigHandler.RES_ANKH_LEVEL_COST)
 		{
-			if (player.experienceLevel >= ConfigHandler.RES_ANKH_LEVEL_COST)
+			if (stack.hasTagCompound())
 			{
-				if (!item.getTagCompound().getString("owner").isEmpty())
-				{
-					UUID playerUUID = player.getUUID(player.getGameProfile());
-					UUID ownerUUID = UUID.fromString(item.getTagCompound().getString("owner"));
-
-					/*if (!playerUUID.equals(ownerUUID))
-					{
-						player.addChatMessage(this.bindFailMsg);
-						return item;
-					}*/
-
-					player.experienceLevel -= ConfigHandler.RES_ANKH_LEVEL_COST;
-					item.damageItem(-1, player);
-					item.getTagCompound().setString("owner", player.getUUID(player.getGameProfile()).toString());
-					return item;
-				}
-				else
-				{
-					player.experienceLevel -= ConfigHandler.RES_ANKH_LEVEL_COST;
-					item.damageItem(-1, player);
-					item.getTagCompound().setString("owner", player.getUUID(player.getGameProfile()).toString());
-					return item;
-				}
+				if (!this.hasOwner(stack))
+					this.setOwner(stack, player.getUUID(player.getGameProfile()));
 			}
+			else
+			{
+				this.setOwner(stack, player.getUUID(player.getGameProfile()));
+			}
+
+			this.chargeAnkh(stack, player);
+			return stack;
 		}
 
-		if (!world.isRemote && this.isCharged(item.getItemDamage()))
+		if (!world.isRemote && this.isCharged(stack.getItemDamage()))
 		{
-			if (!item.getTagCompound().getString("owner").isEmpty())
+			if (stack.hasTagCompound())
 			{
-				UUID playerUUID = player.getUUID(player.getGameProfile());
-				UUID ownerUUID = UUID.fromString(item.getTagCompound().getString("owner"));
-
-				if (!playerUUID.equals(ownerUUID))
+				if (this.hasOwner(stack))
 				{
-					Ribbit.playerUtils.sendPlayerPopupMessage(player, this.bindFailMsg);
-					return item;
+					UUID playerUUID = player.getUUID(player.getGameProfile());
+
+					if (!playerUUID.equals(this.getOwner(stack)))
+					{
+						Ribbit.playerUtils.sendPlayerPopupMessage(player, this.bindFailMsg);
+						return stack;
+					}
 				}
 			}
 
@@ -76,7 +64,7 @@ public class ItemResurrectionAnkh extends Item
 			if (!props.getIsDead() && props.canGainHearts())
 			{
 				props.gainHearts(1);
-				item.stackSize--;
+				stack.stackSize--;
 			}
 			else
 			{
@@ -86,17 +74,17 @@ public class ItemResurrectionAnkh extends Item
 			}
 		}
 
-		return item;
+		return stack;
 	}
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack item)
+	public int getMaxItemUseDuration(ItemStack stack)
 	{
 		return 32;
 	}
 
 	@Override
-	public EnumAction getItemUseAction(ItemStack item)
+	public EnumAction getItemUseAction(ItemStack stack)
 	{
 		return EnumAction.BOW;
 	}
@@ -111,16 +99,16 @@ public class ItemResurrectionAnkh extends Item
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player)
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		player.setItemInUse(item, this.getMaxItemUseDuration(item));
-		return item;
+		player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+		return stack;
 	}
 
 	@Override
-	public boolean hasEffect(ItemStack item)
+	public boolean hasEffect(ItemStack stack)
 	{
-		if (this.isCharged(item.getItemDamage()))
+		if (this.isCharged(stack.getItemDamage()))
 		{
 			return true;
 		}
@@ -129,25 +117,25 @@ public class ItemResurrectionAnkh extends Item
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean useExtraInformation)
+	public void addInformation(ItemStack stack, EntityPlayer player, List info, boolean useExtraInformation)
 	{
 		String msg = "";
 
-		if (this.isCharged(item.getItemDamage()))
+		if (this.isCharged(stack.getItemDamage()))
 		{
 			msg = StatCollector.translateToLocal(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "." + Strings.ANKH_READY_TO_SLOT);
 			Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
 
-			if (item.getTagCompound() != null)
+			if (stack.hasTagCompound())
 			{
-				if (!item.getTagCompound().getString("owner").isEmpty())
+				if (this.hasOwner(stack))
 				{
-					String ownerName = Ribbit.playerUtils.getUserNameFromUUID(UUID.fromString(item.getTagCompound().getString("owner")));
+					String ownerName = Ribbit.playerUtils.getUserNameFromUUID(this.getOwner(stack));
 
 					if (!ownerName.isEmpty())
 					{
-						msg = StatCollector.translateToLocalFormatted(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "."
-								+ Strings.ANKH_GAIN_HEARTS, ownerName);
+						msg = StatCollector.translateToLocalFormatted(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "." + Strings.ANKH_GAIN_HEARTS,
+								ownerName);
 						Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
 					}
 				}
@@ -155,21 +143,21 @@ public class ItemResurrectionAnkh extends Item
 		}
 		else
 		{
-			int levels = item.getItemDamage() * ConfigHandler.RES_ANKH_LEVEL_COST;
+			int levels = stack.getItemDamage() * ConfigHandler.RES_ANKH_LEVEL_COST;
 
 			msg = StatCollector.translateToLocalFormatted(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "." + Strings.ANKH_LVLS_LEFT, levels);
 			Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
 
-			if (item.getTagCompound() != null)
+			if (stack.hasTagCompound())
 			{
-				if (!item.getTagCompound().getString("owner").isEmpty())
+				if (!stack.getTagCompound().getString("owner").isEmpty())
 				{
-					String ownerName = Ribbit.playerUtils.getUserNameFromUUID(UUID.fromString(item.getTagCompound().getString("owner")));
+					String ownerName = Ribbit.playerUtils.getUserNameFromUUID(this.getOwner(stack));
 
 					if (!ownerName.isEmpty())
 					{
-						msg = StatCollector.translateToLocalFormatted(Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "."
-								+ Strings.ANKH_OWNER_CHARGE, ownerName);
+						msg = StatCollector.translateToLocalFormatted(
+								Strings.ITEMS_KEY + "." + Strings.ANKH_NAME + "." + Strings.ANKH_OWNER_CHARGE, ownerName);
 						Ribbit.textUtils.wrapStringToList(msg, 35, false, info);
 					}
 				}
@@ -177,9 +165,46 @@ public class ItemResurrectionAnkh extends Item
 		}
 	}
 
-	@Override
-	public void onCreated(ItemStack item, World world, EntityPlayer player)
+	/*
+	 * @Override public void onCreated(ItemStack stack, World world, EntityPlayer player) { stack.setTagCompound(new NBTTagCompound()); }
+	 */
+
+	public void chargeAnkh(ItemStack stack, EntityPlayer player)
 	{
-		item.setTagCompound(new NBTTagCompound());
+		player.experienceLevel -= ConfigHandler.RES_ANKH_LEVEL_COST;
+		stack.damageItem(-1, player);
+	}
+
+	public boolean hasOwner(ItemStack stack)
+	{
+		if (!stack.hasTagCompound())
+			return false;
+
+		return !stack.getTagCompound().getString("owner").isEmpty();
+	}
+
+	public UUID getOwner(ItemStack stack)
+	{
+		if (!stack.hasTagCompound())
+			return null;
+					
+		if (!stack.getTagCompound().getString("owner").isEmpty())
+		{
+			UUID ownerUUID = UUID.fromString(stack.getTagCompound().getString("owner"));
+			return ownerUUID;
+		}
+
+		return null;
+	}
+
+	public void setOwner(ItemStack stack, UUID ownerUUID)
+	{
+		if (!stack.hasTagCompound())
+			stack.setTagCompound(new NBTTagCompound());
+
+		if (stack.getTagCompound().getString("owner").isEmpty())
+		{
+			stack.getTagCompound().setString("owner", ownerUUID.toString());
+		}
 	}
 }

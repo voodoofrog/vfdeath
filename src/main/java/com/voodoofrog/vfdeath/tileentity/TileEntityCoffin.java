@@ -1,13 +1,19 @@
 package com.voodoofrog.vfdeath.tileentity;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,6 +23,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,6 +32,7 @@ import com.voodoofrog.ribbit.world.IBasicContainer;
 import com.voodoofrog.vfdeath.block.BlockCoffin;
 import com.voodoofrog.vfdeath.inventory.ContainerCoffin;
 import com.voodoofrog.vfdeath.inventory.InventoryFullCoffin;
+import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
 
 public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox, IInventory, IInteractionObject, IBasicContainer
 {
@@ -41,9 +49,17 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 	public int numPlayersUsing;
 	private int ticksSinceSync;
 	private String customName;
+	private UUID occupantUUID;
+	private HashMap<Integer, Integer> bindingProgress;
 
 	public TileEntityCoffin()
 	{
+		this.bindingProgress = new HashMap<Integer, Integer>();
+
+		for (int i = 0; i < slotsAnkhs.length; i++)
+		{
+			this.bindingProgress.put(slotsAnkhs[i], 0);
+		}
 	}
 
 	public int getSizeInventory()
@@ -111,6 +127,9 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 			stack.stackSize = this.getInventoryStackLimit();
 		}
 
+		if (this.bindingProgress.containsKey(index))
+			this.bindingProgress.put(index, 0);
+
 		this.markDirty();
 	}
 
@@ -132,43 +151,67 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 	public void readFromNBT(NBTTagCompound compound)
 	{
 		super.readFromNBT(compound);
-		NBTTagList nbttaglist = compound.getTagList("Items", 10);
+
+		if (!compound.getString("Occupant").isEmpty())
+			this.occupantUUID = UUID.fromString(compound.getString("Occupant"));
+
 		this.coffinContents = new ItemStack[this.getSizeInventory()];
+
+		NBTTagList itemsTagList = compound.getTagList("Items", 10);
+
+		for (int i = 0; i < itemsTagList.tagCount(); ++i)
+		{
+			NBTTagCompound itemCompound = itemsTagList.getCompoundTagAt(i);
+			int j = itemCompound.getByte("Slot") & 255;
+
+			if (j >= 0 && j < this.coffinContents.length)
+			{
+				this.coffinContents[j] = ItemStack.loadItemStackFromNBT(itemCompound);
+
+				if (this.bindingProgress.containsKey(j))
+					this.bindingProgress.put(j, itemCompound.getInteger("BindingProgress"));
+			}
+		}
 
 		if (compound.hasKey("CustomName", 8))
 		{
 			this.customName = compound.getString("CustomName");
-		}
-
-		for (int i = 0; i < nbttaglist.tagCount(); ++i)
-		{
-			NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-			int j = nbttagcompound1.getByte("Slot") & 255;
-
-			if (j >= 0 && j < this.coffinContents.length)
-			{
-				this.coffinContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
-			}
 		}
 	}
 
 	public void writeToNBT(NBTTagCompound compound)
 	{
 		super.writeToNBT(compound);
-		NBTTagList nbttaglist = new NBTTagList();
+
+		if (this.occupantUUID != null)
+		{
+			compound.setString("Occupant", this.occupantUUID.toString());
+		}
+		else
+		{
+			compound.setString("Occupant", "");
+		}
+
+		NBTTagList itemsTagList = new NBTTagList();
 
 		for (int i = 0; i < this.coffinContents.length; ++i)
 		{
 			if (this.coffinContents[i] != null)
 			{
-				NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-				nbttagcompound1.setByte("Slot", (byte)i);
-				this.coffinContents[i].writeToNBT(nbttagcompound1);
-				nbttaglist.appendTag(nbttagcompound1);
+				NBTTagCompound itemCompound = new NBTTagCompound();
+				itemCompound.setByte("Slot", (byte)i);
+
+				if (this.bindingProgress.containsKey(i))
+				{
+					itemCompound.setInteger("BindingProgress", this.bindingProgress.get(i));
+				}
+
+				this.coffinContents[i].writeToNBT(itemCompound);
+				itemsTagList.appendTag(itemCompound);
 			}
 		}
 
-		compound.setTag("Items", nbttaglist);
+		compound.setTag("Items", itemsTagList);
 
 		if (this.hasCustomName())
 		{
@@ -379,6 +422,78 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 				this.lidAngle = 0.0F;
 			}
 		}
+
+		if (this.canBindAnkhs())
+		{
+			this.updateAnkhs();
+		}
+	}
+
+	private boolean canBindAnkhs()
+	{
+		if (this.occupantUUID == null)
+		{
+			return false;
+		}
+		else
+		{
+			for (int i = 0; i < slotsAnkhs.length; i++)
+			{
+				if (this.coffinContents[slotsAnkhs[i]] != null)
+				{
+					if (this.coffinContents[slotsAnkhs[i]].getItem() instanceof ItemResurrectionAnkh)
+					{
+						ItemResurrectionAnkh ankh = (ItemResurrectionAnkh)this.coffinContents[slotsAnkhs[i]].getItem();
+
+						if (!ankh.hasOwner(this.coffinContents[slotsAnkhs[i]]))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+	}
+
+	private void updateAnkhs()
+	{
+		Iterator<Entry<Integer, Integer>> bindingProgressIterator = this.bindingProgress.entrySet().iterator();
+		boolean flag = false;
+
+		while (bindingProgressIterator.hasNext())
+		{
+			Entry<Integer, Integer> pair = bindingProgressIterator.next();
+
+			if (this.coffinContents[pair.getKey()] != null)
+			{
+				ItemStack stack = this.coffinContents[pair.getKey()];
+
+				if (stack.getItem() instanceof ItemResurrectionAnkh)
+				{
+					ItemResurrectionAnkh ankh = (ItemResurrectionAnkh)stack.getItem();
+
+					if (ankh.getOwner(stack) == null)
+					{
+						if (pair.getValue() >= 1000) // TODO: Make this configurable
+						{
+							ankh.setOwner(stack, this.occupantUUID);
+							flag = true;
+						}
+						else
+						{
+							int progress = pair.getValue();
+							progress++;
+							pair.setValue(progress);
+						}
+					}
+				}
+			}
+		}
+
+		if (flag)
+			this.markDirty();
 	}
 
 	public boolean receiveClientEvent(int id, int type)
@@ -520,11 +635,51 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 	{
 		return null;
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 2, 2));
+	}
+
+	public void setOccupant(UUID playerUUID, boolean withAdjacent)
+	{
+		this.occupantUUID = playerUUID;
+
+		if (withAdjacent)
+		{
+			Iterator facingIterator = EnumFacing.Plane.HORIZONTAL.iterator();
+
+			while (facingIterator.hasNext())
+			{
+				TileEntityCoffin coffin = getAdjacentCoffin((EnumFacing)facingIterator.next());
+
+				if (coffin != null)
+				{
+					coffin.setOccupant(playerUUID, false);
+				}
+			}
+		}
+	}
+
+	public void clearOccupant(boolean withAdjacent)
+	{
+		this.occupantUUID = null;
+
+		if (withAdjacent)
+		{
+			Iterator facingIterator = EnumFacing.Plane.HORIZONTAL.iterator();
+
+			while (facingIterator.hasNext())
+			{
+				TileEntityCoffin coffin = getAdjacentCoffin((EnumFacing)facingIterator.next());
+
+				if (coffin != null)
+				{
+					coffin.setOccupant(null, false);
+				}
+			}
+		}
 	}
 }

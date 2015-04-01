@@ -19,12 +19,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
+import com.voodoofrog.ribbit.Ribbit;
 import com.voodoofrog.ribbit.world.IBasicContainer;
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
@@ -288,15 +290,15 @@ public class BlockCoffin extends BlockContainer
 	public boolean canPlaceBlockAt(World worldIn, BlockPos pos, EnumFacing facing)
 	{
 		boolean flag = this.canPlaceBlockAt(worldIn, pos);
-		
+
 		if (facing == EnumFacing.WEST)
-		{		
+		{
 			if (worldIn.getBlockState(pos.south().south()).getBlock() == this)
 			{
 				return false;
 			}
 		}
-		
+
 		if (facing == EnumFacing.EAST)
 		{
 			if (worldIn.getBlockState(pos.north().north()).getBlock() == this)
@@ -304,7 +306,7 @@ public class BlockCoffin extends BlockContainer
 				return false;
 			}
 		}
-		
+
 		if (facing == EnumFacing.NORTH)
 		{
 			if (worldIn.getBlockState(pos.west().west()).getBlock() == this)
@@ -312,7 +314,7 @@ public class BlockCoffin extends BlockContainer
 				return false;
 			}
 		}
-		
+
 		if (facing == EnumFacing.SOUTH)
 		{
 			if (worldIn.getBlockState(pos.east().east()).getBlock() == this)
@@ -320,7 +322,7 @@ public class BlockCoffin extends BlockContainer
 				return false;
 			}
 		}
-		
+
 		return flag;
 	}
 
@@ -354,7 +356,7 @@ public class BlockCoffin extends BlockContainer
 
 		return true;
 	}
-	
+
 	private boolean isFullSize(World worldIn, BlockPos pos)
 	{
 		if (worldIn.getBlockState(pos).getBlock() != this)
@@ -429,14 +431,33 @@ public class BlockCoffin extends BlockContainer
 		}
 		else
 		{
-			IBasicContainer container = this.getContainer(worldIn, pos);
-
-			if (this.isFullSize(worldIn, pos))
+			//TODO: Remove this
+			if (playerIn.isSneaking())
 			{
-				FMLNetworkHandler.openGui(playerIn, VFDeath.instance, ConfigHandler.COFFIN_GUI_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+				TileEntity tileentity = worldIn.getTileEntity(pos);
+				
+				if (!(tileentity instanceof TileEntityCoffin))
+				{
+					return false;
+				}
+				else
+				{
+					((TileEntityCoffin)tileentity).setOccupant(playerIn.getUUID(playerIn.getGameProfile()), this.isFullSize(worldIn, pos));
+					Ribbit.playerUtils.sendPlayerPopupMessage(playerIn, new ChatComponentText("DEBUG: You have occupied this coffin"));
+					return true;
+				}
 			}
+			else
+			{
+				IBasicContainer container = this.getContainer(worldIn, pos);
 
-			return true;
+				if (this.isFullSize(worldIn, pos))
+				{
+					FMLNetworkHandler.openGui(playerIn, VFDeath.instance, ConfigHandler.COFFIN_GUI_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+				}
+
+				return true;
+			}
 		}
 	}
 

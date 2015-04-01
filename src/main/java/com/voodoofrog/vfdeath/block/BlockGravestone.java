@@ -211,6 +211,7 @@ public class BlockGravestone extends BlockContainer
 		return new BlockState(this, new IProperty[] { FACING });
 	}
 
+	//TODO: Remove this
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY,
 			float hitZ)
 	{
