@@ -499,7 +499,6 @@ public class BlockCoffin extends BlockContainer
 							if (coffinTE.hasOccupant())
 							{
 								String occupantName = Ribbit.playerUtils.getUserNameFromUUID(coffinTE.getOccupant());
-								VFDeath.logger.info("Coffin occupied by " + occupantName);
 
 								if (enumfacing != EnumFacing.WEST && enumfacing != EnumFacing.NORTH)
 								{
@@ -514,7 +513,6 @@ public class BlockCoffin extends BlockContainer
 							}
 							else
 							{
-								VFDeath.logger.info("Coffin unoccupied");
 								if (enumfacing != EnumFacing.WEST && enumfacing != EnumFacing.NORTH)
 								{
 									object = new InventoryFullCoffin("container.vfdeath.coffin", (IBasicContainer)object,
