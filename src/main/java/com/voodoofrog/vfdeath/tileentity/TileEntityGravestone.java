@@ -1,5 +1,7 @@
 package com.voodoofrog.vfdeath.tileentity;
 
+import java.util.UUID;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandResultStats;
 import net.minecraft.command.ICommandSender;
@@ -21,14 +23,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.google.gson.JsonParseException;
+import com.voodoofrog.ribbit.Ribbit;
 
 public class TileEntityGravestone extends TileEntity
 {
-	public final IChatComponent[] epitaph = new IChatComponent[] { new ChatComponentText(""), new ChatComponentText(""),
-			new ChatComponentText(""), new ChatComponentText("") };
+	public final IChatComponent[] epitaph = new IChatComponent[] { new ChatComponentText(""), new ChatComponentText(""), new ChatComponentText(""),
+			new ChatComponentText("") };
 	public int lineBeingEdited = -1;
 	private boolean isEditable = true;
 	private EntityPlayer player;
+	private UUID ownerUUID;
 
 	public void writeToNBT(NBTTagCompound compound)
 	{
@@ -38,6 +42,11 @@ public class TileEntityGravestone extends TileEntity
 		{
 			String s = IChatComponent.Serializer.componentToJson(this.epitaph[i]);
 			compound.setString("Text" + (i + 1), s);
+		}
+
+		if (this.ownerUUID != null)
+		{
+			compound.setString("Owner", this.ownerUUID.toString());
 		}
 	}
 
@@ -119,13 +128,18 @@ public class TileEntityGravestone extends TileEntity
 				this.epitaph[i] = new ChatComponentText(s);
 			}
 		}
+
+		if (compound.hasKey("Owner", 8))
+			this.ownerUUID = UUID.fromString(compound.getString("Owner"));
+
+		this.updateOwnerEpitaph();
 	}
 
 	public Packet getDescriptionPacket()
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(this.pos, 3, tag);
+		return new S35PacketUpdateTileEntity(this.pos, 1, tag);
 	}
 
 	@Override
@@ -170,5 +184,18 @@ public class TileEntityGravestone extends TileEntity
 	public void markForUpdate()
 	{
 		this.worldObj.markBlockForUpdate(pos);
+	}
+
+	public void setOwner(UUID playerUUID)
+	{
+		this.ownerUUID = playerUUID;
+	}
+
+	public void updateOwnerEpitaph()
+	{
+		if (this.ownerUUID != null)
+		{
+			this.epitaph[0] = new ChatComponentText(Ribbit.playerUtils.getUserNameFromUUID(this.ownerUUID));
+		}
 	}
 }

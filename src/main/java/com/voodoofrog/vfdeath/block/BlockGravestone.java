@@ -112,15 +112,11 @@ public class BlockGravestone extends BlockContainer
 		if (tileentity instanceof TileEntityGravestone)
 		{
 			TileEntityGravestone teGravestone = (TileEntityGravestone)tileentity;
-			teGravestone.epitaph[0] = new ChatComponentText(placer.getName());
-			teGravestone.epitaph[1] = new ChatComponentText("Died 01/01/01");
-			teGravestone.epitaph[2] = new ChatComponentText("Killed by");
-			teGravestone.epitaph[3] = new ChatComponentText("a creeper");
-			teGravestone.markForUpdate();
-
-			if (stack.hasDisplayName())
+			
+			if (placer instanceof EntityPlayer)
 			{
-				// ((TileEntityGravestone)tileentity).setCustomInventoryName(stack.getDisplayName());
+				teGravestone.setOwner(((EntityPlayer)placer).getUUID(((EntityPlayer)placer).getGameProfile()));
+				teGravestone.markForUpdate();
 			}
 		}
 	}

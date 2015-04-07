@@ -47,7 +47,8 @@ public class Graveyard
 				Date date = Ribbit.dateTime.getCurrentDate(overworld);
 				TileEntityGravestone teGravestone = (TileEntityGravestone)tileentity;
 
-				teGravestone.epitaph[0] = new ChatComponentText(player.getName());
+				teGravestone.setOwner(Ribbit.playerUtils.getUUIDFromUsername("voodoofrog"));
+				//teGravestone.epitaph[0] = new ChatComponentText(player.getName());
 				teGravestone.epitaph[1] = new ChatComponentTranslation(Strings.GRAVE_DOD, dateFormat.format(date));
 				teGravestone.epitaph[2] = new ChatComponentText("Killed by");
 				teGravestone.epitaph[3] = new ChatComponentText("deathcause");

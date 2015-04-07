@@ -178,20 +178,6 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		}
 	}
 
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		NBTTagCompound tag = new NBTTagCompound();
-		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(this.pos, 1, tag);
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet)
-	{
-		readFromNBT(packet.getNbtCompound());
-	}
-
 	public void writeToNBT(NBTTagCompound compound)
 	{
 		super.writeToNBT(compound);
@@ -232,6 +218,20 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		}
 	}
 
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		this.writeToNBT(tag);
+		return new S35PacketUpdateTileEntity(this.pos, 1, tag);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet)
+	{
+		readFromNBT(packet.getNbtCompound());
+	}
+	
 	public int getInventoryStackLimit()
 	{
 		return 64;
