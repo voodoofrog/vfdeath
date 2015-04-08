@@ -1,12 +1,16 @@
 package com.voodoofrog.vfdeath.handler;
 
+import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import com.voodoofrog.vfdeath.client.gui.GuiDeathScreen;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 
 public class ForgeEventHandler
@@ -39,5 +43,14 @@ public class ForgeEventHandler
 	public void onClonePlayer(PlayerEvent.Clone event)
 	{
 		ExtendedPlayer.get(event.entityPlayer).copy(ExtendedPlayer.get(event.original));
+	}
+
+	@SubscribeEvent
+	public void onGuiOpen(GuiOpenEvent event)
+	{
+		if (event.gui instanceof GuiGameOver && FMLClientHandler.instance().getClient().currentScreen == null)
+		{
+			event.gui = new GuiDeathScreen();
+		}
 	}
 }
