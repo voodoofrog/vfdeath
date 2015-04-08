@@ -1,11 +1,16 @@
 package com.voodoofrog.vfdeath.tileentity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -196,43 +201,37 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		}
 	}
 
-	public void receiveResButtonEvent(byte buttonID, byte ankhs, EntityPlayer player, String playerName)
+	public void receiveResButtonEvent(byte ankhs, EntityPlayer player, String playerName)
 	{
-		switch (buttonID)
-		{
-		case 0:
-			EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(playerName);
+		EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(playerName);
 
-			if (resPlayer != null)
+		if (resPlayer != null)
+		{
+			ExtendedPlayer props = ExtendedPlayer.get(resPlayer);
+
+			if (props.getIsDead() && ankhs > 0)
 			{
-				ExtendedPlayer props = ExtendedPlayer.get(resPlayer);
-				
-				if (props.getIsDead() && ankhs > 0)
+				VFDeath.ghostHandler.ghostPlayer(resPlayer, false);
+				props.gainHearts(ankhs, false);
+				this.removeAnkhs();
+				player.closeScreen();
+
+				// TODO: add new death screen before ghost respawn
+				if (player.dimension == 0)
 				{
-					VFDeath.ghostHandler.ghostPlayer(resPlayer, false);
-					props.gainHearts(ankhs, false);
-					this.removeAnkhs();
-					player.closeScreen();
-					
-					// TODO: add new death screen before ghost respawn
-					if (player.dimension == 0)
-					{
-						BlockPos coords = getRandomAltarSpawnPoint();
-						// Teleportation.teleportEntity(this.worldObj,
-						// resPlayer, this.worldObj.provider.dimensionId,
-						// coords, resPlayer.rotationYaw);
-						new TeleportationHelper(MinecraftServer.getServer().worldServerForDimension(this.worldObj.provider.getDimensionId()))
-								.teleport(player, this.worldObj, coords);
-						this.worldObj
-								.addWeatherEffect(new EntityVisualLightningBolt(this.worldObj, coords.getX(), coords.getY(), coords.getZ()));
-					}
-					else
-					{
-						// player is not in the overworld
-					}
+					BlockPos coords = getRandomAltarSpawnPoint();
+					// Teleportation.teleportEntity(this.worldObj,
+					// resPlayer, this.worldObj.provider.dimensionId,
+					// coords, resPlayer.rotationYaw);
+					new TeleportationHelper(MinecraftServer.getServer().worldServerForDimension(this.worldObj.provider.getDimensionId())).teleport(
+							player, this.worldObj, coords);
+					this.worldObj.addWeatherEffect(new EntityVisualLightningBolt(this.worldObj, coords.getX(), coords.getY(), coords.getZ()));
+				}
+				else
+				{
+					// player is not in the overworld
 				}
 			}
-			break;
 		}
 	}
 
@@ -276,5 +275,30 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		{
 			this.inventory[i] = null;
 		}
+	}
+
+	public List<UUID> getPlayerUUIDListFromAnkhs()
+	{
+		List<UUID> result = new ArrayList<UUID>();
+
+		for (int i = 0; i < this.getSizeInventory(); i++)
+		{
+			ItemStack stack = this.getStackInSlot(i);
+
+			if (stack != null)
+			{
+				if (stack.getItem() instanceof ItemResurrectionAnkh)
+				{
+					ItemResurrectionAnkh item = (ItemResurrectionAnkh)stack.getItem();
+
+					if (item.hasOwner(stack))
+					{
+						result.add(item.getOwner(stack));
+					}
+				}
+			}
+		}
+
+		return result;
 	}
 }

@@ -223,13 +223,14 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(this.pos, 1, tag);
+		return new S35PacketUpdateTileEntity(this.pos, 0, tag);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet)
 	{
-		readFromNBT(packet.getNbtCompound());
+		this.readFromNBT(packet.getNbtCompound());
+		System.out.println("got data packet");
 	}
 	
 	public int getInventoryStackLimit()
@@ -681,9 +682,11 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 				if (coffin != null)
 				{
 					coffin.setOccupant(playerUUID, false);
+					this.worldObj.markBlockForUpdate(coffin.pos);
 				}
 			}
 		}
+		this.worldObj.markBlockForUpdate(this.pos);
 	}
 
 	public void clearOccupant(boolean withAdjacent)
@@ -701,8 +704,10 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 				if (coffin != null)
 				{
 					coffin.setOccupant(null, false);
+					this.worldObj.markBlockForUpdate(coffin.pos);
 				}
 			}
 		}
+		this.worldObj.markBlockForUpdate(this.pos);
 	}
 }

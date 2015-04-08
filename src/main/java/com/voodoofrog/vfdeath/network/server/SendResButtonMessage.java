@@ -14,7 +14,6 @@ import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 
 public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMessage>
 {
-	private byte id;
 	private byte ankhs;
 	String playerName;
 
@@ -22,9 +21,8 @@ public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMes
 	{
 	}
 
-	public SendResButtonMessage(byte id, byte ankhs, String playerName)
+	public SendResButtonMessage(byte ankhs, String playerName)
 	{
-		this.id = id;
 		this.ankhs = ankhs;
 		this.playerName = playerName;
 	}
@@ -32,7 +30,6 @@ public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMes
 	@Override
 	public void read(PacketBuffer buffer) throws IOException
 	{
-		this.id = buffer.readByte();
 		this.ankhs = buffer.readByte();
 		this.playerName = ByteBufUtils.readUTF8String(buffer);
 	}
@@ -40,7 +37,6 @@ public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMes
 	@Override
 	public void write(PacketBuffer buffer) throws IOException
 	{
-		buffer.writeByte(this.id);
 		buffer.writeByte(this.ankhs);
 		ByteBufUtils.writeUTF8String(buffer, this.playerName);
 	}
@@ -53,7 +49,7 @@ public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMes
 		if (container != null && container instanceof ContainerResurrectionAltar)
 		{
 			TileEntityResurrectionAltar altar = ((ContainerResurrectionAltar)container).getTileEntityAltar();
-			altar.receiveResButtonEvent(this.id, this.ankhs, player, this.playerName);
+			altar.receiveResButtonEvent(this.ankhs, player, this.playerName);
 		}
 	}
 }
