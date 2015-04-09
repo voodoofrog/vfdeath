@@ -24,5 +24,6 @@ commands.vfdeath.addlife.usage=/addlife <amount> [player]
 commands.vfdeath.addlife.success=Given %d hearts to %s
 commands.vfdeath.addlife.failure=You cannot use this command to remove hearts
 msg.vfdeath.dod=Died %s
+msg.vfdeath.killedBy=Killed by
 msg.vfdeath.noValidLoc=Couldn't get a valid position
 key.vfdeath.graveGui=Open Grave GUI

@@ -39,6 +39,7 @@ public class Strings
 	
 	//Graveyard
 	public static final String GRAVE_DOD = "msg.vfdeath.dod";
+	public static final String GRAVE_KILLED_BY = "msg.vfdeath.killedBy";
 	public static final String GRAVE_NO_VALID_LOC = "msg.vfdeath.noValidLoc";
 	
 	//Keys

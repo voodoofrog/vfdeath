@@ -1,5 +1,8 @@
 package com.voodoofrog.vfdeath.tileentity;
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import net.minecraft.command.CommandException;
@@ -16,6 +19,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentProcessor;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -24,6 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.google.gson.JsonParseException;
 import com.voodoofrog.ribbit.Ribbit;
+import com.voodoofrog.vfdeath.misc.Strings;
 
 public class TileEntityGravestone extends TileEntity
 {
@@ -131,8 +136,6 @@ public class TileEntityGravestone extends TileEntity
 
 		if (compound.hasKey("Owner", 8))
 			this.ownerUUID = UUID.fromString(compound.getString("Owner"));
-
-		this.updateOwnerEpitaph();
 	}
 
 	public Packet getDescriptionPacket()
@@ -146,6 +149,7 @@ public class TileEntityGravestone extends TileEntity
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
 	{
 		readFromNBT(pkt.getNbtCompound());
+		this.updateOwnerEpitaph();
 	}
 
 	public boolean getIsEditable()
@@ -183,12 +187,13 @@ public class TileEntityGravestone extends TileEntity
 
 	public void markForUpdate()
 	{
-		this.worldObj.markBlockForUpdate(pos);
+		this.worldObj.markBlockForUpdate(this.pos);
 	}
 
 	public void setOwner(UUID playerUUID)
 	{
 		this.ownerUUID = playerUUID;
+		this.markForUpdate();
 	}
 
 	public void updateOwnerEpitaph()
@@ -197,5 +202,17 @@ public class TileEntityGravestone extends TileEntity
 		{
 			this.epitaph[0] = new ChatComponentText(Ribbit.playerUtils.getUserNameFromUUID(this.ownerUUID));
 		}
+	}
+	
+	public void updateEpitaph(String deathCause)
+	{
+		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
+		Date date = Ribbit.dateTime.getCurrentDate(this.worldObj);
+		
+		this.epitaph[1] = new ChatComponentTranslation(Strings.GRAVE_DOD, dateFormat.format(date));
+		this.epitaph[2] = new ChatComponentTranslation(Strings.GRAVE_KILLED_BY);
+		this.epitaph[3] = new ChatComponentTranslation(deathCause);
+		
+		this.markForUpdate();
 	}
 }

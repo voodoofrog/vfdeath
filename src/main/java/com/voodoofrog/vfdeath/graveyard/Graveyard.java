@@ -43,16 +43,10 @@ public class Graveyard
 
 			if (tileentity instanceof TileEntityGravestone)
 			{
-				DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
-				Date date = Ribbit.dateTime.getCurrentDate(overworld);
 				TileEntityGravestone teGravestone = (TileEntityGravestone)tileentity;
 
 				teGravestone.setOwner(Ribbit.playerUtils.getUUIDFromUsername("voodoofrog"));
-				//teGravestone.epitaph[0] = new ChatComponentText(player.getName());
-				teGravestone.epitaph[1] = new ChatComponentTranslation(Strings.GRAVE_DOD, dateFormat.format(date));
-				teGravestone.epitaph[2] = new ChatComponentText("Killed by");
-				teGravestone.epitaph[3] = new ChatComponentText("deathcause");
-				teGravestone.markForUpdate();
+				teGravestone.updateEpitaph("");
 			}
 		}
 		else
