@@ -1,6 +1,7 @@
 package com.voodoofrog.vfdeath.network.server;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -15,30 +16,30 @@ import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMessage>
 {
 	private byte ankhs;
-	String playerName;
+	UUID playerUUID;
 
 	public SendResButtonMessage()
 	{
 	}
 
-	public SendResButtonMessage(byte ankhs, String playerName)
+	public SendResButtonMessage(byte ankhs, UUID playerUUID)
 	{
 		this.ankhs = ankhs;
-		this.playerName = playerName;
+		this.playerUUID = playerUUID;
 	}
 
 	@Override
 	public void read(PacketBuffer buffer) throws IOException
 	{
 		this.ankhs = buffer.readByte();
-		this.playerName = ByteBufUtils.readUTF8String(buffer);
+		this.playerUUID = UUID.fromString(ByteBufUtils.readUTF8String(buffer));
 	}
 
 	@Override
 	public void write(PacketBuffer buffer) throws IOException
 	{
 		buffer.writeByte(this.ankhs);
-		ByteBufUtils.writeUTF8String(buffer, this.playerName);
+		ByteBufUtils.writeUTF8String(buffer, this.playerUUID.toString());
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMes
 		if (container != null && container instanceof ContainerResurrectionAltar)
 		{
 			TileEntityResurrectionAltar altar = ((ContainerResurrectionAltar)container).getTileEntityAltar();
-			altar.receiveResButtonEvent(this.ankhs, player, this.playerName);
+			altar.receiveResButtonEvent(this.ankhs, player, this.playerUUID);
 		}
 	}
 }

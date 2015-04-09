@@ -9,6 +9,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
@@ -116,6 +119,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	@Override
 	public void openInventory(EntityPlayer player)
 	{
+		this.markForUpdate();
 	}
 
 	@Override
@@ -123,6 +127,11 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	{
 	}
 
+	public void markForUpdate()
+	{
+		this.worldObj.markBlockForUpdate(this.pos);
+	}
+	
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack stack)
 	{
@@ -180,6 +189,20 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		}
 	}
 
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		this.writeToNBT(tag);
+		return new S35PacketUpdateTileEntity(this.pos, 0, tag);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+	{
+		readFromNBT(pkt.getNbtCompound());
+	}
+	
 	private void removeAnkhs()
 	{
 		for (int i = 0; i < this.getSizeInventory(); i++)
@@ -201,9 +224,9 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		}
 	}
 
-	public void receiveResButtonEvent(byte ankhs, EntityPlayer player, String playerName)
+	public void receiveResButtonEvent(byte ankhs, EntityPlayer player, UUID playerUUID)
 	{
-		EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(playerName);
+		EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUUID(playerUUID);
 
 		if (resPlayer != null)
 		{
@@ -291,7 +314,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				{
 					ItemResurrectionAnkh item = (ItemResurrectionAnkh)stack.getItem();
 
-					if (item.hasOwner(stack))
+					if (item.hasOwner(stack) && !result.contains(item.getOwner(stack)))
 					{
 						result.add(item.getOwner(stack));
 					}
