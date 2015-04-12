@@ -364,7 +364,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 
 					if (item.hasEffect(stack) && item.hasOwner(stack))
 					{
-						if (item.getOwner(stack) == playerUUID)
+						if (item.getOwner(stack).equals(playerUUID))
 						{
 							this.setInventorySlotContents(i, null);
 							count++;
