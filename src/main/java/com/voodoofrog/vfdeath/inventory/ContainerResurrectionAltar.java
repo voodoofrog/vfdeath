@@ -65,9 +65,9 @@ public class ContainerResurrectionAltar extends Container
 	}
 	
 	@Override
-    public void detectAndSendChanges()
-    {
+	public void detectAndSendChanges()
+	{
 		super.detectAndSendChanges();
 		this.altar.markForUpdate();
-    }
+	}
 }

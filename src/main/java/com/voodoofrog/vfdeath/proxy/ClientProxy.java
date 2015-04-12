@@ -1,10 +1,14 @@
 package com.voodoofrog.vfdeath.proxy;
 
+import org.lwjgl.input.Keyboard;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -13,6 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import com.voodoofrog.vfdeath.client.gui.GuiInGameHealthLoss;
 import com.voodoofrog.vfdeath.client.renderer.tileentity.TileEntityCoffinRenderer;
 import com.voodoofrog.vfdeath.client.renderer.tileentity.TileEntityGravestoneRenderer;
+import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.handler.KeyHandler;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.init.VFDeathItems;
@@ -58,5 +63,6 @@ public class ClientProxy extends CommonProxy
 	{
 		this.keyHandler = new KeyHandler();
 		FMLCommonHandler.instance().bus().register(keyHandler);
+		ConfigHandler.GRAVE_KEY = new KeyBinding(StatCollector.translateToLocal(Strings.KEY_GRAVE), Keyboard.KEY_G, "key.categories.inventory");
 	}
 }

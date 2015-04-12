@@ -6,40 +6,35 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.voodoofrog.ribbit.network.AbstractMessage.AbstractServerMessage;
 import com.voodoofrog.vfdeath.inventory.ContainerResurrectionAltar;
 import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 
-public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMessage>
+public class ResurrectionButtonMessage extends AbstractServerMessage<ResurrectionButtonMessage>
 {
-	private byte ankhs;
-	UUID playerUUID;
+	private UUID playerUUID;
 
-	public SendResButtonMessage()
+	public ResurrectionButtonMessage()
 	{
 	}
 
-	public SendResButtonMessage(byte ankhs, UUID playerUUID)
+	public ResurrectionButtonMessage(UUID playerUUID)
 	{
-		this.ankhs = ankhs;
 		this.playerUUID = playerUUID;
 	}
 
 	@Override
 	public void read(PacketBuffer buffer) throws IOException
 	{
-		this.ankhs = buffer.readByte();
-		this.playerUUID = UUID.fromString(ByteBufUtils.readUTF8String(buffer));
+		this.playerUUID = buffer.readUuid();
 	}
 
 	@Override
 	public void write(PacketBuffer buffer) throws IOException
 	{
-		buffer.writeByte(this.ankhs);
-		ByteBufUtils.writeUTF8String(buffer, this.playerUUID.toString());
+		buffer.writeUuid(this.playerUUID);
 	}
 
 	@Override
@@ -50,7 +45,7 @@ public class SendResButtonMessage extends AbstractServerMessage<SendResButtonMes
 		if (container != null && container instanceof ContainerResurrectionAltar)
 		{
 			TileEntityResurrectionAltar altar = ((ContainerResurrectionAltar)container).getTileEntityAltar();
-			altar.receiveResButtonEvent(this.ankhs, player, this.playerUUID);
+			altar.receiveResurrectionButtonEvent(player, this.playerUUID);
 		}
 	}
 }

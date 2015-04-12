@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +14,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -22,15 +22,16 @@ import net.minecraft.util.IChatComponent;
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.entity.effect.EntityVisualLightningBolt;
-import com.voodoofrog.vfdeath.handler.PlayerEventHandler;
 import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
+import com.voodoofrog.vfdeath.network.client.ResurrectionResponseMessage;
 import com.voodoofrog.vfdeath.util.TeleportationHelper;
 
 public class TileEntityResurrectionAltar extends TileEntity implements IInventory
 {
 	private ItemStack[] inventory;
 	private String name = "InventoryAltar";
+	private List<UUID> playerList;
 
 	public TileEntityResurrectionAltar()
 	{
@@ -58,6 +59,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		{
 			if (item.stackSize <= count)
 			{
+				this.removeAnkhOwnerFromList(slot);
 				this.setInventorySlotContents(slot, null);
 			}
 			else
@@ -85,6 +87,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 
 		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
 		{
+			this.addAnkhOwnerToList(slot);
 			stack.stackSize = this.getInventoryStackLimit();
 		}
 
@@ -127,11 +130,6 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	{
 	}
 
-	public void markForUpdate()
-	{
-		this.worldObj.markBlockForUpdate(this.pos);
-	}
-	
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack stack)
 	{
@@ -187,6 +185,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(item));
 			}
 		}
+		this.playerList = this.getPlayerUUIDListFromAnkhs();
 	}
 
 	@Override
@@ -202,29 +201,13 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	{
 		readFromNBT(pkt.getNbtCompound());
 	}
-	
-	private void removeAnkhs()
+
+	public void markForUpdate()
 	{
-		for (int i = 0; i < this.getSizeInventory(); i++)
-		{
-			ItemStack item = getStackInSlot(i);
-
-			if (item != null)
-			{
-				if (item.getItem() instanceof ItemResurrectionAnkh)
-				{
-					ItemResurrectionAnkh ankh = (ItemResurrectionAnkh)item.getItem();
-
-					if (ankh.hasEffect(item))
-					{
-						this.setInventorySlotContents(i, null);
-					}
-				}
-			}
-		}
+		this.worldObj.markBlockForUpdate(this.pos);
 	}
 
-	public void receiveResButtonEvent(byte ankhs, EntityPlayer player, UUID playerUUID)
+	public void receiveResurrectionButtonEvent(EntityPlayer player, UUID playerUUID)
 	{
 		EntityPlayer resPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerByUUID(playerUUID);
 
@@ -232,29 +215,28 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		{
 			ExtendedPlayer props = ExtendedPlayer.get(resPlayer);
 
-			if (props.getIsDead() && ankhs > 0)
+			if (props.getIsDead())
 			{
+				BlockPos coords = getRandomAltarSpawnPoint();
+
 				VFDeath.ghostHandler.ghostPlayer(resPlayer, false);
-				props.gainHearts(ankhs, false);
-				this.removeAnkhs();
+				//TODO: removeAnkhsForPlayerUUID not returning correct count
+				props.gainHearts(this.removeAnkhsForPlayerUUID(playerUUID), false);
 				player.closeScreen();
 
-				// TODO: add new death screen before ghost respawn
-				if (player.dimension == 0)
-				{
-					BlockPos coords = getRandomAltarSpawnPoint();
-					// Teleportation.teleportEntity(this.worldObj,
-					// resPlayer, this.worldObj.provider.dimensionId,
-					// coords, resPlayer.rotationYaw);
-					new TeleportationHelper(MinecraftServer.getServer().worldServerForDimension(this.worldObj.provider.getDimensionId())).teleport(
-							player, this.worldObj, coords);
-					this.worldObj.addWeatherEffect(new EntityVisualLightningBolt(this.worldObj, coords.getX(), coords.getY(), coords.getZ()));
-				}
-				else
-				{
-					// player is not in the overworld
-				}
+				new TeleportationHelper(MinecraftServer.getServer().worldServerForDimension(this.worldObj.provider.getDimensionId())).teleport(
+						resPlayer, this.worldObj, coords);
+				this.worldObj.addWeatherEffect(new EntityVisualLightningBolt(this.worldObj, coords.getX(), coords.getY(), coords.getZ()));
 			}
+			else
+			{
+				VFDeath.packetDispatcher.sendTo(new ResurrectionResponseMessage(0), (EntityPlayerMP)player);
+			}
+		}
+		else
+		{
+			// player may be offline
+			VFDeath.packetDispatcher.sendTo(new ResurrectionResponseMessage(1), (EntityPlayerMP)player);
 		}
 	}
 
@@ -300,7 +282,12 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		}
 	}
 
-	public List<UUID> getPlayerUUIDListFromAnkhs()
+	public List<UUID> getPlayerUUIDList()
+	{
+		return this.playerList;
+	}
+
+	private List<UUID> getPlayerUUIDListFromAnkhs()
 	{
 		List<UUID> result = new ArrayList<UUID>();
 
@@ -323,5 +310,72 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 		}
 
 		return result;
+	}
+
+	private void removeAnkhOwnerFromList(int slot)
+	{
+		ItemStack stack = this.getStackInSlot(slot);
+
+		if (stack != null)
+		{
+			if (stack.getItem() instanceof ItemResurrectionAnkh)
+			{
+				ItemResurrectionAnkh item = (ItemResurrectionAnkh)stack.getItem();
+
+				if (item.hasOwner(stack) && this.playerList.contains(item.getOwner(stack)))
+				{
+					this.playerList.remove(item.getOwner(stack));
+				}
+			}
+		}
+	}
+
+	private void addAnkhOwnerToList(int slot)
+	{
+		ItemStack stack = this.getStackInSlot(slot);
+
+		if (stack != null)
+		{
+			if (stack.getItem() instanceof ItemResurrectionAnkh)
+			{
+				ItemResurrectionAnkh item = (ItemResurrectionAnkh)stack.getItem();
+
+				if (item.hasOwner(stack) && !this.playerList.contains(item.getOwner(stack)))
+				{
+					this.playerList.add(item.getOwner(stack));
+				}
+			}
+		}
+	}
+
+	private int removeAnkhsForPlayerUUID(UUID playerUUID)
+	{
+		int count = 0;
+
+		for (int i = 0; i < this.getSizeInventory(); i++)
+		{
+			ItemStack stack = getStackInSlot(i);
+
+			if (stack != null)
+			{
+				if (stack.getItem() instanceof ItemResurrectionAnkh)
+				{
+					ItemResurrectionAnkh item = (ItemResurrectionAnkh)stack.getItem();
+
+					if (item.hasEffect(stack) && item.hasOwner(stack))
+					{
+						if (item.getOwner(stack) == playerUUID)
+						{
+							this.setInventorySlotContents(i, null);
+							count++;
+						}
+					}
+				}
+			}
+		}
+		
+		VFDeath.logger.info("Hearts to be gained: " + count);
+		this.markForUpdate();
+		return count;
 	}
 }

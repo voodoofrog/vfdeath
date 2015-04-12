@@ -1,18 +1,6 @@
 package com.voodoofrog.vfdeath;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Scanner;
-import java.util.UUID;
-
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -25,14 +13,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.apache.logging.log4j.Logger;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.voodoofrog.ribbit.network.PacketDispatcher;
 import com.voodoofrog.vfdeath.command.AddLifeCommand;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
@@ -46,10 +29,11 @@ import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.item.crafting.VFDeathRecipesCrafting;
 import com.voodoofrog.vfdeath.misc.ModInfo;
+import com.voodoofrog.vfdeath.network.client.ResurrectionResponseMessage;
 import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
 import com.voodoofrog.vfdeath.network.server.OpenGraveInventoryMessage;
 import com.voodoofrog.vfdeath.network.server.RespawnMessage;
-import com.voodoofrog.vfdeath.network.server.SendResButtonMessage;
+import com.voodoofrog.vfdeath.network.server.ResurrectionButtonMessage;
 import com.voodoofrog.vfdeath.proxy.CommonProxy;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION)
@@ -86,7 +70,8 @@ public class VFDeath
 		VFDeathBlocks.registerBlocks();
 
 		packetDispatcher.registerMessage(SyncPlayerPropsMessage.class);
-		packetDispatcher.registerMessage(SendResButtonMessage.class);
+		packetDispatcher.registerMessage(ResurrectionButtonMessage.class);
+		packetDispatcher.registerMessage(ResurrectionResponseMessage.class);
 		packetDispatcher.registerMessage(OpenGraveInventoryMessage.class);
 		packetDispatcher.registerMessage(RespawnMessage.class);
 	}
@@ -105,9 +90,9 @@ public class VFDeath
 		VFDeathBlocks.registerTileEntities();
 
 		new GuiHandler();
-		
+
 		graveyard = new Graveyard();
-		
+
 		proxy.registerKeyBindings();
 	}
 

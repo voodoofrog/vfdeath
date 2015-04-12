@@ -138,11 +138,12 @@ public class TileEntityGravestone extends TileEntity
 			this.ownerUUID = UUID.fromString(compound.getString("Owner"));
 	}
 
+	@Override
 	public Packet getDescriptionPacket()
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		this.writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(this.pos, 1, tag);
+		return new S35PacketUpdateTileEntity(this.pos, 0, tag);
 	}
 
 	@Override

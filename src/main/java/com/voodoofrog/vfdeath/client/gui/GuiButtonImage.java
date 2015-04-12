@@ -5,14 +5,18 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.misc.ModInfo;
 
-public class GuiButtonResurrect extends GuiButton
+public class GuiButtonImage extends GuiButton
 {
-	protected static final ResourceLocation buttonTextures = new ResourceLocation(ModInfo.ID, "textures/gui/widgets.png");
+	protected static final ResourceLocation buttonTextures = new ResourceLocation(ModInfo.ID, "textures/gui/widgets2.png");
+	private int iconX;
+	private int iconY;
+	private int iconWidth;
+	private int iconHeight;
+	private int iconOffset;
 
-	public GuiButtonResurrect(int id, int x, int y)
+	public GuiButtonImage(int id, int x, int y, int iconX, int iconY, int iconWidth, int iconHeight, int iconOffset)
 	{
 		super(id, x, y, 16, 16, "");
 		this.width = 16;
@@ -22,7 +26,11 @@ public class GuiButtonResurrect extends GuiButton
 		this.id = id;
 		this.xPosition = x;
 		this.yPosition = y;
-		this.displayString = "";
+		this.iconX = iconX;
+		this.iconY = iconY;
+		this.iconWidth = iconWidth;
+		this.iconHeight = iconHeight;
+		this.iconOffset = iconOffset;
 	}
 
 	@Override
@@ -36,19 +44,8 @@ public class GuiButtonResurrect extends GuiButton
 					&& mouseY < this.yPosition + this.height;
 			int k = this.getHoverState(this.hovered);
 			this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 0 + k * 16, this.width, this.height);
-			this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width, 0 + k * 16, this.width / 2,
-					this.height);
-			this.mouseDragged(minecraft, mouseX, mouseY);
-			int l = 14737632;
-
-			if (!this.enabled)
-			{
-				l = -6250336;
-			}
-			else if (this.hovered)
-			{
-				l = 16777120;
-			}
+			this.drawTexturedModalRect(this.xPosition + this.iconOffset, this.yPosition + this.iconOffset, this.iconX, this.iconY, this.iconWidth,
+					this.iconHeight);
 		}
 	}
 }

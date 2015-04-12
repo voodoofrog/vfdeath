@@ -9,6 +9,8 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.voodoofrog.vfdeath.client.gui.GuiDeathScreen;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
@@ -46,6 +48,7 @@ public class ForgeEventHandler
 	}
 
 	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
 	public void onGuiOpen(GuiOpenEvent event)
 	{
 		if (event.gui instanceof GuiGameOver && FMLClientHandler.instance().getClient().currentScreen == null)
