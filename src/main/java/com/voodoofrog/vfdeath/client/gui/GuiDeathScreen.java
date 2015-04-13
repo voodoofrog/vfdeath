@@ -11,7 +11,6 @@ import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -48,7 +47,7 @@ public class GuiDeathScreen extends GuiScreen implements GuiYesNoCallback
 			ExtendedPlayer props = ExtendedPlayer.get(this.mc.thePlayer);
 			String respawnButtonText = props.isOnLastLife() ? I18n.format("gui.vfdeath.deathScreen.respawnGhost", new Object[0]) : I18n.format(
 					"gui.vfdeath.deathScreen.recover", new Object[0]);
-			
+
 			this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 72, I18n.format(respawnButtonText, new Object[0])));
 			this.buttonList
 					.add(new GuiButton(1, this.width / 2 - 100, this.height / 4 + 96, I18n.format("deathScreen.titleScreen", new Object[0])));
@@ -112,9 +111,10 @@ public class GuiDeathScreen extends GuiScreen implements GuiYesNoCallback
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
 		ExtendedPlayer props = ExtendedPlayer.get(this.mc.thePlayer);
-		String titleText = this.lostAllHardcoreLives() ? I18n.format("gui.vfdeath.deathScreen.title.hardcore", new Object[0]) : (props.isOnLastLife() ? I18n.format(
-				"gui.vfdeath.deathScreen.title.lastLife", new Object[0]) : I18n.format("gui.vfdeath.deathScreen.title", new Object[0]));
-		
+		String titleText = this.lostAllHardcoreLives() ? I18n.format("gui.vfdeath.deathScreen.title.hardcore", new Object[0]) : (props
+				.isOnLastLife() ? I18n.format("gui.vfdeath.deathScreen.title.lastLife", new Object[0]) : I18n.format(
+				"gui.vfdeath.deathScreen.title", new Object[0]));
+
 		this.drawGradientRect(0, 0, this.width, this.height, 1615855616, -1602211792);
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(2.0F, 2.0F, 2.0F);
@@ -173,7 +173,7 @@ public class GuiDeathScreen extends GuiScreen implements GuiYesNoCallback
 	private boolean lostAllHardcoreLives()
 	{
 		ExtendedPlayer props = ExtendedPlayer.get(this.mc.thePlayer);
-		
+
 		return this.mc.theWorld.getWorldInfo().isHardcoreModeEnabled() && props.isOnLastLife();
 	}
 }

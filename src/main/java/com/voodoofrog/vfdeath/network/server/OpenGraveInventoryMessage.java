@@ -16,10 +16,6 @@ public class OpenGraveInventoryMessage extends AbstractServerMessage<OpenGraveIn
 	{
 	}
 
-	/*public OpenGraveInventoryMessage(EntityPlayer player)
-	{
-	}*/
-
 	@Override
 	protected void read(PacketBuffer buffer) throws IOException
 	{
@@ -33,7 +29,8 @@ public class OpenGraveInventoryMessage extends AbstractServerMessage<OpenGraveIn
 	@Override
 	public void process(EntityPlayer player, Side side)
 	{
-		player.openGui(VFDeath.instance, ConfigHandler.INVENTORY_GRAVE_GUI_ID, player.worldObj, (int)player.posX, (int)player.posY, (int)player.posZ);
+		player.openGui(VFDeath.instance, ConfigHandler.INVENTORY_GRAVE_GUI_ID, player.worldObj, (int)player.posX, (int)player.posY,
+				(int)player.posZ);
 	}
 
 }

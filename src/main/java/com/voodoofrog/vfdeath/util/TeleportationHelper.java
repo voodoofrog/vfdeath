@@ -20,7 +20,7 @@ public class TeleportationHelper extends Teleporter
 	public void teleport(Entity entity, World destinationWorld, BlockPos destinationPos)
 	{
 		EntityPlayerMP playerMP = (EntityPlayerMP)entity;
-		//World world = instance.functions_common().find_world(0);
+		// World world = instance.functions_common().find_world(0);
 
 		double dx = destinationPos.getX() + 0.5d;
 		double dy = destinationPos.getY() + 1.0d;

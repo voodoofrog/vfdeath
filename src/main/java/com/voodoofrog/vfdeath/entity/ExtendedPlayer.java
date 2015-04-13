@@ -1,6 +1,5 @@
 package com.voodoofrog.vfdeath.entity;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
@@ -12,15 +11,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
-import com.voodoofrog.vfdeath.graveyard.Graveyard;
 import com.voodoofrog.vfdeath.inventory.InventoryGrave;
 import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
 
@@ -141,7 +137,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	public void updateHealthAttribMod()
 	{
 		IAttributeInstance maxHealthAttrib = this.player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
-		//VFDeath.logger.info("Max Health (pre mod): " + maxHealthAttrib.getAttributeValue());
+		// VFDeath.logger.info("Max Health (pre mod): " + maxHealthAttrib.getAttributeValue());
 
 		try
 		{
@@ -154,14 +150,14 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		if (this.healthMod != 0.0D)
 		{
 			maxHealthAttrib.applyModifier(new AttributeModifier(healthModUUID, EXT_PROP_NAME + ".healthmod", (0 - this.healthMod), 0));
-			//VFDeath.logger.info("Max Health (post mod): " + maxHealthAttrib.getAttributeValue());
+			// VFDeath.logger.info("Max Health (post mod): " + maxHealthAttrib.getAttributeValue());
 		}
-		
+
 		if (this.player.getHealth() > this.player.getMaxHealth())
 		{
 			this.player.setHealth(this.player.getMaxHealth());
 		}
-		//VFDeath.logger.info("Max Health (post mod): " + maxHealthAttrib.getAttributeValue());
+		// VFDeath.logger.info("Max Health (post mod): " + maxHealthAttrib.getAttributeValue());
 	}
 
 	public void loseHearts(int num)
@@ -189,8 +185,8 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		}
 		else
 		{
-			//VFDeath.logger.info("Losing a life");
-			//VFDeath.logger.info("HEALTH INFO[Losing: " + amount + "|Current: " + currentMax + "]");
+			// VFDeath.logger.info("Losing a life");
+			// VFDeath.logger.info("HEALTH INFO[Losing: " + amount + "|Current: " + currentMax + "]");
 			this.healthMod += amount;
 		}
 
@@ -207,7 +203,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	{
 		if (this.isDead)
 			num -= 1;
-		
+
 		this.isDead = setIsDead;
 		this.gainHearts(num);
 	}
@@ -247,7 +243,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	{
 		return this.inventoryGrave;
 	}
-	
+
 	public boolean isOnLastLife()
 	{
 		return this.player.getMaxHealth() <= ConfigHandler.HEART_LOSS_ON_DEATH * 2;

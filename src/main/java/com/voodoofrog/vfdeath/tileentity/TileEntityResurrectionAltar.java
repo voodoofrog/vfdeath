@@ -220,7 +220,6 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				BlockPos coords = getRandomAltarSpawnPoint();
 
 				VFDeath.ghostHandler.ghostPlayer(resPlayer, false);
-				//TODO: removeAnkhsForPlayerUUID not returning correct count
 				props.gainHearts(this.removeAnkhsForPlayerUUID(playerUUID), false);
 				player.closeScreen();
 
@@ -373,8 +372,8 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 				}
 			}
 		}
-		
-		VFDeath.logger.info("Hearts to be gained: " + count);
+
+		// TODO: May not need this
 		this.markForUpdate();
 		return count;
 	}

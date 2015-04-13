@@ -25,7 +25,7 @@ public class VFDeathBlocks
 		GameRegistry.registerBlock(gravestone, Strings.GRAVESTONE_NAME).setHardness(3.5F).setStepSound(Block.soundTypePiston)
 				.setUnlocalizedName(Strings.GRAVESTONE_UNLOCALIZED).setCreativeTab(VFDeath.vfdeathTab);
 		GameRegistry.registerBlock(coffin, Strings.COFFIN_NAME).setHardness(2.5F).setStepSound(Block.soundTypeWood)
-		.setUnlocalizedName(Strings.COFFIN_UNLOCALIZED).setCreativeTab(VFDeath.vfdeathTab);
+				.setUnlocalizedName(Strings.COFFIN_UNLOCALIZED).setCreativeTab(VFDeath.vfdeathTab);
 	}
 
 	public static void registerTileEntities()

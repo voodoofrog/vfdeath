@@ -1,7 +1,6 @@
 package com.voodoofrog.vfdeath.entity.effect;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -10,20 +9,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EntityVisualLightningBolt extends EntityLightningBolt
 {
 	/**
-	 * Declares which state the lightning bolt is in. Whether it's in the air,
-	 * hit the ground, etc.
+	 * Declares which state the lightning bolt is in. Whether it's in the air, hit the ground, etc.
 	 */
 	private int lightningState;
 
 	/**
-	 * A random long that is used to change the vertex of the lightning rendered
-	 * in RenderLightningBolt
+	 * A random long that is used to change the vertex of the lightning rendered in RenderLightningBolt
 	 */
 	public long boltVertex;
 
 	/**
-	 * Determines the time before the EntityLightningBolt is destroyed. It is a
-	 * random integer decremented over time.
+	 * Determines the time before the EntityLightningBolt is destroyed. It is a random integer decremented over time.
 	 */
 	private int boltLivingTime;
 
@@ -43,8 +39,8 @@ public class EntityVisualLightningBolt extends EntityLightningBolt
 	{
 		if (this.lightningState == 2)
 		{
-			this.worldObj.playSoundEffect(this.posX, this.posY, this.posZ, "ambient.weather.thunder", 10000.0F,
-					0.8F + this.rand.nextFloat() * 0.2F);
+			this.worldObj
+					.playSoundEffect(this.posX, this.posY, this.posZ, "ambient.weather.thunder", 10000.0F, 0.8F + this.rand.nextFloat() * 0.2F);
 			this.worldObj.playSoundEffect(this.posX, this.posY, this.posZ, "random.explode", 2.0F, 0.5F + this.rand.nextFloat() * 0.2F);
 		}
 

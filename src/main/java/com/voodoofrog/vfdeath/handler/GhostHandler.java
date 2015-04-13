@@ -130,7 +130,7 @@ public class GhostHandler
 				player.capabilities.disableDamage = true;
 				player.sendPlayerAbilities();
 			}
-			
+
 			player.setInvisible(true);
 		}
 		else
@@ -141,7 +141,7 @@ public class GhostHandler
 				player.capabilities.disableDamage = false;
 				player.sendPlayerAbilities();
 			}
-			
+
 			player.setInvisible(false);
 		}
 	}

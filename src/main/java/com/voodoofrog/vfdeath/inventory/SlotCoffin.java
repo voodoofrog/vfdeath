@@ -18,10 +18,10 @@ public class SlotCoffin extends Slot
 	{
 		return item.getItem() instanceof ItemCoffin;
 	}
-	
+
 	@Override
-    public int getItemStackLimit(ItemStack stack)
-    {
-        return 1;
-    }
+	public int getItemStackLimit(ItemStack stack)
+	{
+		return 1;
+	}
 }

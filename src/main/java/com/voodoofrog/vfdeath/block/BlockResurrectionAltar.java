@@ -97,16 +97,16 @@ public class BlockResurrectionAltar extends BlockContainer
 	{
 		return 3;
 	}
-	
-	@Override
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
 
 	@Override
-    public boolean isFullCube()
-    {
-        return false;
-    }
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isFullCube()
+	{
+		return false;
+	}
 }

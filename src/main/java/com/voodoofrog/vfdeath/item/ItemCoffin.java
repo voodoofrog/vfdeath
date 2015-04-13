@@ -3,7 +3,6 @@ package com.voodoofrog.vfdeath.item;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,7 +11,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.block.BlockCoffin;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 
@@ -63,7 +61,7 @@ public class ItemCoffin extends Item
 				{
 					int j = facing.getHorizontalIndex();
 					IBlockState coffinBlockState = VFDeathBlocks.coffin.getDefaultState().withProperty(BlockBed.FACING, rotatedFacing);
-					
+
 					if (((BlockCoffin)coffinBlockState.getBlock()).canPlaceBlockAt(worldIn, pos, rotatedFacing))
 					{
 						worldIn.setBlockState(pos, coffinBlockState, 3);

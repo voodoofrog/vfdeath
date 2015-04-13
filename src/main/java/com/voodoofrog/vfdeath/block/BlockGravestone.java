@@ -15,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -24,7 +23,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.voodoofrog.vfdeath.VFDeath;
-import com.voodoofrog.vfdeath.graveyard.Graveyard;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
 
@@ -112,7 +110,7 @@ public class BlockGravestone extends BlockContainer
 		if (tileentity instanceof TileEntityGravestone)
 		{
 			TileEntityGravestone teGravestone = (TileEntityGravestone)tileentity;
-			
+
 			if (placer instanceof EntityPlayer)
 			{
 				teGravestone.setOwner(((EntityPlayer)placer).getUUID(((EntityPlayer)placer).getGameProfile()));
@@ -207,7 +205,7 @@ public class BlockGravestone extends BlockContainer
 		return new BlockState(this, new IProperty[] { FACING });
 	}
 
-	//TODO: Remove this
+	// TODO: Remove this
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY,
 			float hitZ)
 	{

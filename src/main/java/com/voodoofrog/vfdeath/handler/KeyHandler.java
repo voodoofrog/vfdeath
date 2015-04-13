@@ -1,7 +1,5 @@
 package com.voodoofrog.vfdeath.handler;
 
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -10,11 +8,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import org.lwjgl.input.Keyboard;
-
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
-import com.voodoofrog.vfdeath.misc.Strings;
 import com.voodoofrog.vfdeath.network.server.OpenGraveInventoryMessage;
 
 public class KeyHandler

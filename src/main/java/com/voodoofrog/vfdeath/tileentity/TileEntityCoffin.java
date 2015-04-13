@@ -232,7 +232,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		this.readFromNBT(packet.getNbtCompound());
 		System.out.println("got data packet");
 	}
-	
+
 	public int getInventoryStackLimit()
 	{
 		return 64;

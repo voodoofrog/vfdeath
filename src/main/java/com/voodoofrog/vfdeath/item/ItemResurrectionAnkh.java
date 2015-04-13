@@ -187,7 +187,7 @@ public class ItemResurrectionAnkh extends Item
 	{
 		if (!stack.hasTagCompound())
 			return null;
-					
+
 		if (!stack.getTagCompound().getString("owner").isEmpty())
 		{
 			UUID ownerUUID = UUID.fromString(stack.getTagCompound().getString("owner"));

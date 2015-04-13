@@ -16,7 +16,7 @@ public class VFDeathItems
 	{
 		GameRegistry.registerItem(ankh, Strings.ANKH_NAME, null).setUnlocalizedName(Strings.ANKH_UNLOCALIZED).setCreativeTab(VFDeath.vfdeathTab)
 				.setMaxStackSize(1).setMaxDamage(4);
-		GameRegistry.registerItem(coffinItem, Strings.COFFIN_ITEM_NAME, null).setUnlocalizedName(Strings.COFFIN_UNLOCALIZED).setCreativeTab(VFDeath.vfdeathTab)
-		.setMaxStackSize(1);
+		GameRegistry.registerItem(coffinItem, Strings.COFFIN_ITEM_NAME, null).setUnlocalizedName(Strings.COFFIN_UNLOCALIZED)
+				.setCreativeTab(VFDeath.vfdeathTab).setMaxStackSize(1);
 	}
 }

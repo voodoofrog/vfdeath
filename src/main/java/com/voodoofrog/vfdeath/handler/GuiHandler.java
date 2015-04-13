@@ -18,7 +18,6 @@ import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.inventory.ContainerCoffin;
 import com.voodoofrog.vfdeath.inventory.ContainerGrave;
 import com.voodoofrog.vfdeath.inventory.ContainerResurrectionAltar;
-import com.voodoofrog.vfdeath.inventory.InventoryGrave;
 import com.voodoofrog.vfdeath.tileentity.TileEntityCoffin;
 import com.voodoofrog.vfdeath.tileentity.TileEntityResurrectionAltar;
 
@@ -34,7 +33,7 @@ public class GuiHandler implements IGuiHandler
 	{
 		BlockPos pos = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(pos);
-		
+
 		switch (guiId)
 		{
 		case 0:
@@ -47,7 +46,7 @@ public class GuiHandler implements IGuiHandler
 			if (tileEntity != null && tileEntity instanceof TileEntityCoffin)
 			{
 				Block block = world.getBlockState(pos).getBlock();
-				
+
 				if (block instanceof BlockCoffin)
 				{
 					IBasicContainer container = ((BlockCoffin)block).getContainer(world, pos);
@@ -68,7 +67,7 @@ public class GuiHandler implements IGuiHandler
 	{
 		BlockPos pos = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(pos);
-		
+
 		switch (guiId)
 		{
 		case 0:
@@ -81,7 +80,7 @@ public class GuiHandler implements IGuiHandler
 			if (tileEntity != null && tileEntity instanceof TileEntityCoffin)
 			{
 				Block block = world.getBlockState(pos).getBlock();
-				
+
 				if (block instanceof BlockCoffin)
 				{
 					IBasicContainer container = ((BlockCoffin)block).getContainer(world, pos);

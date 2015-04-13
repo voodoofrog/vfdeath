@@ -18,10 +18,10 @@ public class SlotResurrectionAnkh extends Slot
 	{
 		return item.getItem() instanceof ItemResurrectionAnkh;
 	}
-	
+
 	@Override
-    public int getItemStackLimit(ItemStack stack)
-    {
-        return 1;
-    }
+	public int getItemStackLimit(ItemStack stack)
+	{
+		return 1;
+	}
 }

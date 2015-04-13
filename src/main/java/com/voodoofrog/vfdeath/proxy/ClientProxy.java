@@ -1,10 +1,7 @@
 package com.voodoofrog.vfdeath.proxy;
 
-import org.lwjgl.input.Keyboard;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
@@ -12,7 +9,8 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import org.lwjgl.input.Keyboard;
 
 import com.voodoofrog.vfdeath.client.gui.GuiInGameHealthLoss;
 import com.voodoofrog.vfdeath.client.renderer.tileentity.TileEntityCoffinRenderer;

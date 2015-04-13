@@ -1,9 +1,9 @@
 package com.voodoofrog.vfdeath.creativetab;
 
-import com.voodoofrog.vfdeath.init.VFDeathItems;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+
+import com.voodoofrog.vfdeath.init.VFDeathItems;
 
 public class VFDeathCreativeTab extends CreativeTabs
 {

@@ -204,16 +204,16 @@ public class TileEntityGravestone extends TileEntity
 			this.epitaph[0] = new ChatComponentText(Ribbit.playerUtils.getUserNameFromUUID(this.ownerUUID));
 		}
 	}
-	
+
 	public void updateEpitaph(String deathCause)
 	{
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
 		Date date = Ribbit.dateTime.getCurrentDate(this.worldObj);
-		
+
 		this.epitaph[1] = new ChatComponentTranslation(Strings.GRAVE_DOD, dateFormat.format(date));
 		this.epitaph[2] = new ChatComponentTranslation(Strings.GRAVE_KILLED_BY);
 		this.epitaph[3] = new ChatComponentTranslation(deathCause);
-		
+
 		this.markForUpdate();
 	}
 }

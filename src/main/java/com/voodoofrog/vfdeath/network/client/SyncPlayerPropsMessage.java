@@ -8,7 +8,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.voodoofrog.ribbit.network.AbstractMessage.AbstractClientMessage;
-import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 
 public class SyncPlayerPropsMessage extends AbstractClientMessage<SyncPlayerPropsMessage>
@@ -42,6 +41,6 @@ public class SyncPlayerPropsMessage extends AbstractClientMessage<SyncPlayerProp
 	public void process(EntityPlayer player, Side side)
 	{
 		ExtendedPlayer.get(player).loadNBTData(this.data);
-		//ExtendedPlayer.get(player).updateHealthAttribMod();
+		// ExtendedPlayer.get(player).updateHealthAttribMod();
 	}
 }

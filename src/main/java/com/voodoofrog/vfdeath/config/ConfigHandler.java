@@ -2,10 +2,7 @@ package com.voodoofrog.vfdeath.config;
 
 import java.util.UUID;
 
-import org.lwjgl.input.Keyboard;
-
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -14,7 +11,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.voodoofrog.vfdeath.misc.ModInfo;
-import com.voodoofrog.vfdeath.misc.Strings;
 
 public class ConfigHandler
 {
@@ -33,15 +29,15 @@ public class ConfigHandler
 	public static int RES_ANKH_LEVEL_COST; // Default: 5
 	public static int HEART_LOSS_ON_DEATH; // Default: 1
 	public static Property GHOST_ALLOWED_BLOCKS;
-	
+
 	// Keys
 	@SideOnly(Side.CLIENT)
 	public static KeyBinding GRAVE_KEY;
 
 	public static void syncConfig()
 	{
-		HEART_LOSS_ON_DEATH = configFile
-				.get(Configuration.CATEGORY_GENERAL, "Heart Loss On Death", 1, "How many hearts a player loses on death").getInt();
+		HEART_LOSS_ON_DEATH = configFile.get(Configuration.CATEGORY_GENERAL, "Heart Loss On Death", 1, "How many hearts a player loses on death")
+				.getInt();
 		RES_ANKH_LEVEL_COST = configFile.get(Configuration.CATEGORY_GENERAL, "Resurrection Ankh Level Cost", 5,
 				"Cost in player levels to charge an ankh by one point").getInt();
 		GHOST_ALLOWED_BLOCKS = configFile.get(Configuration.CATEGORY_GENERAL, "GhostAllowedBlocks", "",

@@ -3,7 +3,6 @@ package com.voodoofrog.vfdeath.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -20,7 +19,7 @@ public class ContainerResurrectionAltar extends Container
 		// Player's Hotbar
 		for (int x = 0; x < 9; x++)
 		{
-			this.addSlotToContainer(new Slot(playerInventory, x, 8 + 18 * x, 142)); //index 0-8
+			this.addSlotToContainer(new Slot(playerInventory, x, 8 + 18 * x, 142)); // index 0-8
 		}
 
 		// Player's Main Inventory
@@ -36,12 +35,12 @@ public class ContainerResurrectionAltar extends Container
 		{
 			if (x <= 4)
 			{
-				this.addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x, 8)); //index 0-4
+				this.addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x, 8)); // index 0-4
 			}
 
 			if (x > 4)
 			{
-				this.addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x - 115, 31)); //index 5-9
+				this.addSlotToContainer(new SlotResurrectionAnkh(altar, x, 52 + 23 * x - 115, 31)); // index 5-9
 			}
 		}
 	}
@@ -63,7 +62,7 @@ public class ContainerResurrectionAltar extends Container
 	{
 		return this.altar;
 	}
-	
+
 	@Override
 	public void detectAndSendChanges()
 	{

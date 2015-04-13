@@ -6,13 +6,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.PacketThreadUtil;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.voodoofrog.ribbit.network.AbstractMessage.AbstractServerMessage;
-import com.voodoofrog.vfdeath.VFDeath;
-import com.voodoofrog.vfdeath.misc.ModInfo;
 
 public class RespawnMessage extends AbstractServerMessage<RespawnMessage>
 {

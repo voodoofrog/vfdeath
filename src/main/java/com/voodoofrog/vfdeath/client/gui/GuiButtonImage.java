@@ -9,7 +9,7 @@ import com.voodoofrog.vfdeath.misc.ModInfo;
 
 public class GuiButtonImage extends GuiButton
 {
-	protected static final ResourceLocation buttonTextures = new ResourceLocation(ModInfo.ID, "textures/gui/widgets2.png");
+	protected static final ResourceLocation buttonTextures = new ResourceLocation(ModInfo.ID, "textures/gui/widgets.png");
 	private int iconX;
 	private int iconY;
 	private int iconWidth;

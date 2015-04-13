@@ -81,8 +81,8 @@ public class UpdateGravestoneMessage extends AbstractClientMessage<UpdateGravest
 
 		if (!flag && mc.thePlayer != null)
 		{
-			mc.thePlayer.addChatMessage(new ChatComponentText("Unable to locate gravestone at " + this.pos.getX() + ", " + this.pos.getY()
-					+ ", " + this.pos.getZ()));
+			mc.thePlayer.addChatMessage(new ChatComponentText("Unable to locate gravestone at " + this.pos.getX() + ", " + this.pos.getY() + ", "
+					+ this.pos.getZ()));
 		}
 	}
 

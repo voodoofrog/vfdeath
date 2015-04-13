@@ -8,7 +8,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.voodoofrog.ribbit.network.AbstractMessage.AbstractClientMessage;
-import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.client.gui.GuiResurrectionAltar;
 import com.voodoofrog.vfdeath.misc.Strings;
 
@@ -41,7 +40,7 @@ public class ResurrectionResponseMessage extends AbstractClientMessage<Resurrect
 	public void process(EntityPlayer player, Side side)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		
+
 		if (mc.currentScreen instanceof GuiResurrectionAltar)
 		{
 			GuiResurrectionAltar screen = (GuiResurrectionAltar)mc.currentScreen;
