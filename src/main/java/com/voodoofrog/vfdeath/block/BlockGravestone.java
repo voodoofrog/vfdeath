@@ -1,6 +1,7 @@
 package com.voodoofrog.vfdeath.block;
 
 import java.util.Iterator;
+import java.util.Random;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -11,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -24,6 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
+import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
 
 public class BlockGravestone extends BlockContainer
@@ -172,7 +175,7 @@ public class BlockGravestone extends BlockContainer
 			return state.withProperty(FACING, enumfacing2);
 		}
 	}
-
+	
 	// TODO: May need this from chest block class
 	// public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
 
