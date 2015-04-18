@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -120,29 +121,23 @@ public class GhostHandler
 		}
 	}
 
-	public void ghostPlayer(EntityPlayer player, boolean makeGhost)
+	public void enableGhostAbilities(EntityPlayerMP player, boolean enable)
 	{
-		if (makeGhost)
+		if (enable)
 		{
-			if (player.worldObj.isRemote)
-			{
-				player.capabilities.allowFlying = true;
-				player.capabilities.disableDamage = true;
-				player.sendPlayerAbilities();
-			}
-
-			player.setInvisible(true);
+			player.capabilities.allowFlying = true;
+			player.capabilities.disableDamage = true;
+			player.sendPlayerAbilities();
 		}
 		else
 		{
-			if (!player.capabilities.isCreativeMode && player.worldObj.isRemote)
+			if (!player.capabilities.isCreativeMode)
 			{
 				player.capabilities.allowFlying = false;
 				player.capabilities.disableDamage = false;
-				player.sendPlayerAbilities();
 			}
 
-			player.setInvisible(false);
+			player.sendPlayerAbilities();
 		}
 	}
 }

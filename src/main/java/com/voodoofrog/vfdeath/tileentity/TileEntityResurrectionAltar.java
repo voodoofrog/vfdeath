@@ -219,7 +219,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 			{
 				BlockPos coords = getRandomAltarSpawnPoint();
 
-				VFDeath.ghostHandler.ghostPlayer(resPlayer, false);
+				VFDeath.ghostHandler.enableGhostAbilities((EntityPlayerMP)resPlayer, false);
 				props.gainHearts(this.removeAnkhsForPlayerUUID(playerUUID), false);
 				player.closeScreen();
 

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.client.gui.GuiDeathScreen;
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 
@@ -34,8 +35,15 @@ public class ForgeEventHandler
 	{
 		if (event.entity instanceof EntityPlayerMP)
 		{
-			ExtendedPlayer props = ExtendedPlayer.get((EntityPlayerMP)event.entity);
+			EntityPlayerMP player = (EntityPlayerMP)event.entity;
+			ExtendedPlayer props = ExtendedPlayer.get(player);
+			
 			props.updateHealthAttribMod();
+			
+			//if (props.getIsDead())
+			//{
+			//	VFDeath.ghostHandler.ghostPlayer(player, true);
+			//}
 
 			// VFDeath.packetDispatcher.sendTo(new SyncPlayerPropsMessage((EntityPlayer)event.entity), (EntityPlayerMP)event.entity);
 		}
