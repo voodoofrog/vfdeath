@@ -1,8 +1,10 @@
 package com.voodoofrog.vfdeath.block;
 
 import java.util.Iterator;
+import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -12,8 +14,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -27,6 +31,7 @@ import com.voodoofrog.ribbit.world.IBasicContainer;
 import com.voodoofrog.vfdeath.VFDeath;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
+import com.voodoofrog.vfdeath.init.VFDeathItems;
 import com.voodoofrog.vfdeath.inventory.InventoryFullCoffin;
 import com.voodoofrog.vfdeath.tileentity.TileEntityCoffin;
 
@@ -415,9 +420,20 @@ public class BlockCoffin extends BlockContainer
 			}
 		}
 
+        if (!worldIn.isRemote && this.isFullBlock())
+        {
+            this.dropBlockAsItem(worldIn, pos, state, 0);
+        }
+		
 		super.breakBlock(worldIn, pos, state);
 	}
 
+	@Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    {
+        return VFDeathItems.coffinItem;
+    }
+	
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY,
 			float hitZ)
 	{

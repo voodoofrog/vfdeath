@@ -47,20 +47,13 @@ public class ClientProxy extends CommonProxy
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGravestone.class, new TileEntityGravestoneRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCoffin.class, new TileEntityCoffinRenderer());
-
-		// Item itemGravestoneSimple = GameRegistry.findItem(ModInfo.ID, Strings.GRAVESTONE_NAME);
-		// ModelResourceLocation gravestoneModelResourceLocation = new ModelResourceLocation(ModInfo.ID + ":" + Strings.GRAVESTONE_NAME,
-		// "inventory");
-		// final int DEFAULT_ITEM_SUBTYPE = 0;
-		// Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(itemGravestoneSimple, DEFAULT_ITEM_SUBTYPE,
-		// gravestoneModelResourceLocation);
 	}
 
 	@Override
 	public void registerKeyBindings()
 	{
+		ConfigHandler.GRAVE_KEY = new KeyBinding(StatCollector.translateToLocal(Strings.KEY_GRAVE), Keyboard.KEY_G, "key.categories.inventory");
 		this.keyHandler = new KeyHandler();
 		FMLCommonHandler.instance().bus().register(keyHandler);
-		ConfigHandler.GRAVE_KEY = new KeyBinding(StatCollector.translateToLocal(Strings.KEY_GRAVE), Keyboard.KEY_G, "key.categories.inventory");
 	}
 }
