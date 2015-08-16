@@ -1,8 +1,13 @@
 package com.voodoofrog.vfdeath.graveyard;
 
+import java.util.Iterator;
+import java.util.List;
+
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
@@ -12,26 +17,34 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.voodoofrog.ribbit.Ribbit;
+import com.voodoofrog.ribbit.world.IBasicContainer;
+import com.voodoofrog.vfdeath.VFDeath;
+import com.voodoofrog.vfdeath.block.BlockCoffin;
 import com.voodoofrog.vfdeath.block.BlockGravestone;
+import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
+import com.voodoofrog.vfdeath.item.ItemCoffin;
 import com.voodoofrog.vfdeath.misc.Strings;
+import com.voodoofrog.vfdeath.tileentity.TileEntityCoffin;
 import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
 
 public class Graveyard
 {
+	private int worldId = 0;
+	
 	public BlockPos spawnGrave(EntityPlayer player)
 	{
-		WorldServer overworld = DimensionManager.getWorld(0);
-		BlockPos pos = this.getRandomizedSpawnPoint(overworld);
+		WorldServer graveWorld = DimensionManager.getWorld(this.worldId);
+		BlockPos pos = this.getRandomizedSpawnPoint(graveWorld);
 
 		if (pos != null)
 		{
 			BlockGravestone graveStone = VFDeathBlocks.gravestone;
 
-			overworld.setBlockState(pos, graveStone.getDefaultState());
-			overworld.notifyNeighborsOfStateChange(pos, VFDeathBlocks.gravestone);
-			graveStone.digGrave(overworld, pos);
-			TileEntity tileentity = overworld.getTileEntity(pos);
+			graveWorld.setBlockState(pos, graveStone.getDefaultState());
+			graveWorld.notifyNeighborsOfStateChange(pos, VFDeathBlocks.gravestone);
+			graveStone.digGrave(graveWorld, pos);
+			TileEntity tileentity = graveWorld.getTileEntity(pos);
 
 			if (tileentity instanceof TileEntityGravestone)
 			{
@@ -137,5 +150,102 @@ public class Graveyard
 		// End checking below north blocks
 
 		return flag;
+	}
+	
+	public int getWorldId()
+	{
+		return this.worldId;
+	}
+	
+	public boolean addDropsToGrave(EntityPlayer player, World world, BlockPos pos, List<EntityItem> drops)
+	{
+		Block block = world.getBlockState(pos).getBlock();
+
+		if (block instanceof BlockGravestone)
+		{
+			TileEntity te = world.getTileEntity(pos);
+
+			if (te instanceof TileEntityGravestone)
+			{
+				if (((TileEntityGravestone)te).getOwner().equals(player.getUUID(player.getGameProfile())))
+				{
+					if (((BlockGravestone)block).getCoffinPos(world, pos) != null)
+					{
+						//TODO: This is the new baseline
+						VFDeath.logger.info("Adding drops to existing coffin...");
+						// should check to see if coffin is occupied
+						BlockPos coffinPos = ((BlockGravestone)block).getCoffinPos(world, pos);
+						
+						if (coffinPos != null)
+						{
+							IBasicContainer container = ((BlockCoffin)world.getBlockState(coffinPos).getBlock()).getContainer(world, coffinPos, true);
+							if (container != null)
+							{
+								this.fillCoffin(container, drops);
+							}
+							else
+							{
+								//TODO: This is the fuck up point
+								VFDeath.logger.info("Null container!");
+								return false;
+							}
+						}
+						else
+						{
+							VFDeath.logger.info("Null coffinPos!");
+							return false;
+						}
+
+						return true;
+					}
+					else
+					{
+						VFDeath.logger.info("Adding coffin...");
+						// default coffin
+						BlockCoffin coffin = VFDeathBlocks.coffin;
+
+						if (ExtendedPlayer.get(player).getGraveInventory().getInventory().length > 0)
+						{
+							ItemCoffin coffinItem = (ItemCoffin)ExtendedPlayer.get(player).getGraveInventory().getStackInSlot(0).getItem();
+							coffin = coffinItem.getCoffinBlock();
+						}
+
+						BlockPos coffinPos = ((BlockGravestone)block).digGrave(world, pos, coffin);
+						IBasicContainer container = coffin.getContainer(world, coffinPos);
+
+						VFDeath.logger.info("Adding drops to added coffin...");
+						ExtendedPlayer.get(player).getGraveInventory().decrStackSize(0, 1);
+						this.fillCoffin(container, drops);
+						coffin.setOccupant(world, coffinPos, player);
+						return true;
+					}
+				}
+				else
+				{
+					VFDeath.logger.info("No gravestone TE found!");
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+		VFDeath.logger.info("No gravestone found!");
+		return false;
+	}
+	
+	private void fillCoffin(IBasicContainer container, List<EntityItem> drops)
+	{
+		Iterator<EntityItem> dropsIterator = drops.iterator();
+		int index = 0;
+
+		while (dropsIterator.hasNext())
+		{
+			ItemStack drop = dropsIterator.next().getEntityItem();
+			//TODO: Fix this
+			container.setInventorySlotContents(index, drop);
+			index++;
+		}
 	}
 }

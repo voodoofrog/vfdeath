@@ -358,7 +358,7 @@ public class BlockCoffin extends BlockContainer
 		return true;
 	}
 
-	private boolean isFullSize(World worldIn, BlockPos pos)
+	public boolean isFullSize(World worldIn, BlockPos pos)
 	{
 		if (worldIn.getBlockState(pos).getBlock() != this)
 		{
@@ -475,6 +475,11 @@ public class BlockCoffin extends BlockContainer
 
 	public IBasicContainer getContainer(World worldIn, BlockPos pos)
 	{
+		return getContainer(worldIn, pos, false);
+	}
+	
+	public IBasicContainer getContainer(World worldIn, BlockPos pos, boolean ignoreBlocked)
+	{
 		TileEntity tileentity = worldIn.getTileEntity(pos);
 
 		if (!(tileentity instanceof TileEntityCoffin))
@@ -485,7 +490,7 @@ public class BlockCoffin extends BlockContainer
 		{
 			Object object = (TileEntityCoffin)tileentity;
 
-			if (this.isBlocked(worldIn, pos))
+			if (this.isBlocked(worldIn, pos) && !ignoreBlocked)
 			{
 				return null;
 			}
@@ -501,7 +506,7 @@ public class BlockCoffin extends BlockContainer
 
 					if (block == this)
 					{
-						if (this.isBlocked(worldIn, blockpos1))
+						if (this.isBlocked(worldIn, blockpos1) && !ignoreBlocked)
 						{
 							return null;
 						}
@@ -584,5 +589,18 @@ public class BlockCoffin extends BlockContainer
 	protected BlockState createBlockState()
 	{
 		return new BlockState(this, new IProperty[] { FACING });
+	}
+	
+	public boolean setOccupant(World world, BlockPos pos, EntityPlayer player)
+	{
+		TileEntity tileentity = world.getTileEntity(pos);
+		
+		if (tileentity instanceof TileEntityCoffin)
+		{
+			((TileEntityCoffin)tileentity).setOccupant(player.getUUID(player.getGameProfile()), this.isFullSize(world, pos));
+			return true;
+		}
+		
+		return false;
 	}
 }

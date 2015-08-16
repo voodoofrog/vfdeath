@@ -13,9 +13,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 import com.voodoofrog.vfdeath.VFDeath;
+import com.voodoofrog.vfdeath.block.BlockGravestone;
 import com.voodoofrog.vfdeath.config.ConfigHandler;
 import com.voodoofrog.vfdeath.inventory.InventoryGrave;
 import com.voodoofrog.vfdeath.network.client.SyncPlayerPropsMessage;
@@ -27,8 +29,9 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	private final EntityPlayer player;
 	private double healthMod;
 	private boolean isDead;
-	private boolean hasGrave;
 	private BlockPos gravePos;
+	private BlockPos customGravePos;
+	private int customGraveWorldId;
 	public final static UUID healthModUUID = UUID.fromString("b70b11c6-3690-4ff6-b284-2d626929c6da");
 	private InventoryGrave inventoryGrave;
 
@@ -37,8 +40,9 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		this.player = player;
 		this.healthMod = 0;
 		this.isDead = false;
-		this.hasGrave = false;
-		this.gravePos = new BlockPos(player.worldObj.getSpawnPoint());
+		this.gravePos = null;
+		this.customGravePos = null;
+		this.customGraveWorldId = 0;
 		this.inventoryGrave = new InventoryGrave(player);
 	}
 
@@ -65,8 +69,9 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	{
 		this.healthMod = props.healthMod;
 		this.isDead = props.isDead;
-		this.hasGrave = props.hasGrave;
 		this.gravePos = props.gravePos;
+		this.customGravePos = props.customGravePos;
+		this.customGraveWorldId = props.customGraveWorldId;
 	}
 
 	@Override
@@ -79,11 +84,23 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 
 		properties.setDouble("HealthModifier", this.healthMod);
 		properties.setBoolean("IsDead", this.isDead);
-		properties.setBoolean("HasGrave", this.hasGrave);
-		properties.setInteger("GravePosX", this.gravePos.getX());
-		properties.setInteger("GravePosY", this.gravePos.getY());
-		properties.setInteger("GravePosZ", this.gravePos.getZ());
+		
+		if (this.gravePos != null)
+		{
+			properties.setInteger("GravePosX", this.gravePos.getX());
+			properties.setInteger("GravePosY", this.gravePos.getY());
+			properties.setInteger("GravePosZ", this.gravePos.getZ());
+		}
 
+		if (this.customGravePos != null)
+		{
+			properties.setInteger("CustomGravePosX", this.customGravePos.getX());
+			properties.setInteger("CustomGravePosY", this.customGravePos.getY());
+			properties.setInteger("CustomGravePosZ", this.customGravePos.getZ());
+		}
+		
+		properties.setInteger("CustomGraveWorldID", this.customGraveWorldId);
+		
 		for (int i = 0; i < inventory.length; i++)
 		{
 			if (inventory[i] != null)
@@ -107,11 +124,24 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 
 		this.healthMod = properties.getDouble("HealthModifier");
 		this.isDead = properties.getBoolean("IsDead");
-		this.hasGrave = properties.getBoolean("HasGrave");
-		int gravePosX = properties.getInteger("GravePosX");
-		int gravePosY = properties.getInteger("GravePosY");
-		int gravePosZ = properties.getInteger("GravePosZ");
-		this.gravePos = new BlockPos(gravePosX, gravePosY, gravePosZ);
+		
+		if (properties.hasKey("GravePosX") && properties.hasKey("GravePosY") && properties.hasKey("GravePosZ"))
+		{
+			int gravePosX = properties.getInteger("GravePosX");
+			int gravePosY = properties.getInteger("GravePosY");
+			int gravePosZ = properties.getInteger("GravePosZ");
+			this.gravePos = new BlockPos(gravePosX, gravePosY, gravePosZ);
+		}
+		
+		if (properties.hasKey("CustomGravePosX") && properties.hasKey("CustomGravePosY") && properties.hasKey("CustomGravePosZ"))
+		{
+			int customGravePosX = properties.getInteger("CustomGravePosX");
+			int customGravePosY = properties.getInteger("CustomGravePosY");
+			int customGravePosZ = properties.getInteger("CustomGravePosZ");
+			this.customGravePos = new BlockPos(customGravePosX, customGravePosY, customGravePosZ);
+		}
+		
+		this.customGraveWorldId = properties.getInteger("CustomGraveWorldID");
 
 		NBTTagList tagList = properties.getTagList("GraveInventory", 10);
 
@@ -175,11 +205,9 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 			VFDeath.logger.info("Losing last life");
 			this.isDead = true;
 
-			if (!this.hasGrave)
-			{
-				this.gravePos = VFDeath.graveyard.spawnGrave(player);
-				this.hasGrave = true;
-			}
+			/*
+			 * if (!this.hasGrave) { this.gravePos = VFDeath.graveyard.spawnGrave(player); this.hasGrave = true; }
+			 */
 
 			this.healthMod = baseMax - 2D; // TODO: remove this later?
 		}
@@ -247,5 +275,37 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	public boolean isOnLastLife()
 	{
 		return this.player.getMaxHealth() <= ConfigHandler.HEART_LOSS_ON_DEATH * 2;
+	}
+
+
+	public BlockPos getGravePos()
+	{
+		return this.gravePos;
+	}
+	
+	public void setGravePos(BlockPos pos)
+	{
+		this.gravePos = pos;
+	}
+
+	public BlockPos getCustomGravePos()
+	{
+		return this.customGravePos;
+	}
+	
+	public int getCustomGraveWorldId()
+	{
+		return this.customGraveWorldId;
+	}
+	
+	public void setCustomGravePos(World world, BlockPos pos)
+	{
+		this.customGraveWorldId = world.provider.getDimensionId();
+		this.customGravePos = pos;
+	}
+	
+	public void spawnNewGrave()
+	{
+		this.setGravePos(VFDeath.graveyard.spawnGrave(player));
 	}
 }

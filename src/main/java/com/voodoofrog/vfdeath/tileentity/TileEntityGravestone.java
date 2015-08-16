@@ -191,6 +191,11 @@ public class TileEntityGravestone extends TileEntity
 		this.worldObj.markBlockForUpdate(this.pos);
 	}
 
+	public UUID getOwner()
+	{
+		return this.ownerUUID;
+	}
+	
 	public void setOwner(UUID playerUUID)
 	{
 		this.ownerUUID = playerUUID;

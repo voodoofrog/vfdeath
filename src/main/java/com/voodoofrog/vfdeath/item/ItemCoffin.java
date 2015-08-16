@@ -84,4 +84,9 @@ public class ItemCoffin extends Item
 			}
 		}
 	}
+	
+	public BlockCoffin getCoffinBlock()
+	{
+		return VFDeathBlocks.coffin;
+	}
 }

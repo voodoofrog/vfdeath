@@ -33,7 +33,7 @@ public class PlayerEventHandler
 	{
 		ExtendedPlayer props = ExtendedPlayer.get(event.player);
 
-		props.loseHearts(1);
+		//props.loseHearts(1);
 
 		if (props.getIsDead())
 		{

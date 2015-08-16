@@ -225,6 +225,11 @@ public class BlockGravestone extends BlockContainer
 
 	public void digGrave(World world, BlockPos pos)
 	{
+		this.digGrave(world, pos, VFDeathBlocks.coffin);
+	}
+	
+	public BlockPos digGrave(World world, BlockPos pos, BlockCoffin coffin)
+	{
 		int meta = this.getMetaFromState(world.getBlockState(pos));
 
 		if (meta == 2) // SOUTH
@@ -234,44 +239,81 @@ public class BlockGravestone extends BlockContainer
 			world.setBlockState(pos.down().north().north(), Blocks.grass.getDefaultState());
 			world.notifyNeighborsOfStateChange(pos.down().north().north(), Blocks.grass);
 
-			world.setBlockState(pos.down().down().north().north(), VFDeathBlocks.coffin.getDefaultState().withProperty(FACING, EnumFacing.WEST));
-			world.notifyNeighborsOfStateChange(pos.down().down().north().north(), VFDeathBlocks.coffin);
+			world.setBlockState(pos.down().down().north().north(), coffin.getDefaultState().withProperty(FACING, EnumFacing.WEST));
+			world.notifyNeighborsOfStateChange(pos.down().down().north().north(), coffin);
+			
+			return pos.down().down().north().north();
 		}
 
 		if (meta == 3) // NORTH
 		{
 			world.setBlockState(pos.down().south(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().south(), Blocks.air);
-			world.setBlockState(pos.down().south().south(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().south().south(), Blocks.air);
-			world.setBlockState(pos.down().down().south(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().down().south(), Blocks.air);
-			world.setBlockState(pos.down().down().south().south(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().down().south().south(), Blocks.air);
+			world.notifyNeighborsOfStateChange(pos.down().south(), Blocks.grass);
+			world.setBlockState(pos.down().south().south(), Blocks.grass.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().south().south(), Blocks.grass);
+			
+			world.setBlockState(pos.down().down().south().south(), coffin.getDefaultState().withProperty(FACING, EnumFacing.EAST));
+			world.notifyNeighborsOfStateChange(pos.down().down().south().south(), coffin);
+			
+			return pos.down().down().south().south();
 		}
 
 		if (meta == 4) // WEST
 		{
-			world.setBlockState(pos.down().east(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().east(), Blocks.air);
-			world.setBlockState(pos.down().east().east(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().east().east(), Blocks.air);
-			world.setBlockState(pos.down().down().east(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().down().east(), Blocks.air);
-			world.setBlockState(pos.down().down().east().east(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().down().east().east(), Blocks.air);
+			world.setBlockState(pos.down().east(), Blocks.grass.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().east(), Blocks.grass);
+			world.setBlockState(pos.down().east().east(), Blocks.grass.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().east().east(), Blocks.grass);
+			
+			world.setBlockState(pos.down().down().east().east(), coffin.getDefaultState().withProperty(FACING, EnumFacing.NORTH));
+			world.notifyNeighborsOfStateChange(pos.down().down().east().east(), coffin);
+			
+			return pos.down().down().east().east();
 		}
 
 		if (meta == 5) // EAST
 		{
-			world.setBlockState(pos.down().west(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().west(), Blocks.air);
-			world.setBlockState(pos.down().west().west(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().west().west(), Blocks.air);
-			world.setBlockState(pos.down().down().west(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().down().west(), Blocks.air);
-			world.setBlockState(pos.down().down().west().west(), Blocks.air.getDefaultState());
-			world.notifyNeighborsOfStateChange(pos.down().down().west().west(), Blocks.air);
+			world.setBlockState(pos.down().west(), Blocks.grass.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().west(), Blocks.grass);
+			world.setBlockState(pos.down().west().west(), Blocks.grass.getDefaultState());
+			world.notifyNeighborsOfStateChange(pos.down().west().west(), Blocks.grass);
+			
+			world.setBlockState(pos.down().down().west().west(), coffin.getDefaultState().withProperty(FACING, EnumFacing.SOUTH));
+			world.notifyNeighborsOfStateChange(pos.down().down().west().west(), coffin);
+			
+			return pos.down().down().west().west();
 		}
+		return null;
+	}
+	
+	public BlockPos getCoffinPos(World world, BlockPos pos)
+	{
+		int meta = this.getMetaFromState(world.getBlockState(pos));
+
+		if (meta == 2) // SOUTH
+		{
+			if (world.getBlockState(pos.down().down().north().north()).getBlock() instanceof BlockCoffin)
+				return pos.down().down().north().north();
+		}
+
+		if (meta == 3) // NORTH
+		{
+			if (world.getBlockState(pos.down().down().south().south()).getBlock() instanceof BlockCoffin)
+				return pos.down().down().south().south();
+		}
+
+		if (meta == 4) // WEST
+		{
+			if (world.getBlockState(pos.down().down().east().east()).getBlock() instanceof BlockCoffin)
+				return pos.down().down().east().east();
+		}
+
+		if (meta == 5) // EAST
+		{
+			if (world.getBlockState(pos.down().down().west().west()).getBlock() instanceof BlockCoffin)
+				return pos.down().down().west().west();
+		}
+		
+		return null;
 	}
 }
