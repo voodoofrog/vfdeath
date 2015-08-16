@@ -286,7 +286,7 @@ public class BlockGravestone extends BlockContainer
 		return null;
 	}
 	
-	public BlockPos getCoffinPos(World world, BlockPos pos)
+	public BlockPos getCoffinBlockPos(World world, BlockPos pos)
 	{
 		int meta = this.getMetaFromState(world.getBlockState(pos));
 
@@ -312,6 +312,16 @@ public class BlockGravestone extends BlockContainer
 		{
 			if (world.getBlockState(pos.down().down().west().west()).getBlock() instanceof BlockCoffin)
 				return pos.down().down().west().west();
+		}
+		
+		return null;
+	}
+	
+	public BlockCoffin getCoffinBlock(World world, BlockPos pos)
+	{
+		if (this.getCoffinBlockPos(world, pos) != null)
+		{
+			return (BlockCoffin)world.getBlockState(this.getCoffinBlockPos(world, pos)).getBlock();
 		}
 		
 		return null;

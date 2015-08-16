@@ -123,6 +123,7 @@ public class ForgeEventHandler
 					if (VFDeath.graveyard.addDropsToGrave(event.entityPlayer, DimensionManager.getWorld(VFDeath.graveyard.getWorldId()), gravePos,
 							event.drops))
 					{
+						props.setGravePos(gravePos);
 						VFDeath.logger.info("Successfully used new default grave!");
 						event.setCanceled(true);
 					}

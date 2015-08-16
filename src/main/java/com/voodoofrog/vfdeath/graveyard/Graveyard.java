@@ -31,7 +31,7 @@ import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
 public class Graveyard
 {
 	private int worldId = 0;
-	
+
 	public BlockPos spawnGrave(EntityPlayer player)
 	{
 		WorldServer graveWorld = DimensionManager.getWorld(this.worldId);
@@ -151,48 +151,45 @@ public class Graveyard
 
 		return flag;
 	}
-	
+
 	public int getWorldId()
 	{
 		return this.worldId;
 	}
-	
+
 	public boolean addDropsToGrave(EntityPlayer player, World world, BlockPos pos, List<EntityItem> drops)
 	{
 		Block block = world.getBlockState(pos).getBlock();
 
 		if (block instanceof BlockGravestone)
 		{
+			BlockGravestone blockGravestone = (BlockGravestone)block;
 			TileEntity te = world.getTileEntity(pos);
 
 			if (te instanceof TileEntityGravestone)
 			{
-				if (((TileEntityGravestone)te).getOwner().equals(player.getUUID(player.getGameProfile())))
+				TileEntityGravestone tileEntityGravestone = (TileEntityGravestone)te;
+
+				if (tileEntityGravestone.getOwner().equals(player.getUUID(player.getGameProfile())))
 				{
-					if (((BlockGravestone)block).getCoffinPos(world, pos) != null)
+					BlockPos coffinBlockPos = blockGravestone.getCoffinBlockPos(world, pos);
+					
+					if (coffinBlockPos != null)
 					{
-						//TODO: This is the new baseline
+						BlockCoffin blockCoffin = blockGravestone.getCoffinBlock(world, pos);
+						IBasicContainer container = blockCoffin.getContainer(world, coffinBlockPos, true);
+
 						VFDeath.logger.info("Adding drops to existing coffin...");
-						// should check to see if coffin is occupied
-						BlockPos coffinPos = ((BlockGravestone)block).getCoffinPos(world, pos);
-						
-						if (coffinPos != null)
+						// TODO: should check to see if coffin is occupied
+
+						if (container != null)
 						{
-							IBasicContainer container = ((BlockCoffin)world.getBlockState(coffinPos).getBlock()).getContainer(world, coffinPos, true);
-							if (container != null)
-							{
-								this.fillCoffin(container, drops);
-							}
-							else
-							{
-								//TODO: This is the fuck up point
-								VFDeath.logger.info("Null container!");
-								return false;
-							}
+							this.fillCoffin(container, drops);
+							blockCoffin.setOccupant(world, coffinBlockPos, player);
 						}
 						else
 						{
-							VFDeath.logger.info("Null coffinPos!");
+							VFDeath.logger.info("Null container!");
 							return false;
 						}
 
@@ -202,39 +199,29 @@ public class Graveyard
 					{
 						VFDeath.logger.info("Adding coffin...");
 						// default coffin
-						BlockCoffin coffin = VFDeathBlocks.coffin;
+						BlockCoffin blockCoffin = VFDeathBlocks.coffin;
 
 						if (ExtendedPlayer.get(player).getGraveInventory().getInventory().length > 0)
 						{
 							ItemCoffin coffinItem = (ItemCoffin)ExtendedPlayer.get(player).getGraveInventory().getStackInSlot(0).getItem();
-							coffin = coffinItem.getCoffinBlock();
+							blockCoffin = coffinItem.getCoffinBlock();
+							ExtendedPlayer.get(player).getGraveInventory().decrStackSize(0, 1);
 						}
 
-						BlockPos coffinPos = ((BlockGravestone)block).digGrave(world, pos, coffin);
-						IBasicContainer container = coffin.getContainer(world, coffinPos);
+						BlockPos coffinPos = blockGravestone.digGrave(world, pos, blockCoffin);
+						IBasicContainer container = blockCoffin.getContainer(world, coffinPos);
 
 						VFDeath.logger.info("Adding drops to added coffin...");
-						ExtendedPlayer.get(player).getGraveInventory().decrStackSize(0, 1);
 						this.fillCoffin(container, drops);
-						coffin.setOccupant(world, coffinPos, player);
+						blockCoffin.setOccupant(world, coffinPos, player);
 						return true;
 					}
 				}
-				else
-				{
-					VFDeath.logger.info("No gravestone TE found!");
-					return false;
-				}
-			}
-			else
-			{
-				return false;
 			}
 		}
-		VFDeath.logger.info("No gravestone found!");
 		return false;
 	}
-	
+
 	private void fillCoffin(IBasicContainer container, List<EntityItem> drops)
 	{
 		Iterator<EntityItem> dropsIterator = drops.iterator();
@@ -243,7 +230,6 @@ public class Graveyard
 		while (dropsIterator.hasNext())
 		{
 			ItemStack drop = dropsIterator.next().getEntityItem();
-			//TODO: Fix this
 			container.setInventorySlotContents(index, drop);
 			index++;
 		}
