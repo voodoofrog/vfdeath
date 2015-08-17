@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
@@ -68,13 +69,14 @@ public class ForgeEventHandler
 
 		if (props.isOnLastLife())
 		{
+			World defaultGraveyardWorld = DimensionManager.getWorld(VFDeath.graveyard.getWorldId());
 			props.loseHearts(1);
 
 			if (props.getCustomGravePos() != null)
 			{
 				VFDeath.logger.info("Attempting to use existing custom grave...");
-				if (VFDeath.graveyard.addDropsToGrave(event.entityPlayer, DimensionManager.getWorld(props.getCustomGraveWorldId()), props.getCustomGravePos(),
-						event.drops))
+				if (VFDeath.graveyard.fillGrave(event.entityPlayer, DimensionManager.getWorld(props.getCustomGraveWorldId()),
+						props.getCustomGravePos(), event.drops, event.source))
 				{
 					VFDeath.logger.info("Successfully used existing custom grave!");
 					event.setCanceled(true);
@@ -83,9 +85,8 @@ public class ForgeEventHandler
 				else if (props.getGravePos() != null)
 				{
 					VFDeath.logger.info("Attempting to use existing default grave...");
-					
-					if (VFDeath.graveyard.addDropsToGrave(event.entityPlayer, DimensionManager.getWorld(VFDeath.graveyard.getWorldId()), props.getGravePos(),
-							event.drops))
+
+					if (VFDeath.graveyard.fillGrave(event.entityPlayer, defaultGraveyardWorld, props.getGravePos(), event.drops, event.source))
 					{
 						VFDeath.logger.info("Successfully used existing default grave!");
 						event.setCanceled(true);
@@ -95,9 +96,8 @@ public class ForgeEventHandler
 					{
 						VFDeath.logger.info("Setting up new default grave...");
 						BlockPos gravePos = VFDeath.graveyard.spawnGrave(event.entityPlayer);
-						
-						if (VFDeath.graveyard.addDropsToGrave(event.entityPlayer, DimensionManager.getWorld(VFDeath.graveyard.getWorldId()), gravePos,
-								event.drops))
+
+						if (VFDeath.graveyard.fillGrave(event.entityPlayer, defaultGraveyardWorld, gravePos, event.drops, event.source))
 						{
 							VFDeath.logger.info("Successfully used new default grave!");
 							event.setCanceled(true);
@@ -108,9 +108,8 @@ public class ForgeEventHandler
 			else if (props.getGravePos() != null)
 			{
 				VFDeath.logger.info("Attempting to use existing default grave...");
-				
-				if (VFDeath.graveyard.addDropsToGrave(event.entityPlayer, DimensionManager.getWorld(VFDeath.graveyard.getWorldId()), props.getGravePos(),
-						event.drops))
+
+				if (VFDeath.graveyard.fillGrave(event.entityPlayer, defaultGraveyardWorld, props.getGravePos(), event.drops, event.source))
 				{
 					VFDeath.logger.info("Successfully used existing default grave!");
 					event.setCanceled(true);
@@ -119,9 +118,8 @@ public class ForgeEventHandler
 				{
 					VFDeath.logger.info("Setting up new default grave...");
 					BlockPos gravePos = VFDeath.graveyard.spawnGrave(event.entityPlayer);
-					
-					if (VFDeath.graveyard.addDropsToGrave(event.entityPlayer, DimensionManager.getWorld(VFDeath.graveyard.getWorldId()), gravePos,
-							event.drops))
+
+					if (VFDeath.graveyard.fillGrave(event.entityPlayer, defaultGraveyardWorld, gravePos, event.drops, event.source))
 					{
 						props.setGravePos(gravePos);
 						VFDeath.logger.info("Successfully used new default grave!");
@@ -132,9 +130,8 @@ public class ForgeEventHandler
 			else
 			{
 				BlockPos gravePos = VFDeath.graveyard.spawnGrave(event.entityPlayer);
-				
-				if (VFDeath.graveyard.addDropsToGrave(event.entityPlayer, DimensionManager.getWorld(VFDeath.graveyard.getWorldId()), gravePos,
-						event.drops))
+
+				if (VFDeath.graveyard.fillGrave(event.entityPlayer, defaultGraveyardWorld, gravePos, event.drops, event.source))
 				{
 					event.setCanceled(true);
 				}

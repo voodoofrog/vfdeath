@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -25,7 +26,6 @@ import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.init.VFDeathBlocks;
 import com.voodoofrog.vfdeath.item.ItemCoffin;
 import com.voodoofrog.vfdeath.misc.Strings;
-import com.voodoofrog.vfdeath.tileentity.TileEntityCoffin;
 import com.voodoofrog.vfdeath.tileentity.TileEntityGravestone;
 
 public class Graveyard
@@ -51,7 +51,7 @@ public class Graveyard
 				TileEntityGravestone teGravestone = (TileEntityGravestone)tileentity;
 
 				teGravestone.setOwner(Ribbit.playerUtils.getUUIDFromUsername("voodoofrog"));
-				teGravestone.updateEpitaph("");
+				teGravestone.updateEpitaph("", "");
 			}
 		}
 		else
@@ -157,7 +157,7 @@ public class Graveyard
 		return this.worldId;
 	}
 
-	public boolean addDropsToGrave(EntityPlayer player, World world, BlockPos pos, List<EntityItem> drops)
+	public boolean fillGrave(EntityPlayer player, World world, BlockPos pos, List<EntityItem> drops, DamageSource source)
 	{
 		Block block = world.getBlockState(pos).getBlock();
 
@@ -173,7 +173,9 @@ public class Graveyard
 				if (tileEntityGravestone.getOwner().equals(player.getUUID(player.getGameProfile())))
 				{
 					BlockPos coffinBlockPos = blockGravestone.getCoffinBlockPos(world, pos);
-					
+
+					tileEntityGravestone.updateEpitaph(source);
+
 					if (coffinBlockPos != null)
 					{
 						BlockCoffin blockCoffin = blockGravestone.getCoffinBlock(world, pos);

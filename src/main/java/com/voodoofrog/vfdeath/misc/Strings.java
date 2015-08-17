@@ -40,6 +40,7 @@ public class Strings
 	public static final String GRAVE_DOD = "msg.vfdeath.dod";
 	public static final String GRAVE_KILLED_BY = "msg.vfdeath.killedBy";
 	public static final String GRAVE_NO_VALID_LOC = "msg.vfdeath.noValidLoc";
+	public static final String GRAVE_DEATH_CAUSE = "msg.vfdeath.deathcause";
 
 	// Keys
 	public static final String KEY_GRAVE = "key.vfdeath.graveGui";

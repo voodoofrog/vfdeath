@@ -454,7 +454,7 @@ public class BlockCoffin extends BlockContainer
 				}
 				else
 				{
-					((TileEntityCoffin)tileentity).setOccupant(playerIn.getUUID(playerIn.getGameProfile()), this.isFullSize(worldIn, pos));
+					this.setOccupant(worldIn, pos, playerIn);
 					Ribbit.playerUtils.sendPlayerPopupMessage(playerIn, new ChatComponentText("DEBUG: You have occupied this coffin"));
 					return true;
 				}

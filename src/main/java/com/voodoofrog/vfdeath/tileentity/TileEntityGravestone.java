@@ -20,6 +20,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentProcessor;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -210,15 +211,47 @@ public class TileEntityGravestone extends TileEntity
 		}
 	}
 
-	public void updateEpitaph(String deathCause)
+	public void updateEpitaph(DamageSource source)
 	{
 		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
 		Date date = Ribbit.dateTime.getCurrentDate(this.worldObj);
 
 		this.epitaph[1] = new ChatComponentTranslation(Strings.GRAVE_DOD, dateFormat.format(date));
 		this.epitaph[2] = new ChatComponentTranslation(Strings.GRAVE_KILLED_BY);
-		this.epitaph[3] = new ChatComponentTranslation(deathCause);
+		this.epitaph[3] = this.processEpitaph(source);
 
 		this.markForUpdate();
+	}
+	
+	public void updateEpitaph(String text, String text2)
+	{
+		DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
+		Date date = Ribbit.dateTime.getCurrentDate(this.worldObj);
+
+		this.epitaph[1] = new ChatComponentTranslation(Strings.GRAVE_DOD, dateFormat.format(date));
+		this.epitaph[2] = new ChatComponentText(text);
+		this.epitaph[3] = new ChatComponentText(text2);
+
+		this.markForUpdate();
+	}
+	
+	private IChatComponent processEpitaph(DamageSource source)
+	{
+		if (source.damageType == "mob" || source.damageType == "player")
+		{
+			return new ChatComponentTranslation(Strings.GRAVE_DEATH_CAUSE + "." + source.damageType, new Object[] { source.getSourceOfDamage()
+					.getDisplayName() });
+		}
+		else if (source.damageType == "arrow" || source.damageType == "arrow.item" || source.damageType == "fireball"
+				|| source.damageType == "fireball.item" || source.damageType == "thrown" || source.damageType == "thrown.item"
+				|| source.damageType == "indirectMagic" || source.damageType == "indirectMagic.item" || source.damageType == "thorns")
+		{
+			return new ChatComponentTranslation(Strings.GRAVE_DEATH_CAUSE + "." + source.damageType, new Object[] { source.getEntity()
+					.getDisplayName() });
+		}
+		else
+		{
+			return new ChatComponentTranslation(Strings.GRAVE_DEATH_CAUSE + "." + source.damageType);
+		}
 	}
 }
