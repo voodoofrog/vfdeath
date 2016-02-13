@@ -6,6 +6,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.MathHelper;
@@ -21,6 +22,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.voodoofrog.vfdeath.entity.ExtendedPlayer;
 import com.voodoofrog.vfdeath.misc.ModInfo;
+
+import javafx.scene.shape.VertexFormat;
 
 @SideOnly(Side.CLIENT)
 public class GuiInGameHealthLoss extends Gui
@@ -54,7 +57,7 @@ public class GuiInGameHealthLoss extends Gui
 		if (props.getIsDead())
 			healthDiff = 20f;
 
-		ScaledResolution resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+		ScaledResolution resolution = new ScaledResolution(this.mc);
 		int x = (resolution.getScaledWidth() / 2 - 91);
 		int y = resolution.getScaledHeight() - 39;
 		this.mc.getTextureManager().bindTexture(texture);
@@ -95,7 +98,7 @@ public class GuiInGameHealthLoss extends Gui
 			return;
 		}
 
-		ScaledResolution resolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+		ScaledResolution resolution = new ScaledResolution(this.mc);
 
 		GlStateManager.disableDepth();
 		GlStateManager.depthMask(false);
@@ -105,11 +108,11 @@ public class GuiInGameHealthLoss extends Gui
 		this.mc.getTextureManager().bindTexture(ghostBlur);
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		worldrenderer.startDrawingQuads();
-		worldrenderer.addVertexWithUV(0.0D, (double)resolution.getScaledHeight(), -90.0D, 0.0D, 1.0D);
-		worldrenderer.addVertexWithUV((double)resolution.getScaledWidth(), (double)resolution.getScaledHeight(), -90.0D, 1.0D, 1.0D);
-		worldrenderer.addVertexWithUV((double)resolution.getScaledWidth(), 0.0D, -90.0D, 1.0D, 0.0D);
-		worldrenderer.addVertexWithUV(0.0D, 0.0D, -90.0D, 0.0D, 0.0D);
+		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		worldrenderer.pos(0.0D, (double)resolution.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
+		worldrenderer.pos((double)resolution.getScaledWidth(), (double)resolution.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
+		worldrenderer.pos((double)resolution.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
+		worldrenderer.pos(0.0D, 0.0D, -90.0D).tex(0.0D, 0.0D).endVertex();
 		tessellator.draw();
 		GlStateManager.depthMask(true);
 		GlStateManager.enableDepth();

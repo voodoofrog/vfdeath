@@ -26,13 +26,13 @@ public class AddLifeCommand extends CommandBase implements ICommand
 	}
 
 	@Override
-	public int compareTo(Object arg0)
+	public int compareTo(ICommand command)
 	{
 		return 0;
 	}
 
 	@Override
-	public String getName()
+	public String getCommandName()
 	{
 		return Strings.ADDLIFE_NAME;
 	}
@@ -50,13 +50,13 @@ public class AddLifeCommand extends CommandBase implements ICommand
 	}
 
 	@Override
-	public List getAliases()
+	public List getCommandAliases()
 	{
 		return this.aliases;
 	}
 
 	@Override
-	public void execute(ICommandSender sender, String[] args) throws CommandException
+	public void processCommand(ICommandSender sender, String[] args) throws CommandException
 	{
 		if (args.length <= 0)
 		{
@@ -94,7 +94,7 @@ public class AddLifeCommand extends CommandBase implements ICommand
 	}
 
 	@Override
-	public boolean canCommandSenderUse(ICommandSender sender)
+	public boolean canCommandSenderUseCommand(ICommandSender sender)
 	{
 		return true;
 	}

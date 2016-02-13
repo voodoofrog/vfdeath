@@ -73,7 +73,7 @@ public class TileEntityResurrectionAltar extends TileEntity implements IInventor
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot)
+	public ItemStack removeStackFromSlot(int slot)
 	{
 		ItemStack item = getStackInSlot(slot);
 		this.setInventorySlotContents(slot, null);

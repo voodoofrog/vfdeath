@@ -76,7 +76,7 @@ public class TileEntityGravestone extends TileEntity
 			{
 			}
 
-			public boolean canUseCommand(int permLevel, String commandName)
+			public boolean canCommandSenderUseCommand(int permLevel, String commandName)
 			{
 				return true;
 			}
@@ -122,7 +122,7 @@ public class TileEntityGravestone extends TileEntity
 
 				try
 				{
-					this.epitaph[i] = ChatComponentProcessor.func_179985_a(icommandsender, ichatcomponent, (Entity)null);
+					this.epitaph[i] = ChatComponentProcessor.processComponent(icommandsender, ichatcomponent, (Entity)null);
 				}
 				catch (CommandException commandexception)
 				{

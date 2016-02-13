@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import com.voodoofrog.ribbit.world.IBasicContainer;
+import com.voodoofrog.vfdeath.block.BlockCoffin;
+import com.voodoofrog.vfdeath.inventory.ContainerCoffin;
+import com.voodoofrog.vfdeath.inventory.InventoryFullCoffin;
+import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -17,23 +23,17 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.voodoofrog.ribbit.world.IBasicContainer;
-import com.voodoofrog.vfdeath.block.BlockCoffin;
-import com.voodoofrog.vfdeath.inventory.ContainerCoffin;
-import com.voodoofrog.vfdeath.inventory.InventoryFullCoffin;
-import com.voodoofrog.vfdeath.item.ItemResurrectionAnkh;
-
-public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox, IInventory, IInteractionObject, IBasicContainer
+public class TileEntityCoffin extends TileEntity implements ITickable, IInventory, IInteractionObject, IBasicContainer
 {
 	private static final int[] slotsItems = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
 	private static final int[] slotsAnkhs = new int[] { 18, 19, 20, 21, 22 };
@@ -103,7 +103,7 @@ public class TileEntityCoffin extends TileEntity implements IUpdatePlayerListBox
 		}
 	}
 
-	public ItemStack getStackInSlotOnClosing(int index)
+	public ItemStack removeStackFromSlot(int index)
 	{
 		if (this.coffinContents[index] != null)
 		{

@@ -101,10 +101,10 @@ public class InventoryFullCoffin implements IBasicContainer
 				: this.upperCoffin.decrStackSize(index, count);
 	}
 
-	public ItemStack getStackInSlotOnClosing(int index)
+	public ItemStack removeStackFromSlot(int index)
 	{
-		return index >= this.upperCoffin.getSizeInventory() ? this.lowerCoffin.getStackInSlotOnClosing(index - this.upperCoffin.getSizeInventory())
-				: this.upperCoffin.getStackInSlotOnClosing(index);
+		return index >= this.upperCoffin.getSizeInventory() ? this.lowerCoffin.removeStackFromSlot(index - this.upperCoffin.getSizeInventory())
+				: this.upperCoffin.removeStackFromSlot(index);
 	}
 
 	public void setInventorySlotContents(int index, ItemStack stack)
